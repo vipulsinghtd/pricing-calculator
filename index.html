@@ -1104,6 +1104,18 @@ input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus,
   </div>
 </div>
 
+<!-- ==================== SUCCESS CONFIRMATION MODAL ==================== -->
+<div class="modal-overlay" id="success-modal" onclick="if(event.target===this)closeSuccessModal()">
+  <div class="modal" style="text-align: center; padding: 2.5rem 2rem;">
+    <div style="width: 56px; height: 56px; border-radius: 50%; background: rgba(157,204,76,0.15); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem;">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#9DCC4C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    </div>
+    <h3 style="margin-bottom: 0.5rem;">Submitted Successfully</h3>
+    <p style="margin-bottom: 1.5rem;">Thank you! Our team will review your inputs and be in touch with a tailored pricing proposal.</p>
+    <button class="btn btn-primary" onclick="closeSuccessModal()">OK</button>
+  </div>
+</div>
+
 <script>
 // ====== EASING HELPER — VALUE BUMP ======
 function bumpValue(el) {
@@ -1429,6 +1441,9 @@ function openSubmitModal() {
 function closeSubmitModal() {
   document.getElementById('submit-modal').classList.remove('show');
 }
+function closeSuccessModal() {
+  document.getElementById('success-modal').classList.remove('show');
+}
 
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxHwNrtMavJ2Cj9eHWCMEhMd3tPF0x7ck6Y4eEgwkJQY0Ce93gj6-prgeRRtm_5C4I/exec';
 
@@ -1450,7 +1465,7 @@ function submitToSheet() {
 
   const payload = {
     headers: [
-      'Name', 'Email', 'Submission Date',
+      'Timestamp', 'Name', 'Email',
       'P+B Mode',
       'Known Customers', 'Additional Sources', 'Overlap %', 'Anonymous Visitors/Year',
       'Transactions/Year', 'Email SMS Push/Year', 'Web App Events/Year', 'Other Events/Year',
@@ -1464,9 +1479,9 @@ function submitToSheet() {
       'AI Credits/Month', 'AI Credits/Year', 'AI Tier'
     ],
     values: [
+      new Date().toLocaleString(),
       name,
       email,
-      new Date().toISOString(),
       isGuided ? 'Guided' : 'Direct',
       isGuided ? (document.getElementById('pb-known-raw').value || '') : '',
       isGuided ? (document.getElementById('pb-additional-raw').value || '') : '',
@@ -1508,8 +1523,10 @@ function submitToSheet() {
     body: JSON.stringify(payload)
   })
   .then(() => {
-    showStatus('Submitted successfully! Our team will be in touch.', 'success');
-    btn.textContent = 'Submitted';
+    closeSubmitModal();
+    document.getElementById('success-modal').classList.add('show');
+    btn.textContent = 'Submit';
+    btn.disabled = false;
     btn.style.opacity = '1';
   })
   .catch(err => {
