@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Treasure AI — Pricing Calculator</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --td-primary: #494FFF;
+  --td-secondary-1: #8753FF;
+  --td-secondary-2: #C466D4;
+  --td-accent-lime: #9DCC4C;
+  --td-accent-red: #EE2328;
+  --td-accent-salmon: #F69068;
+  --td-gradient: linear-gradient(135deg, #494FFF, #8753FF, #C466D4);
+  --bg: #f8f9fc;
+  --card-bg: #ffffff;
+  --text: #1a1a2e;
+  --text-muted: #666;
+  --border: rgba(73,79,255,0.12);
+  --radius: 16px;
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 2rem 1rem;
+}
+a { color: var(--td-primary); }
+
+/* Header */
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding: 2rem 1rem;
+  background: var(--td-gradient);
+  border-radius: var(--radius);
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+.header p {
+  color: rgba(255,255,255,0.85);
+  font-size: 0.95rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  max-width: 1100px;
+  margin: 1.5rem auto;
+  border-bottom: 2px solid #e8e8f0;
+  gap: 0;
+}
+.tab-btn {
+  padding: 0.85rem 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #888;
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s;
+}
+.tab-btn:hover { color: #555; }
+.tab-btn.active { color: var(--td-primary); }
+.tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--td-primary);
+  border-radius: 3px 3px 0 0;
+}
+.tab-content { display: none; max-width: 1100px; margin: 0 auto; }
+.tab-content.active { display: block; }
+
+/* Cards */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.card:hover {
+  border-color: rgba(73,79,255,0.3);
+  box-shadow: 0 4px 20px rgba(73,79,255,0.08);
+}
+.card h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.badge {
+  font-size: 0.65rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 20px;
+  background: rgba(73,79,255,0.12);
+  color: var(--td-primary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.definition {
+  font-size: 0.82rem;
+  color: #555;
+  line-height: 1.6;
+  padding: 0.75rem;
+  background: #f4f4fb;
+  border-radius: 8px;
+  border-left: 3px solid var(--td-secondary-1);
+  margin-bottom: 1.2rem;
+}
+.definition strong { color: var(--td-primary); }
+
+/* Form elements */
+.input-group { margin-bottom: 1rem; }
+.input-group label {
+  display: block;
+  font-size: 0.8rem;
+  color: #444;
+  margin-bottom: 0.4rem;
+  font-weight: 500;
+}
+.input-group .unit { font-size: 0.7rem; color: #999; }
+.input-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.input-row input[type="range"] {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background: #e0e0f0;
+  outline: none;
+}
+.input-row input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--td-primary);
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(73,79,255,0.4);
+}
+input[type="number"], input[type="text"], input[type="email"], select {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--text);
+  font-size: 0.88rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus, select:focus {
+  border-color: var(--td-primary);
+  box-shadow: 0 0 0 2px rgba(73,79,255,0.12);
+}
+.input-row input[type="number"] {
+  width: 100px;
+  text-align: right;
+}
+
+/* Credit output */
+.credit-output {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 1rem;
+  background: rgba(73,79,255,0.05);
+  border-radius: 10px;
+  margin-top: 0.75rem;
+}
+.credit-output .label { font-size: 0.78rem; color: var(--text-muted); }
+.credit-output .value { font-size: 1.2rem; font-weight: 700; color: var(--td-primary); }
+.conversion-note {
+  font-size: 0.68rem;
+  color: #999;
+  margin-top: 0.4rem;
+  text-align: right;
+}
+
+/* Wizard */
+.wizard-steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 2rem;
+}
+.wizard-step {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.wizard-step .step-num {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  background: #e8e8f0;
+  color: #888;
+  transition: all 0.3s;
+}
+.wizard-step.active .step-num {
+  background: var(--td-primary);
+  color: #fff;
+}
+.wizard-step.done .step-num {
+  background: var(--td-accent-lime);
+  color: #fff;
+}
+.wizard-step .step-label {
+  font-size: 0.78rem;
+  color: #888;
+  font-weight: 500;
+}
+.wizard-step.active .step-label { color: var(--td-primary); font-weight: 600; }
+.wizard-step.done .step-label { color: var(--td-accent-lime); }
+.wizard-connector {
+  width: 40px;
+  height: 2px;
+  background: #e8e8f0;
+  margin: 0 0.5rem;
+}
+.wizard-connector.done { background: var(--td-accent-lime); }
+
+.wizard-panel { display: none; }
+.wizard-panel.active { display: block; }
+
+/* Buttons */
+.btn {
+  padding: 0.75rem 1.8rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.btn:active { transform: scale(0.97); }
+.btn-primary {
+  background: var(--td-gradient);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(73,79,255,0.25);
+}
+.btn-primary:hover { box-shadow: 0 6px 24px rgba(73,79,255,0.35); }
+.btn-secondary {
+  background: #fff;
+  color: var(--td-primary);
+  border: 2px solid var(--td-primary);
+}
+.btn-secondary:hover { background: rgba(73,79,255,0.05); }
+.btn-group {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+
+/* Toggle switch for mode */
+.mode-toggle {
+  display: flex;
+  background: #f0f0f8;
+  border-radius: 10px;
+  padding: 4px;
+  margin-bottom: 1.5rem;
+  width: fit-content;
+}
+.mode-toggle button {
+  padding: 0.6rem 1.2rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background: transparent;
+  color: #888;
+  transition: all 0.2s;
+}
+.mode-toggle button.active {
+  background: #fff;
+  color: var(--td-primary);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* Results / Summary */
+.result-banner {
+  background: var(--td-gradient);
+  border-radius: var(--radius);
+  padding: 1.5rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.result-banner h2 { color: #fff; font-size: 1.1rem; font-weight: 600; }
+.result-banner .big-number { font-size: 2.2rem; font-weight: 800; color: #fff; }
+.result-banner .sub { font-size: 0.85rem; color: rgba(255,255,255,0.8); }
+
+/* Tier table */
+.tier-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+.tier-table thead { background: var(--td-gradient); }
+.tier-table thead th {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.tier-table tbody tr {
+  border-bottom: 1px solid #f0f0f5;
+  transition: background 0.15s;
+}
+.tier-table tbody tr:hover { background: rgba(73,79,255,0.03); }
+.tier-table td { padding: 0.6rem 1rem; }
+.tier-table .tier-name { font-weight: 700; color: var(--td-primary); }
+.tier-highlight { background: rgba(73,79,255,0.08) !important; }
+
+/* Highlight box */
+.highlight-box {
+  background: rgba(157,204,76,0.1);
+  border: 1px solid rgba(157,204,76,0.3);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  margin: 1rem 0;
+}
+.highlight-box.info {
+  background: rgba(73,79,255,0.05);
+  border-color: rgba(73,79,255,0.2);
+}
+
+/* Modal */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.modal-overlay.show { display: flex; }
+.modal {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 2rem;
+  max-width: 440px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+}
+.modal h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  color: var(--text);
+}
+.modal p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+}
+.modal .input-group { margin-bottom: 1rem; }
+.modal .input-group label { font-size: 0.82rem; margin-bottom: 0.3rem; display: block; font-weight: 500; }
+.modal .input-group input { width: 100%; }
+.modal .btn { width: 100%; text-align: center; }
+.modal .status-msg {
+  text-align: center;
+  font-size: 0.85rem;
+  margin-top: 1rem;
+  padding: 0.5rem;
+  border-radius: 8px;
+}
+.modal .status-msg.success { background: rgba(157,204,76,0.15); color: #2d7a2d; }
+.modal .status-msg.error { background: rgba(238,35,40,0.1); color: var(--td-accent-red); }
+
+/* Two-col grid */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+@media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
+.full-width { grid-column: 1 / -1; }
+
+/* Breakdown */
+.breakdown-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f0f0f5;
+  font-size: 0.82rem;
+}
+.breakdown-row:last-child { border-bottom: none; }
+.breakdown-row .bk-label { color: var(--text-muted); }
+.breakdown-row .bk-value { color: var(--td-secondary-1); font-weight: 600; }
+
+/* Responsive */
+@media (max-width: 600px) {
+  body { padding: 1rem 0.5rem; }
+  .header h1 { font-size: 1.5rem; }
+  .tabs { overflow-x: auto; }
+  .tab-btn { padding: 0.7rem 1rem; font-size: 0.8rem; white-space: nowrap; }
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <h1>Treasure AI — Pricing Estimator</h1>
+  <p>Estimate your platform usage across CDP (Profiles + Behaviors) and AI Suite Credits to understand your pricing tier.</p>
+</div>
+
+<!-- Tabs -->
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('pb')">P+B (CDP Platform)</button>
+  <button class="tab-btn" onclick="switchTab('ai')">AI Suite Credits</button>
+  <button class="tab-btn" onclick="switchTab('summary')">Summary & Submit</button>
+</div>
+
+<!-- ==================== P+B TAB ==================== -->
+<div id="tab-pb" class="tab-content active">
+
+  <!-- Definitions -->
+  <div class="card">
+    <h3>What are Profiles + Behaviors (P+B)?</h3>
+    <div class="definition" style="margin-top: 0.75rem;">
+      <strong>P+B Units</strong> determine your CDP platform tier.<br><br>
+      <strong>P+B Units = Profiles (in Millions) + Behaviors (in Billions)</strong><br><br>
+      <strong>Profiles</strong> — The unified "golden record" for an individual or account after identity resolution (ID stitching). Measured in millions.<br>
+      • <strong>Known profiles</strong>: Contain at least one addressable identifier (email, phone, loyalty ID, login ID). Each counts as 1.<br>
+      • <strong>Unknown profiles</strong>: No addressable identifier (anonymous cookies, device IDs). <strong>20 unknown = 1 profile</strong> for billing.<br><br>
+      <strong>Behaviors</strong> — Events tied to a profile: purchases, site visits, email sends/opens, app events, support calls, etc. Measured in billions.<br><br>
+      <em>Example: 7M profiles + 2.5B behaviors = 9.5 P+B Units</em>
+    </div>
+  </div>
+
+  <!-- Mode Toggle -->
+  <div class="card">
+    <h3>How would you like to enter your data?</h3>
+    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0.5rem 0 1rem;">Choose guided mode if you have raw customer/activity counts. Choose direct mode if you already know your profile and behavior totals.</p>
+    <div class="mode-toggle">
+      <button class="active" onclick="setPBMode('guided')">Guided (Recommended)</button>
+      <button onclick="setPBMode('direct')">Direct Entry</button>
+    </div>
+
+    <!-- GUIDED MODE -->
+    <div id="pb-guided" class="wizard-panel active">
+
+      <!-- Wizard Steps -->
+      <div class="wizard-steps">
+        <div class="wizard-step active" id="ws-1"><span class="step-num">1</span><span class="step-label">Profiles</span></div>
+        <div class="wizard-connector" id="wc-1"></div>
+        <div class="wizard-step" id="ws-2"><span class="step-num">2</span><span class="step-label">Behaviors</span></div>
+        <div class="wizard-connector" id="wc-2"></div>
+        <div class="wizard-step" id="ws-3"><span class="step-num">3</span><span class="step-label">Results</span></div>
+      </div>
+
+      <!-- Step 1: Profiles -->
+      <div class="wizard-panel active" id="wizard-step-1">
+        <div class="card" style="border-color: rgba(73,79,255,0.25);">
+          <h3 style="font-size: 1rem;">Step 1: Who are your customers?</h3>
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1.2rem;">Enter approximate counts for people/accounts you actively market to or service.</p>
+
+          <div class="input-group">
+            <label>Known Customers / Members / Contacts <span class="unit">(unique individuals with email, phone, or login ID)</span></label>
+            <div class="input-row">
+              <input type="number" id="pb-known-raw" min="0" value="" placeholder="e.g. 5000000" style="width: 180px;" oninput="calcPBGuided()">
+              <span class="unit" style="font-size: 0.78rem;">people</span>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Additional system sources <span class="unit">(if you have contacts in multiple systems — e.g. CRM + ESP + loyalty)</span></label>
+            <div class="input-row">
+              <input type="number" id="pb-additional-raw" min="0" value="" placeholder="e.g. 3000000" style="width: 180px;" oninput="calcPBGuided()">
+              <span class="unit" style="font-size: 0.78rem;">people (we'll apply 30-40% overlap dedup)</span>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Estimated overlap/dedup rate <span class="unit">(% of additional source that overlaps with primary)</span></label>
+            <div class="input-row">
+              <input type="range" id="pb-overlap-slider" min="0" max="80" value="35" step="5" oninput="document.getElementById('pb-overlap-val').textContent=this.value; calcPBGuided();">
+              <span id="pb-overlap-val" style="font-size: 0.85rem; font-weight: 600; min-width: 35px;">35</span><span class="unit">%</span>
+            </div>
+          </div>
+
+          <hr style="border: none; border-top: 1px solid #eee; margin: 1.2rem 0;">
+
+          <div class="highlight-box">
+            <h3 style="font-size: 0.9rem;"><strong>Anonymous / Unknown Profiles</strong></h3>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0.5rem 0;">Do you plan to include anonymous web/app visitors in the CDP? These are device IDs, cookies, etc. with no addressable identifier.</p>
+            <p style="font-size: 0.78rem; color: var(--td-primary); font-weight: 600; margin-bottom: 0.75rem;">Conversion: 20 unknown profiles = 1 profile unit for billing</p>
+            <div class="input-group">
+              <label>Annual anonymous web/app visitors</label>
+              <div class="input-row">
+                <input type="number" id="pb-unknown-raw" min="0" value="" placeholder="e.g. 100000000" style="width: 180px;" oninput="calcPBGuided()">
+                <span class="unit">visitors / year</span>
+              </div>
+            </div>
+            <div id="pb-unknown-calc" style="font-size: 0.8rem; color: var(--td-secondary-1); font-weight: 500; margin-top: 0.5rem;"></div>
+          </div>
+
+          <div class="credit-output" style="margin-top: 1.2rem;">
+            <span class="label">Estimated Total Profiles</span>
+            <span class="value" id="pb-profiles-result">—</span>
+          </div>
+          <div style="font-size: 0.72rem; color: #999; text-align: right; margin-top: 0.3rem;" id="pb-profiles-breakdown"></div>
+
+          <div class="btn-group">
+            <button class="btn btn-primary" onclick="wizardNext(2)">Next: Behaviors →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2: Behaviors -->
+      <div class="wizard-panel" id="wizard-step-2">
+        <div class="card" style="border-color: rgba(73,79,255,0.25);">
+          <h3 style="font-size: 1rem;">Step 2: What do your customers do?</h3>
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1.2rem;">Enter approximate <strong>annual</strong> volumes by channel. Don't worry about being exact — ballpark estimates work.</p>
+
+          <div class="input-group">
+            <label>Transactions / Orders per year <span class="unit">(e-commerce, in-store, subscriptions)</span></label>
+            <div class="input-row">
+              <input type="number" id="pb-transactions" min="0" value="" placeholder="e.g. 50000000" style="width: 180px;" oninput="calcPBGuided()">
+              <span class="unit">per year</span>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Email / SMS / Push sends per year <span class="unit">(from all ESPs / messaging platforms)</span></label>
+            <div class="input-row">
+              <input type="number" id="pb-messages" min="0" value="" placeholder="e.g. 200000000" style="width: 180px;" oninput="calcPBGuided()">
+              <span class="unit">per year</span>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Web / App page views or events per year <span class="unit">(not necessarily all raw logs — events you'd want in the CDP)</span></label>
+            <div class="input-row">
+              <input type="number" id="pb-pageviews" min="0" value="" placeholder="e.g. 500000000" style="width: 180px;" oninput="calcPBGuided()">
+              <span class="unit">per year</span>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Other events per year <span class="unit">(call center, in-store interactions, IoT, etc.)</span></label>
+            <div class="input-row">
+              <input type="number" id="pb-other-events" min="0" value="" placeholder="e.g. 10000000" style="width: 180px;" oninput="calcPBGuided()">
+              <span class="unit">per year</span>
+            </div>
+          </div>
+
+          <div class="credit-output" style="margin-top: 1.2rem;">
+            <span class="label">Estimated Total Behaviors</span>
+            <span class="value" id="pb-behaviors-result">—</span>
+          </div>
+          <div style="font-size: 0.72rem; color: #999; text-align: right; margin-top: 0.3rem;" id="pb-behaviors-breakdown"></div>
+
+          <div class="btn-group">
+            <button class="btn btn-secondary" onclick="wizardNext(1)">← Back</button>
+            <button class="btn btn-primary" onclick="wizardNext(3)">Next: See Results →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3: Results -->
+      <div class="wizard-panel" id="wizard-step-3">
+        <div class="result-banner">
+          <div>
+            <h2>Your Estimated P+B</h2>
+            <div class="sub">Profiles (M) + Behaviors (B)</div>
+          </div>
+          <div style="text-align: right;">
+            <div class="big-number" id="pb-total-units">—</div>
+            <div class="sub">P+B Units</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 style="font-size: 1rem;">Breakdown</h3>
+          <div class="breakdown-row"><span class="bk-label">Known Profiles</span><span class="bk-value" id="pb-sum-known">—</span></div>
+          <div class="breakdown-row"><span class="bk-label">Unknown Profiles (÷ 20)</span><span class="bk-value" id="pb-sum-unknown">—</span></div>
+          <div class="breakdown-row"><span class="bk-label">Total Profiles</span><span class="bk-value" id="pb-sum-profiles">—</span></div>
+          <div class="breakdown-row"><span class="bk-label">Total Behaviors</span><span class="bk-value" id="pb-sum-behaviors">—</span></div>
+          <div class="breakdown-row" style="border-top: 2px solid var(--td-primary); margin-top: 0.5rem; padding-top: 0.75rem;">
+            <span class="bk-label" style="font-weight: 600; color: var(--text);">P+B Units</span>
+            <span class="bk-value" style="font-size: 1.1rem;" id="pb-sum-total">—</span>
+          </div>
+        </div>
+
+        <div class="highlight-box info">
+          <p style="font-size: 0.82rem; margin: 0;"><strong>Growth buffer:</strong> We recommend adding 20-30% for Year 2-3 growth and additional data sources. Your scoped tier should accommodate this headroom.</p>
+        </div>
+
+        <div class="card" style="margin-top: 1rem;">
+          <h3 style="font-size: 1rem;">ICDP Tier Alignment</h3>
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1rem;">Your P+B estimate maps to the following platform tier:</p>
+          <div style="overflow-x: auto;">
+            <table class="tier-table" id="pb-tier-table">
+              <thead>
+                <tr><th>Tier</th><th>Group</th><th>P+B Range (Low)</th><th>P+B Range (High)</th></tr>
+              </thead>
+              <tbody id="pb-tier-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <button class="btn btn-secondary" onclick="wizardNext(2)">← Back</button>
+          <button class="btn btn-primary" onclick="switchTab('ai')">Continue to AI Credits →</button>
+        </div>
+      </div>
+
+    </div><!-- end guided -->
+
+    <!-- DIRECT MODE -->
+    <div id="pb-direct" class="wizard-panel">
+      <div class="two-col">
+        <div class="input-group">
+          <label>Total Profiles <span class="unit">(in Millions)</span></label>
+          <div class="input-row">
+            <input type="range" id="pb-direct-profiles-slider" min="0" max="500" value="0" step="1" oninput="document.getElementById('pb-direct-profiles').value=this.value; calcPBDirect();">
+            <input type="number" id="pb-direct-profiles" min="0" value="0" style="width: 100px;" oninput="document.getElementById('pb-direct-profiles-slider').value=this.value; calcPBDirect();">
+            <span class="unit">M</span>
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Total Behaviors <span class="unit">(in Billions)</span></label>
+          <div class="input-row">
+            <input type="range" id="pb-direct-behaviors-slider" min="0" max="100" value="0" step="0.5" oninput="document.getElementById('pb-direct-behaviors').value=this.value; calcPBDirect();">
+            <input type="number" id="pb-direct-behaviors" min="0" value="0" step="0.1" style="width: 100px;" oninput="document.getElementById('pb-direct-behaviors-slider').value=this.value; calcPBDirect();">
+            <span class="unit">B</span>
+          </div>
+        </div>
+      </div>
+      <div class="credit-output" style="margin-top: 1rem;">
+        <span class="label">P+B Units</span>
+        <span class="value" id="pb-direct-total">0.00</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ==================== AI CREDITS TAB ==================== -->
+<div id="tab-ai" class="tab-content">
+
+  <!-- Definitions -->
+  <div class="card">
+    <h3>What are AI Suite Credits?</h3>
+    <div class="definition" style="margin-top: 0.75rem;">
+      <strong>AI Credits</strong> are a consumption-based unit for Treasure AI services. Each product converts usage into credits at a defined rate. Your total annual credits determine your AI Suite tier and entitlement.<br><br>
+      Credits are calculated monthly, then annualized (× 12) to determine your tier.
+    </div>
+  </div>
+
+  <div class="two-col">
+
+    <!-- AI Foundry -->
+    <div class="card">
+      <h3>AI Foundry <span class="badge">All Suites</span></h3>
+      <div class="definition">
+        Powers conversational AI across Treasure AI Studio, Code, and AI Agents. A <strong>Conversation</strong> = an average of five back-and-forth exchanges between two entities using standard LLMs. Metered across Studio, Code, and Agent Foundry on Production Instances.
+      </div>
+      <div class="input-group">
+        <label>Total Conversations / month <span class="unit">(Thousands × 1,000)</span></label>
+        <div class="input-row">
+          <input type="range" id="ai-foundry-slider" min="0" max="500" value="0" step="1" oninput="document.getElementById('ai-foundry-input').value=this.value; calcAI();">
+          <input type="number" id="ai-foundry-input" min="0" max="10000" value="0" step="1" oninput="document.getElementById('ai-foundry-slider').value=this.value; calcAI();">
+        </div>
+      </div>
+      <div class="credit-output">
+        <span class="label">Credits / Month</span>
+        <span class="value" id="ai-foundry-credits">0.00</span>
+      </div>
+      <div class="conversion-note">1 Credit = 600 Conversations</div>
+    </div>
+
+    <!-- Agentic Engage -->
+    <div class="card">
+      <h3>Agentic Engage <span class="badge">Engagement Suite</span></h3>
+      <div class="definition">
+        AI-powered customer engagement via email, push notifications, and messaging at scale. <strong>Email Messages</strong> counted from messages sent via Engage Studio in Production Instances. Supports personalized, AI-optimized content delivery.
+      </div>
+      <div class="input-group">
+        <label>Emails Sent / month <span class="unit">(Millions × 1,000,000)</span></label>
+        <div class="input-row">
+          <input type="range" id="ai-engage-slider" min="0" max="50" value="0" step="0.5" oninput="document.getElementById('ai-engage-input').value=this.value; calcAI();">
+          <input type="number" id="ai-engage-input" min="0" max="1000" value="0" step="0.1" oninput="document.getElementById('ai-engage-slider').value=this.value; calcAI();">
+        </div>
+      </div>
+      <div class="credit-output">
+        <span class="label">Credits / Month</span>
+        <span class="value" id="ai-engage-credits">0.00</span>
+      </div>
+      <div class="conversion-note">1 Credit = 1 Million Email Messages</div>
+    </div>
+
+    <!-- RT Personalization -->
+    <div class="card">
+      <h3>RT Personalization <span class="badge">Personalization Suite</span></h3>
+      <div class="definition">
+        Delivers sub-second API responses with customer attributes from the RT Decision Engine. <strong>RT Profiles</strong> = collections of customer attributes held in the engine (measured as the 4th highest daily count per month). <strong>Personalization Calls</strong> = API calls returning up to 20 attributes per request.
+      </div>
+      <div class="input-group">
+        <label>Total RT Profiles <span class="unit">(Millions)</span></label>
+        <div class="input-row">
+          <input type="range" id="ai-rt-profiles-slider" min="0" max="50" value="0" step="0.5" oninput="document.getElementById('ai-rt-profiles-input').value=this.value; calcAI();">
+          <input type="number" id="ai-rt-profiles-input" min="0" max="500" value="0" step="0.1" oninput="document.getElementById('ai-rt-profiles-slider').value=this.value; calcAI();">
+        </div>
+      </div>
+      <div class="input-group">
+        <label>Personalization Calls / month <span class="unit">(Millions)</span></label>
+        <div class="input-row">
+          <input type="range" id="ai-rt-calls-slider" min="0" max="500" value="0" step="5" oninput="document.getElementById('ai-rt-calls-input').value=this.value; calcAI();">
+          <input type="number" id="ai-rt-calls-input" min="0" max="5000" value="0" step="1" oninput="document.getElementById('ai-rt-calls-slider').value=this.value; calcAI();">
+        </div>
+      </div>
+      <div class="credit-output">
+        <span class="label">Credits / Month</span>
+        <span class="value" id="ai-rt-pz-credits">0.00</span>
+      </div>
+      <div class="conversion-note">1 Credit = 1M RT Profiles | 1 Credit = 10M Personalization Calls</div>
+    </div>
+
+    <!-- RT Triggers -->
+    <div class="card">
+      <h3>RT Triggers <span class="badge">Personalization & Engagement</span></h3>
+      <div class="definition">
+        Fire downstream actions (webhooks, messaging, journey entry) when streaming events meet criteria — ~3 min end-to-end latency. <strong>Incoming Events</strong> = streaming events into RT Decision Engine. <strong>Trigger Activations</strong> = outgoing events from engine to external systems.
+      </div>
+      <div class="input-group">
+        <label>RT Profiles <span class="unit">(Millions)</span></label>
+        <div class="input-row">
+          <input type="range" id="ai-trig-profiles-slider" min="0" max="50" value="0" step="0.5" oninput="document.getElementById('ai-trig-profiles-input').value=this.value; calcAI();">
+          <input type="number" id="ai-trig-profiles-input" min="0" max="500" value="0" step="0.1" oninput="document.getElementById('ai-trig-profiles-slider').value=this.value; calcAI();">
+        </div>
+      </div>
+      <div class="input-group">
+        <label>Incoming Trigger Events / month <span class="unit">(Millions)</span></label>
+        <div class="input-row">
+          <input type="range" id="ai-trig-events-slider" min="0" max="500" value="0" step="5" oninput="document.getElementById('ai-trig-events-input').value=this.value; calcAI();">
+          <input type="number" id="ai-trig-events-input" min="0" max="5000" value="0" step="1" oninput="document.getElementById('ai-trig-events-slider').value=this.value; calcAI();">
+        </div>
+      </div>
+      <div class="input-group">
+        <label>Outgoing Trigger Activations / month <span class="unit">(Millions)</span></label>
+        <div class="input-row">
+          <input type="range" id="ai-trig-activations-slider" min="0" max="500" value="0" step="5" oninput="document.getElementById('ai-trig-activations-input').value=this.value; calcAI();">
+          <input type="number" id="ai-trig-activations-input" min="0" max="5000" value="0" step="1" oninput="document.getElementById('ai-trig-activations-slider').value=this.value; calcAI();">
+        </div>
+      </div>
+      <div class="credit-output">
+        <span class="label">Credits / Month</span>
+        <span class="value" id="ai-rt-trig-credits">0.00</span>
+      </div>
+      <div class="conversion-note">1 Credit = 1M Profiles | 1 Credit = 15M Events | 1 Credit = 25M Activations</div>
+    </div>
+
+    <!-- AI Signals -->
+    <div class="card full-width">
+      <h3>AI Signals <span class="badge">Multiple Suites</span></h3>
+      <div class="definition">
+        Enterprise AutoML within Treasure Workflows — automates preprocessing, feature engineering, model selection, training, and evaluation. Includes <strong>AutoML Framework Packages</strong>, <strong>Framework Add-Ons</strong>, and <strong>Solution Notebooks</strong> (churn prediction, propensity scoring, lead scoring). Credits apply to Predictions generated by ML and RFM models.
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+        <div class="input-group">
+          <label>AutoML Framework</label>
+          <select id="ai-signals-framework" onchange="calcAI()">
+            <option value="none">No AutoML</option>
+            <option value="basic">Basic</option>
+            <option value="advanced">Advanced</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label>Framework Add-Ons</label>
+          <select id="ai-signals-addons" onchange="calcAI()">
+            <option value="none">No Add-On</option>
+            <option value="basic">Basic Add-On</option>
+            <option value="advanced">Advanced Add-On</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label>Solution Notebook</label>
+          <select id="ai-signals-notebook" onchange="calcAI()">
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+          </select>
+        </div>
+      </div>
+      <div class="two-col" style="gap: 1rem;">
+        <div class="input-group">
+          <label>ML Model Predictions / month <span class="unit">(Millions)</span></label>
+          <div class="input-row">
+            <input type="range" id="ai-signals-ml-slider" min="0" max="500" value="0" step="5" oninput="document.getElementById('ai-signals-ml-input').value=this.value; calcAI();">
+            <input type="number" id="ai-signals-ml-input" min="0" max="5000" value="0" step="1" oninput="document.getElementById('ai-signals-ml-slider').value=this.value; calcAI();">
+          </div>
+        </div>
+        <div class="input-group">
+          <label>RFM Model Predictions / month <span class="unit">(Millions)</span></label>
+          <div class="input-row">
+            <input type="range" id="ai-signals-rfm-slider" min="0" max="1000" value="0" step="10" oninput="document.getElementById('ai-signals-rfm-input').value=this.value; calcAI();">
+            <input type="number" id="ai-signals-rfm-input" min="0" max="10000" value="0" step="1" oninput="document.getElementById('ai-signals-rfm-slider').value=this.value; calcAI();">
+          </div>
+        </div>
+      </div>
+      <div class="credit-output">
+        <span class="label">Credits / Month</span>
+        <span class="value" id="ai-signals-credits">0.00</span>
+      </div>
+      <div class="conversion-note">1 Credit = 40M ML Predictions | 1 Credit = 100M RFM Predictions</div>
+    </div>
+
+  </div>
+
+  <!-- AI Totals -->
+  <div class="result-banner" style="margin-top: 1.5rem;">
+    <div>
+      <h2>Total AI Credits</h2>
+      <div class="sub" id="ai-total-annual">0.00 Credits / Year</div>
+    </div>
+    <div style="text-align: right;">
+      <div class="big-number" id="ai-total-monthly">0.00</div>
+      <div class="sub">Credits / Month</div>
+    </div>
+  </div>
+
+  <!-- AI Tier -->
+  <div class="card">
+    <h3 style="font-size: 1rem;">AI Suite Credits — Tier Reference</h3>
+    <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1rem;">Your estimated tier: <strong id="ai-your-tier" style="color: var(--td-primary); font-size: 1.1rem;">0</strong></p>
+    <div style="overflow-x: auto; max-height: 400px; overflow-y: auto;">
+      <table class="tier-table" id="ai-tier-table">
+        <thead><tr><th>Tier</th><th>Annual Credits (Min)</th><th>Annual Credits (Max)</th></tr></thead>
+        <tbody id="ai-tier-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="btn-group" style="margin-top: 1.5rem;">
+    <button class="btn btn-secondary" onclick="switchTab('pb')">← Back to P+B</button>
+    <button class="btn btn-primary" onclick="switchTab('summary')">Review & Submit →</button>
+  </div>
+</div>
+
+<!-- ==================== SUMMARY & SUBMIT TAB ==================== -->
+<div id="tab-summary" class="tab-content">
+
+  <div class="result-banner">
+    <div>
+      <h2>Your Pricing Estimate</h2>
+      <div class="sub">Combined P+B + AI Credits Summary</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <!-- P+B Summary -->
+    <div class="card">
+      <h3 style="font-size: 1rem;">CDP Platform (P+B)</h3>
+      <div class="breakdown-row"><span class="bk-label">Total Profiles</span><span class="bk-value" id="sum-profiles">—</span></div>
+      <div class="breakdown-row"><span class="bk-label">Total Behaviors</span><span class="bk-value" id="sum-behaviors">—</span></div>
+      <div class="breakdown-row" style="border-top: 2px solid var(--td-primary); padding-top: 0.6rem;">
+        <span class="bk-label" style="font-weight: 600;">P+B Units</span>
+        <span class="bk-value" style="font-size: 1.2rem;" id="sum-pb-units">—</span>
+      </div>
+      <div style="margin-top: 0.75rem; font-size: 0.82rem; color: var(--text-muted);">ICDP Tier: <strong id="sum-pb-tier" style="color: var(--td-primary);">—</strong></div>
+    </div>
+
+    <!-- AI Summary -->
+    <div class="card">
+      <h3 style="font-size: 1rem;">AI Suite Credits</h3>
+      <div class="breakdown-row"><span class="bk-label">AI Foundry</span><span class="bk-value" id="sum-ai-foundry">0.00</span></div>
+      <div class="breakdown-row"><span class="bk-label">Agentic Engage</span><span class="bk-value" id="sum-ai-engage">0.00</span></div>
+      <div class="breakdown-row"><span class="bk-label">RT Personalization</span><span class="bk-value" id="sum-ai-rtpz">0.00</span></div>
+      <div class="breakdown-row"><span class="bk-label">RT Triggers</span><span class="bk-value" id="sum-ai-rttrig">0.00</span></div>
+      <div class="breakdown-row"><span class="bk-label">AI Signals</span><span class="bk-value" id="sum-ai-signals">0.00</span></div>
+      <div class="breakdown-row" style="border-top: 2px solid var(--td-primary); padding-top: 0.6rem;">
+        <span class="bk-label" style="font-weight: 600;">Total / Year</span>
+        <span class="bk-value" style="font-size: 1.2rem;" id="sum-ai-annual">0.00</span>
+      </div>
+      <div style="margin-top: 0.75rem; font-size: 0.82rem; color: var(--text-muted);">AI Tier: <strong id="sum-ai-tier" style="color: var(--td-primary);">0</strong></div>
+    </div>
+  </div>
+
+  <!-- Submit Button -->
+  <div style="text-align: center; margin-top: 2rem;">
+    <button class="btn btn-primary" style="padding: 1rem 3rem; font-size: 1.05rem;" onclick="openSubmitModal()">
+      Submit My Inputs
+    </button>
+    <p style="font-size: 0.75rem; color: #999; margin-top: 0.75rem;">Your inputs will be shared with the Treasure Data team to prepare a tailored pricing proposal.</p>
+  </div>
+</div>
+
+<!-- ==================== SUBMIT MODAL ==================== -->
+<div class="modal-overlay" id="submit-modal">
+  <div class="modal">
+    <h3>Submit Your Estimate</h3>
+    <p>Enter your details and we'll prepare a pricing proposal based on your inputs.</p>
+    <div class="input-group">
+      <label>Full Name *</label>
+      <input type="text" id="submit-name" placeholder="Jane Smith" required>
+    </div>
+    <div class="input-group">
+      <label>Work Email *</label>
+      <input type="email" id="submit-email" placeholder="jane@company.com" required>
+    </div>
+    <button class="btn btn-primary" onclick="submitToSheet()" id="submit-btn">Submit</button>
+    <button class="btn btn-secondary" style="width: 100%; margin-top: 0.75rem;" onclick="closeSubmitModal()">Cancel</button>
+    <div class="status-msg" id="submit-status" style="display: none;"></div>
+  </div>
+</div>
+
+<script>
+// ====== TAB NAVIGATION ======
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+    btn.classList.remove('active');
+    if ((tab === 'pb' && i === 0) || (tab === 'ai' && i === 1) || (tab === 'summary' && i === 2)) btn.classList.add('active');
+  });
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  if (tab === 'summary') updateSummary();
+}
+
+// ====== P+B MODE ======
+function setPBMode(mode) {
+  document.querySelectorAll('.mode-toggle button').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('pb-guided').classList.toggle('active', mode === 'guided');
+  document.getElementById('pb-direct').classList.toggle('active', mode === 'direct');
+}
+
+// ====== WIZARD ======
+let currentWizardStep = 1;
+function wizardNext(step) {
+  currentWizardStep = step;
+  [1,2,3].forEach(s => {
+    document.getElementById('wizard-step-' + s).classList.toggle('active', s === step);
+    const ws = document.getElementById('ws-' + s);
+    ws.classList.remove('active', 'done');
+    if (s === step) ws.classList.add('active');
+    else if (s < step) ws.classList.add('done');
+  });
+  [1,2].forEach(c => {
+    document.getElementById('wc-' + c).classList.toggle('done', c < step);
+  });
+  if (step === 3) calcPBResults();
+}
+
+// ====== P+B GUIDED CALCULATION ======
+function calcPBGuided() {
+  const known = parseFloat(document.getElementById('pb-known-raw').value) || 0;
+  const additional = parseFloat(document.getElementById('pb-additional-raw').value) || 0;
+  const overlap = parseFloat(document.getElementById('pb-overlap-slider').value) / 100;
+  const unknownRaw = parseFloat(document.getElementById('pb-unknown-raw').value) || 0;
+
+  const deduped = additional > 0 ? additional * (1 - overlap) : 0;
+  const totalKnown = known + deduped;
+  const unknownEquiv = unknownRaw / 20;
+  const totalProfiles = totalKnown + unknownEquiv;
+  const profilesM = totalProfiles / 1000000;
+
+  document.getElementById('pb-profiles-result').textContent = profilesM > 0 ? profilesM.toFixed(2) + 'M' : '—';
+  document.getElementById('pb-profiles-breakdown').textContent = profilesM > 0 ?
+    `${(totalKnown/1e6).toFixed(2)}M known + ${(unknownEquiv/1e6).toFixed(2)}M unknown equiv (${(unknownRaw/1e6).toFixed(1)}M ÷ 20)` : '';
+
+  if (unknownRaw > 0) {
+    document.getElementById('pb-unknown-calc').textContent =
+      `${(unknownRaw/1e6).toFixed(1)}M anonymous ÷ 20 = ${(unknownEquiv/1e6).toFixed(2)}M profile equivalents`;
+  } else {
+    document.getElementById('pb-unknown-calc').textContent = '';
+  }
+
+  // Behaviors
+  const tx = parseFloat(document.getElementById('pb-transactions').value) || 0;
+  const msg = parseFloat(document.getElementById('pb-messages').value) || 0;
+  const pv = parseFloat(document.getElementById('pb-pageviews').value) || 0;
+  const other = parseFloat(document.getElementById('pb-other-events').value) || 0;
+  const totalBehaviors = tx + msg + pv + other;
+  const behaviorsB = totalBehaviors / 1e9;
+
+  document.getElementById('pb-behaviors-result').textContent = behaviorsB > 0 ? behaviorsB.toFixed(2) + 'B' : '—';
+  document.getElementById('pb-behaviors-breakdown').textContent = behaviorsB > 0 ?
+    `${(tx/1e9).toFixed(2)}B tx + ${(msg/1e9).toFixed(2)}B msg + ${(pv/1e9).toFixed(2)}B web + ${(other/1e9).toFixed(2)}B other` : '';
+}
+
+function calcPBResults() {
+  calcPBGuided();
+  const known = parseFloat(document.getElementById('pb-known-raw').value) || 0;
+  const additional = parseFloat(document.getElementById('pb-additional-raw').value) || 0;
+  const overlap = parseFloat(document.getElementById('pb-overlap-slider').value) / 100;
+  const unknownRaw = parseFloat(document.getElementById('pb-unknown-raw').value) || 0;
+
+  const deduped = additional > 0 ? additional * (1 - overlap) : 0;
+  const totalKnown = known + deduped;
+  const unknownEquiv = unknownRaw / 20;
+  const totalProfiles = totalKnown + unknownEquiv;
+  const profilesM = totalProfiles / 1e6;
+
+  const tx = parseFloat(document.getElementById('pb-transactions').value) || 0;
+  const msg = parseFloat(document.getElementById('pb-messages').value) || 0;
+  const pv = parseFloat(document.getElementById('pb-pageviews').value) || 0;
+  const other = parseFloat(document.getElementById('pb-other-events').value) || 0;
+  const behaviorsB = (tx + msg + pv + other) / 1e9;
+
+  const pbUnits = profilesM + behaviorsB;
+
+  document.getElementById('pb-total-units').textContent = pbUnits.toFixed(2);
+  document.getElementById('pb-sum-known').textContent = (totalKnown / 1e6).toFixed(2) + 'M';
+  document.getElementById('pb-sum-unknown').textContent = (unknownEquiv / 1e6).toFixed(2) + 'M';
+  document.getElementById('pb-sum-profiles').textContent = profilesM.toFixed(2) + 'M';
+  document.getElementById('pb-sum-behaviors').textContent = behaviorsB.toFixed(2) + 'B';
+  document.getElementById('pb-sum-total').textContent = pbUnits.toFixed(2);
+
+  highlightPBTier(pbUnits);
+}
+
+// ====== P+B DIRECT ======
+function calcPBDirect() {
+  const p = parseFloat(document.getElementById('pb-direct-profiles').value) || 0;
+  const b = parseFloat(document.getElementById('pb-direct-behaviors').value) || 0;
+  document.getElementById('pb-direct-total').textContent = (p + b).toFixed(2);
+}
+
+// ====== P+B TIER TABLE ======
+const pbTiers = [
+  [1, 'I', 0, 1.99], [2, 'I', 2, 3.99], [3, 'I', 4, 5.99],
+  [4, 'II', 6, 7.99], [5, 'II', 8, 9.99], [6, 'II', 10, 11.99],
+  [7, 'III', 12, 14.99], [8, 'III', 15, 17.99], [9, 'III', 18, 20.99],
+  [10, 'III', 21, 24.99], [11, 'IV', 25, 29.99], [12, 'IV', 30, 34.99],
+  [13, 'IV', 35, 39.99], [14, 'IV', 40, 49.99], [15, 'V', 50, 59.99],
+  [16, 'V', 60, 74.99], [17, 'V', 75, 99.99], [18, 'V', 100, 124.99],
+  [19, 'VI', 125, 149.99], [20, 'VI', 150, 199.99], [21, 'VI', 200, 249.99],
+  [22, 'VI', 250, 299.99], [23, 'VII', 300, 399.99], [24, 'VII', 400, 499.99],
+  [25, 'VII', 500, 749.99], [26, 'VII', 750, 999.99],
+  [27, 'VIII', 1000, 1499.99], [28, 'VIII', 1500, 1999.99],
+  [29, 'VIII', 2000, 2999.99], [30, 'VIII', 3000, 6499.99]
+];
+
+function buildPBTierTable() {
+  const tbody = document.getElementById('pb-tier-body');
+  tbody.innerHTML = pbTiers.map(t =>
+    `<tr data-pb-tier="${t[0]}"><td class="tier-name">${t[0]}</td><td>${t[1]}</td><td>${t[2]}</td><td>${t[3]}</td></tr>`
+  ).join('');
+}
+
+function highlightPBTier(units) {
+  let matched = null;
+  for (let i = pbTiers.length - 1; i >= 0; i--) {
+    if (units >= pbTiers[i][2]) { matched = pbTiers[i]; break; }
+  }
+  document.querySelectorAll('#pb-tier-body tr').forEach(r => r.classList.remove('tier-highlight'));
+  if (matched) {
+    const row = document.querySelector(`#pb-tier-body tr[data-pb-tier="${matched[0]}"]`);
+    if (row) { row.classList.add('tier-highlight'); row.scrollIntoView({behavior:'smooth', block:'center'}); }
+  }
+}
+
+function getPBTierName(units) {
+  for (let i = pbTiers.length - 1; i >= 0; i--) {
+    if (units >= pbTiers[i][2]) return 'Tier ' + pbTiers[i][0] + ' (Group ' + pbTiers[i][1] + ')';
+  }
+  return '—';
+}
+
+// ====== AI CREDITS CALCULATION ======
+function calcAI() {
+  const foundryK = parseFloat(document.getElementById('ai-foundry-input').value) || 0;
+  const foundryCredits = (foundryK * 1000) / 600;
+
+  const engageM = parseFloat(document.getElementById('ai-engage-input').value) || 0;
+  const engageCredits = engageM;
+
+  const rtProfilesM = parseFloat(document.getElementById('ai-rt-profiles-input').value) || 0;
+  const rtCallsM = parseFloat(document.getElementById('ai-rt-calls-input').value) || 0;
+  const rtPzCredits = rtProfilesM + (rtCallsM / 10);
+
+  const trigProfilesM = parseFloat(document.getElementById('ai-trig-profiles-input').value) || 0;
+  const trigEventsM = parseFloat(document.getElementById('ai-trig-events-input').value) || 0;
+  const trigActivationsM = parseFloat(document.getElementById('ai-trig-activations-input').value) || 0;
+  const rtTrigCredits = trigProfilesM + (trigEventsM / 15) + (trigActivationsM / 25);
+
+  const signalsMlM = parseFloat(document.getElementById('ai-signals-ml-input').value) || 0;
+  const signalsRfmM = parseFloat(document.getElementById('ai-signals-rfm-input').value) || 0;
+  const signalsCredits = (signalsMlM / 40) + (signalsRfmM / 100);
+
+  document.getElementById('ai-foundry-credits').textContent = foundryCredits.toFixed(2);
+  document.getElementById('ai-engage-credits').textContent = engageCredits.toFixed(2);
+  document.getElementById('ai-rt-pz-credits').textContent = rtPzCredits.toFixed(2);
+  document.getElementById('ai-rt-trig-credits').textContent = rtTrigCredits.toFixed(2);
+  document.getElementById('ai-signals-credits').textContent = signalsCredits.toFixed(2);
+
+  const total = foundryCredits + engageCredits + rtPzCredits + rtTrigCredits + signalsCredits;
+  const annual = total * 12;
+  document.getElementById('ai-total-monthly').textContent = total.toFixed(2);
+  document.getElementById('ai-total-annual').textContent = annual.toFixed(2) + ' Credits / Year';
+
+  const tier = getAITier(annual);
+  document.getElementById('ai-your-tier').textContent = tier;
+  highlightAITier(tier);
+}
+
+// ====== AI TIER ======
+const aiTiers = [
+  ['0', 0, 0], ['A', 1, 59.99], ['B', 60, 119.99], ['C', 120, 179.99],
+  ['D', 180, 239.99], ['E', 240, 299.99], ['F', 300, 359.99],
+  ['G', 360, 479.99], ['H', 480, 599.99], ['I', 600, 719.99],
+  ['J', 720, 959.99], ['K', 960, 1199.99], ['L', 1200, 1799.99],
+  ['M', 1800, 2399.99], ['N', 2400, 2999.99], ['O', 3000, 3599.99],
+  ['P', 3600, 4799.99], ['Q', 4800, 5999.99], ['R', 6000, 7199.99],
+  ['S', 7200, 8399.99], ['T', 8400, 9599.99], ['U', 9600, 10799.99],
+  ['V', 10800, 11999.99], ['W', 12000, 14999.99], ['X', 15000, 17999.99],
+  ['Y', 18000, 20999.99], ['Z', 21000, 23999.99], ['AA', 24000, 29999.99],
+  ['AB', 30000, 35999.99], ['AC', 36000, 41999.99], ['AD', 42000, 47999.99],
+  ['AE', 48000, 53999.99], ['AF', 54000, 59999.99]
+];
+
+function getAITier(annual) {
+  if (annual <= 0) return '0';
+  for (let i = aiTiers.length - 1; i >= 0; i--) {
+    if (annual >= aiTiers[i][1]) return aiTiers[i][0];
+  }
+  return '0';
+}
+
+function buildAITierTable() {
+  const tbody = document.getElementById('ai-tier-body');
+  tbody.innerHTML = aiTiers.slice(1).map(t =>
+    `<tr data-ai-tier="${t[0]}"><td class="tier-name">${t[0]}</td><td>${t[1].toLocaleString()}</td><td>${t[2].toLocaleString()}</td></tr>`
+  ).join('');
+}
+
+function highlightAITier(tier) {
+  document.querySelectorAll('#ai-tier-body tr').forEach(r => r.classList.remove('tier-highlight'));
+  const row = document.querySelector(`#ai-tier-body tr[data-ai-tier="${tier}"]`);
+  if (row) row.classList.add('tier-highlight');
+}
+
+// ====== SUMMARY ======
+function getPBValues() {
+  const isGuided = document.getElementById('pb-guided').classList.contains('active');
+  if (isGuided) {
+    const known = parseFloat(document.getElementById('pb-known-raw').value) || 0;
+    const additional = parseFloat(document.getElementById('pb-additional-raw').value) || 0;
+    const overlap = parseFloat(document.getElementById('pb-overlap-slider').value) / 100;
+    const unknownRaw = parseFloat(document.getElementById('pb-unknown-raw').value) || 0;
+    const deduped = additional > 0 ? additional * (1 - overlap) : 0;
+    const totalKnown = known + deduped;
+    const unknownEquiv = unknownRaw / 20;
+    const profilesM = (totalKnown + unknownEquiv) / 1e6;
+    const tx = parseFloat(document.getElementById('pb-transactions').value) || 0;
+    const msg = parseFloat(document.getElementById('pb-messages').value) || 0;
+    const pv = parseFloat(document.getElementById('pb-pageviews').value) || 0;
+    const other = parseFloat(document.getElementById('pb-other-events').value) || 0;
+    const behaviorsB = (tx + msg + pv + other) / 1e9;
+    return { profilesM, behaviorsB, pbUnits: profilesM + behaviorsB };
+  } else {
+    const p = parseFloat(document.getElementById('pb-direct-profiles').value) || 0;
+    const b = parseFloat(document.getElementById('pb-direct-behaviors').value) || 0;
+    return { profilesM: p, behaviorsB: b, pbUnits: p + b };
+  }
+}
+
+function updateSummary() {
+  const pb = getPBValues();
+  document.getElementById('sum-profiles').textContent = pb.profilesM.toFixed(2) + 'M';
+  document.getElementById('sum-behaviors').textContent = pb.behaviorsB.toFixed(2) + 'B';
+  document.getElementById('sum-pb-units').textContent = pb.pbUnits.toFixed(2);
+  document.getElementById('sum-pb-tier').textContent = getPBTierName(pb.pbUnits);
+
+  const foundryCredits = parseFloat(document.getElementById('ai-foundry-credits').textContent) || 0;
+  const engageCredits = parseFloat(document.getElementById('ai-engage-credits').textContent) || 0;
+  const rtPzCredits = parseFloat(document.getElementById('ai-rt-pz-credits').textContent) || 0;
+  const rtTrigCredits = parseFloat(document.getElementById('ai-rt-trig-credits').textContent) || 0;
+  const signalsCredits = parseFloat(document.getElementById('ai-signals-credits').textContent) || 0;
+  const totalMonthly = foundryCredits + engageCredits + rtPzCredits + rtTrigCredits + signalsCredits;
+  const totalAnnual = totalMonthly * 12;
+
+  document.getElementById('sum-ai-foundry').textContent = foundryCredits.toFixed(2);
+  document.getElementById('sum-ai-engage').textContent = engageCredits.toFixed(2);
+  document.getElementById('sum-ai-rtpz').textContent = rtPzCredits.toFixed(2);
+  document.getElementById('sum-ai-rttrig').textContent = rtTrigCredits.toFixed(2);
+  document.getElementById('sum-ai-signals').textContent = signalsCredits.toFixed(2);
+  document.getElementById('sum-ai-annual').textContent = totalAnnual.toFixed(2);
+  document.getElementById('sum-ai-tier').textContent = getAITier(totalAnnual);
+}
+
+// ====== SUBMIT MODAL ======
+function openSubmitModal() {
+  updateSummary();
+  document.getElementById('submit-modal').classList.add('show');
+  document.getElementById('submit-status').style.display = 'none';
+}
+function closeSubmitModal() {
+  document.getElementById('submit-modal').classList.remove('show');
+}
+
+const SHEET_URL = 'https://script.google.com/a/macros/treasure.ai/s/AKfycbxHwNrtMavJ2Cj9eHWCMEhMd3tPF0x7ck6Y4eEgwkJQY0Ce93gj6-prgeRRtm_5C4I/exec';
+
+function submitToSheet() {
+  const name = document.getElementById('submit-name').value.trim();
+  const email = document.getElementById('submit-email').value.trim();
+  if (!name || !email) {
+    showStatus('Please enter both name and email.', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('submit-btn');
+  btn.textContent = 'Submitting...';
+  btn.disabled = true;
+
+  // Gather all inputs
+  const pb = getPBValues();
+  const isGuided = document.getElementById('pb-guided').classList.contains('active');
+
+  const payload = {
+    headers: [
+      'Name', 'Email', 'Submission Date',
+      'P+B Mode',
+      'Known Customers', 'Additional Sources', 'Overlap %', 'Anonymous Visitors/Year',
+      'Transactions/Year', 'Email SMS Push/Year', 'Web App Events/Year', 'Other Events/Year',
+      'Direct Profiles (M)', 'Direct Behaviors (B)',
+      'Total Profiles (M)', 'Total Behaviors (B)', 'P+B Units', 'ICDP Tier',
+      'AI Foundry Conversations/mo (K)', 'Agentic Engage Emails/mo (M)',
+      'RT PZ Profiles (M)', 'RT PZ Calls/mo (M)',
+      'RT Trig Profiles (M)', 'RT Trig Events/mo (M)', 'RT Trig Activations/mo (M)',
+      'AI Signals Framework', 'AI Signals Add-Ons', 'AI Signals Notebook',
+      'AI Signals ML Predictions/mo (M)', 'AI Signals RFM Predictions/mo (M)',
+      'AI Credits/Month', 'AI Credits/Year', 'AI Tier'
+    ],
+    values: [
+      name,
+      email,
+      new Date().toISOString(),
+      isGuided ? 'Guided' : 'Direct',
+      isGuided ? (document.getElementById('pb-known-raw').value || '') : '',
+      isGuided ? (document.getElementById('pb-additional-raw').value || '') : '',
+      isGuided ? document.getElementById('pb-overlap-slider').value : '',
+      isGuided ? (document.getElementById('pb-unknown-raw').value || '') : '',
+      isGuided ? (document.getElementById('pb-transactions').value || '') : '',
+      isGuided ? (document.getElementById('pb-messages').value || '') : '',
+      isGuided ? (document.getElementById('pb-pageviews').value || '') : '',
+      isGuided ? (document.getElementById('pb-other-events').value || '') : '',
+      !isGuided ? (document.getElementById('pb-direct-profiles').value || '') : '',
+      !isGuided ? (document.getElementById('pb-direct-behaviors').value || '') : '',
+      pb.profilesM.toFixed(2),
+      pb.behaviorsB.toFixed(2),
+      pb.pbUnits.toFixed(2),
+      getPBTierName(pb.pbUnits),
+      document.getElementById('ai-foundry-input').value || '',
+      document.getElementById('ai-engage-input').value || '',
+      document.getElementById('ai-rt-profiles-input').value || '',
+      document.getElementById('ai-rt-calls-input').value || '',
+      document.getElementById('ai-trig-profiles-input').value || '',
+      document.getElementById('ai-trig-events-input').value || '',
+      document.getElementById('ai-trig-activations-input').value || '',
+      document.getElementById('ai-signals-framework').value,
+      document.getElementById('ai-signals-addons').value,
+      document.getElementById('ai-signals-notebook').value,
+      document.getElementById('ai-signals-ml-input').value || '',
+      document.getElementById('ai-signals-rfm-input').value || '',
+      document.getElementById('ai-total-monthly').textContent,
+      (parseFloat(document.getElementById('ai-total-monthly').textContent) * 12).toFixed(2),
+      document.getElementById('ai-your-tier').textContent
+    ]
+  };
+
+  fetch(SHEET_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    showStatus('Submitted successfully! Our team will be in touch.', 'success');
+    btn.textContent = 'Submitted ✓';
+  })
+  .catch(err => {
+    showStatus('Something went wrong. Please try again.', 'error');
+    btn.textContent = 'Submit';
+    btn.disabled = false;
+  });
+}
+
+function showStatus(msg, type) {
+  const el = document.getElementById('submit-status');
+  el.textContent = msg;
+  el.className = 'status-msg ' + type;
+  el.style.display = 'block';
+}
+
+// ====== INIT ======
+buildPBTierTable();
+buildAITierTable();
+calcAI();
+</script>
+</body>
+</html>
