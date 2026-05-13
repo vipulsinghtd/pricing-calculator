@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Treasure AI — Pricing Calculator</title>
+<title>Treasure AI — Pricing Estimator</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 :root {
@@ -20,6 +20,9 @@
   --text-muted: #666;
   --border: rgba(73,79,255,0.12);
   --radius: 16px;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -30,37 +33,44 @@ body {
 }
 a { color: var(--td-primary); }
 
-/* Header */
+/* ===== HEADER ===== */
 .header {
   text-align: center;
   margin-bottom: 2rem;
-  padding: 2rem 1rem;
+  padding: 2.5rem 1.5rem;
   background: var(--td-gradient);
   border-radius: var(--radius);
   max-width: 1100px;
   margin-left: auto;
   margin-right: auto;
+  opacity: 0;
+  transform: translateY(8px);
+  animation: fadeUp 500ms var(--ease-out) forwards;
 }
 .header h1 {
   font-size: 2rem;
   font-weight: 700;
   color: #fff;
   margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
 }
 .header p {
   color: rgba(255,255,255,0.85);
   font-size: 0.95rem;
   max-width: 600px;
   margin: 0 auto;
+  line-height: 1.5;
 }
 
-/* Tabs */
+/* ===== TABS ===== */
 .tabs {
   display: flex;
   max-width: 1100px;
   margin: 1.5rem auto;
   border-bottom: 2px solid #e8e8f0;
   gap: 0;
+  opacity: 0;
+  animation: fadeUp 500ms var(--ease-out) 80ms forwards;
 }
 .tab-btn {
   padding: 0.85rem 1.5rem;
@@ -71,9 +81,10 @@ a { color: var(--td-primary); }
   border: none;
   cursor: pointer;
   position: relative;
-  transition: color 0.2s;
+  transition: color 200ms var(--ease-out);
 }
-.tab-btn:hover { color: #555; }
+.tab-btn:hover { color: var(--text); }
+.tab-btn:active { transform: scale(0.97); }
 .tab-btn.active { color: var(--td-primary); }
 .tab-btn.active::after {
   content: '';
@@ -84,11 +95,24 @@ a { color: var(--td-primary); }
   height: 3px;
   background: var(--td-primary);
   border-radius: 3px 3px 0 0;
+  animation: scaleX 250ms var(--ease-out);
+  transform-origin: center;
 }
-.tab-content { display: none; max-width: 1100px; margin: 0 auto; }
-.tab-content.active { display: block; }
+@keyframes scaleX {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+.tab-content {
+  display: none;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.tab-content.active {
+  display: block;
+  animation: fadeUp 300ms var(--ease-out);
+}
 
-/* Cards */
+/* ===== CARDS ===== */
 .card {
   background: var(--card-bg);
   border: 1px solid var(--border);
@@ -96,10 +120,12 @@ a { color: var(--td-primary); }
   padding: 1.5rem;
   margin-bottom: 1.5rem;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: border-color 250ms var(--ease-out), box-shadow 250ms var(--ease-out), transform 250ms var(--ease-out);
 }
 .card:hover {
-  border-color: rgba(73,79,255,0.3);
-  box-shadow: 0 4px 20px rgba(73,79,255,0.08);
+  border-color: rgba(73,79,255,0.25);
+  box-shadow: 0 8px 32px rgba(73,79,255,0.08);
+  transform: translateY(-1px);
 }
 .card h3 {
   font-size: 1.15rem;
@@ -113,7 +139,7 @@ a { color: var(--td-primary); }
   font-size: 0.65rem;
   padding: 0.2rem 0.55rem;
   border-radius: 20px;
-  background: rgba(73,79,255,0.12);
+  background: rgba(73,79,255,0.1);
   color: var(--td-primary);
   font-weight: 600;
   text-transform: uppercase;
@@ -123,15 +149,15 @@ a { color: var(--td-primary); }
   font-size: 0.82rem;
   color: #555;
   line-height: 1.6;
-  padding: 0.75rem;
-  background: #f4f4fb;
-  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  background: rgba(73,79,255,0.03);
+  border-radius: 10px;
   border-left: 3px solid var(--td-secondary-1);
   margin-bottom: 1.2rem;
 }
 .definition strong { color: var(--td-primary); }
 
-/* Form elements */
+/* ===== FORM ELEMENTS ===== */
 .input-group { margin-bottom: 1rem; }
 .input-group label {
   display: block;
@@ -154,15 +180,27 @@ a { color: var(--td-primary); }
   border-radius: 3px;
   background: #e0e0f0;
   outline: none;
+  transition: background 200ms var(--ease-out);
+}
+.input-row input[type="range"]:hover {
+  background: #d0d0e8;
 }
 .input-row input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   background: var(--td-primary);
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(73,79,255,0.4);
+  box-shadow: 0 2px 10px rgba(73,79,255,0.4);
+  transition: transform 160ms var(--ease-out), box-shadow 160ms var(--ease-out);
+}
+.input-row input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+  box-shadow: 0 4px 16px rgba(73,79,255,0.5);
+}
+.input-row input[type="range"]::-webkit-slider-thumb:active {
+  transform: scale(0.95);
 }
 input[type="number"], input[type="text"], input[type="email"], select {
   padding: 0.5rem 0.75rem;
@@ -172,29 +210,37 @@ input[type="number"], input[type="text"], input[type="email"], select {
   color: var(--text);
   font-size: 0.88rem;
   outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: border-color 200ms var(--ease-out), box-shadow 200ms var(--ease-out);
 }
 input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus, select:focus {
   border-color: var(--td-primary);
-  box-shadow: 0 0 0 2px rgba(73,79,255,0.12);
+  box-shadow: 0 0 0 3px rgba(73,79,255,0.1);
 }
 .input-row input[type="number"] {
   width: 100px;
   text-align: right;
 }
 
-/* Credit output */
+/* ===== CREDIT OUTPUT ===== */
 .credit-output {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.6rem 1rem;
-  background: rgba(73,79,255,0.05);
+  padding: 0.7rem 1rem;
+  background: rgba(73,79,255,0.04);
   border-radius: 10px;
   margin-top: 0.75rem;
+  transition: background 200ms var(--ease-out);
 }
+.credit-output:hover { background: rgba(73,79,255,0.07); }
 .credit-output .label { font-size: 0.78rem; color: var(--text-muted); }
-.credit-output .value { font-size: 1.2rem; font-weight: 700; color: var(--td-primary); }
+.credit-output .value {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--td-primary);
+  transition: transform 160ms var(--ease-spring);
+}
+.credit-output .value.bump { transform: scale(1.08); }
 .conversion-note {
   font-size: 0.68rem;
   color: #999;
@@ -202,7 +248,7 @@ input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus,
   text-align: right;
 }
 
-/* Wizard */
+/* ===== WIZARD ===== */
 .wizard-steps {
   display: flex;
   align-items: center;
@@ -216,8 +262,8 @@ input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus,
   gap: 0.5rem;
 }
 .wizard-step .step-num {
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -226,35 +272,60 @@ input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus,
   font-weight: 700;
   background: #e8e8f0;
   color: #888;
-  transition: all 0.3s;
+  transition: background 300ms var(--ease-out), color 300ms var(--ease-out), transform 300ms var(--ease-spring);
 }
 .wizard-step.active .step-num {
   background: var(--td-primary);
   color: #fff;
+  transform: scale(1.1);
+  box-shadow: 0 4px 14px rgba(73,79,255,0.35);
 }
 .wizard-step.done .step-num {
   background: var(--td-accent-lime);
   color: #fff;
+  transform: scale(1);
 }
 .wizard-step .step-label {
   font-size: 0.78rem;
   color: #888;
   font-weight: 500;
+  transition: color 250ms var(--ease-out);
 }
 .wizard-step.active .step-label { color: var(--td-primary); font-weight: 600; }
-.wizard-step.done .step-label { color: var(--td-accent-lime); }
+.wizard-step.done .step-label { color: #5a9e1a; }
 .wizard-connector {
-  width: 40px;
+  width: 44px;
   height: 2px;
   background: #e8e8f0;
-  margin: 0 0.5rem;
+  margin: 0 0.6rem;
+  border-radius: 1px;
+  transition: background 400ms var(--ease-out);
+  position: relative;
+  overflow: hidden;
 }
-.wizard-connector.done { background: var(--td-accent-lime); }
+.wizard-connector::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  width: 0;
+  background: var(--td-accent-lime);
+  border-radius: 1px;
+  transition: width 400ms var(--ease-in-out);
+}
+.wizard-connector.done { background: transparent; }
+.wizard-connector.done::after { width: 100%; }
 
 .wizard-panel { display: none; }
-.wizard-panel.active { display: block; }
+.wizard-panel.active {
+  display: block;
+  animation: wizardIn 350ms var(--ease-out);
+}
+@keyframes wizardIn {
+  from { opacity: 0; transform: translateX(12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
 
-/* Buttons */
+/* ===== BUTTONS ===== */
 .btn {
   padding: 0.75rem 1.8rem;
   font-size: 0.9rem;
@@ -262,21 +333,35 @@ input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus,
   border: none;
   border-radius: 10px;
   cursor: pointer;
-  transition: transform 0.15s, box-shadow 0.15s;
+  transition: transform 160ms var(--ease-out), box-shadow 200ms var(--ease-out);
+  position: relative;
+  overflow: hidden;
 }
+.btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.1);
+  opacity: 0;
+  transition: opacity 200ms var(--ease-out);
+}
+.btn:hover::after { opacity: 1; }
 .btn:active { transform: scale(0.97); }
 .btn-primary {
   background: var(--td-gradient);
   color: #fff;
   box-shadow: 0 4px 16px rgba(73,79,255,0.25);
 }
-.btn-primary:hover { box-shadow: 0 6px 24px rgba(73,79,255,0.35); }
+.btn-primary:hover { box-shadow: 0 8px 28px rgba(73,79,255,0.35); }
 .btn-secondary {
   background: #fff;
   color: var(--td-primary);
-  border: 2px solid var(--td-primary);
+  border: 2px solid rgba(73,79,255,0.3);
 }
-.btn-secondary:hover { background: rgba(73,79,255,0.05); }
+.btn-secondary:hover {
+  background: rgba(73,79,255,0.04);
+  border-color: var(--td-primary);
+}
 .btn-group {
   display: flex;
   gap: 1rem;
@@ -284,7 +369,7 @@ input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus,
   margin-top: 1.5rem;
 }
 
-/* Toggle switch for mode */
+/* ===== MODE TOGGLE ===== */
 .mode-toggle {
   display: flex;
   background: #f0f0f8;
@@ -292,6 +377,7 @@ input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus,
   padding: 4px;
   margin-bottom: 1.5rem;
   width: fit-content;
+  position: relative;
 }
 .mode-toggle button {
   padding: 0.6rem 1.2rem;
@@ -302,15 +388,27 @@ input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus,
   cursor: pointer;
   background: transparent;
   color: #888;
-  transition: all 0.2s;
+  transition: color 200ms var(--ease-out);
+  position: relative;
+  z-index: 1;
 }
 .mode-toggle button.active {
-  background: #fff;
   color: var(--td-primary);
+}
+.mode-toggle button:active { transform: scale(0.97); }
+.mode-indicator {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  height: calc(100% - 8px);
+  border-radius: 8px;
+  background: #fff;
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transition: transform 300ms var(--ease-out), width 300ms var(--ease-out);
+  z-index: 0;
 }
 
-/* Results / Summary */
+/* ===== RESULTS / SUMMARY ===== */
 .result-banner {
   background: var(--td-gradient);
   border-radius: var(--radius);
@@ -323,10 +421,16 @@ input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus,
   margin-bottom: 1.5rem;
 }
 .result-banner h2 { color: #fff; font-size: 1.1rem; font-weight: 600; }
-.result-banner .big-number { font-size: 2.2rem; font-weight: 800; color: #fff; }
+.result-banner .big-number {
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: #fff;
+  transition: transform 200ms var(--ease-spring);
+}
+.result-banner .big-number.bump { transform: scale(1.05); }
 .result-banner .sub { font-size: 0.85rem; color: rgba(255,255,255,0.8); }
 
-/* Tier table */
+/* ===== TIER TABLE ===== */
 .tier-table {
   width: 100%;
   border-collapse: collapse;
@@ -336,7 +440,7 @@ input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus,
 .tier-table thead th {
   padding: 0.75rem 1rem;
   text-align: left;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 600;
   color: #fff;
   text-transform: uppercase;
@@ -344,45 +448,69 @@ input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus,
 }
 .tier-table tbody tr {
   border-bottom: 1px solid #f0f0f5;
-  transition: background 0.15s;
+  transition: background 200ms var(--ease-out), transform 200ms var(--ease-out);
 }
 .tier-table tbody tr:hover { background: rgba(73,79,255,0.03); }
 .tier-table td { padding: 0.6rem 1rem; }
 .tier-table .tier-name { font-weight: 700; color: var(--td-primary); }
-.tier-highlight { background: rgba(73,79,255,0.08) !important; }
+.tier-highlight {
+  background: rgba(73,79,255,0.08) !important;
+  transform: scale(1.005);
+  box-shadow: inset 3px 0 0 var(--td-primary);
+}
 
-/* Highlight box */
+/* ===== HIGHLIGHT BOX ===== */
 .highlight-box {
-  background: rgba(157,204,76,0.1);
-  border: 1px solid rgba(157,204,76,0.3);
-  border-radius: 10px;
-  padding: 1rem 1.25rem;
+  background: rgba(157,204,76,0.08);
+  border: 1px solid rgba(157,204,76,0.25);
+  border-radius: 12px;
+  padding: 1.1rem 1.25rem;
   margin: 1rem 0;
+  transition: border-color 250ms var(--ease-out);
 }
+.highlight-box:hover { border-color: rgba(157,204,76,0.5); }
 .highlight-box.info {
-  background: rgba(73,79,255,0.05);
-  border-color: rgba(73,79,255,0.2);
+  background: rgba(73,79,255,0.04);
+  border-color: rgba(73,79,255,0.15);
 }
+.highlight-box.info:hover { border-color: rgba(73,79,255,0.35); }
 
-/* Modal */
+/* ===== MODAL ===== */
 .modal-overlay {
   display: none;
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0);
   z-index: 1000;
   align-items: center;
   justify-content: center;
   padding: 1rem;
+  transition: background 250ms var(--ease-out);
 }
-.modal-overlay.show { display: flex; }
+.modal-overlay.show {
+  display: flex;
+  background: rgba(0,0,0,0.5);
+  animation: overlayIn 250ms var(--ease-out) forwards;
+}
+@keyframes overlayIn {
+  from { background: rgba(0,0,0,0); }
+  to { background: rgba(0,0,0,0.5); }
+}
 .modal {
   background: #fff;
   border-radius: var(--radius);
   padding: 2rem;
   max-width: 440px;
   width: 100%;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  box-shadow: 0 24px 64px rgba(0,0,0,0.2);
+  transform: scale(0.95);
+  opacity: 0;
+  animation: modalIn 300ms var(--ease-out) 50ms forwards;
+  transform-origin: center;
+}
+@keyframes modalIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }
 .modal h3 {
   font-size: 1.2rem;
@@ -393,44 +521,76 @@ input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus,
   font-size: 0.85rem;
   color: var(--text-muted);
   margin-bottom: 1.5rem;
+  line-height: 1.5;
 }
-.modal .input-group { margin-bottom: 1rem; }
-.modal .input-group label { font-size: 0.82rem; margin-bottom: 0.3rem; display: block; font-weight: 500; }
+.modal .input-group { margin-bottom: 1.1rem; }
+.modal .input-group label { font-size: 0.82rem; margin-bottom: 0.35rem; display: block; font-weight: 500; }
 .modal .input-group input { width: 100%; }
 .modal .btn { width: 100%; text-align: center; }
 .modal .status-msg {
   text-align: center;
   font-size: 0.85rem;
   margin-top: 1rem;
-  padding: 0.5rem;
+  padding: 0.6rem;
   border-radius: 8px;
+  animation: fadeUp 250ms var(--ease-out);
 }
-.modal .status-msg.success { background: rgba(157,204,76,0.15); color: #2d7a2d; }
-.modal .status-msg.error { background: rgba(238,35,40,0.1); color: var(--td-accent-red); }
+.modal .status-msg.success { background: rgba(157,204,76,0.12); color: #2d7a2d; }
+.modal .status-msg.error { background: rgba(238,35,40,0.08); color: var(--td-accent-red); }
 
-/* Two-col grid */
+/* ===== TWO-COL GRID ===== */
 .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
 @media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
 .full-width { grid-column: 1 / -1; }
 
-/* Breakdown */
+/* ===== BREAKDOWN ===== */
 .breakdown-row {
   display: flex;
   justify-content: space-between;
   padding: 0.5rem 0;
   border-bottom: 1px solid #f0f0f5;
   font-size: 0.82rem;
+  transition: background 150ms var(--ease-out);
 }
+.breakdown-row:hover { background: rgba(73,79,255,0.02); }
 .breakdown-row:last-child { border-bottom: none; }
 .breakdown-row .bk-label { color: var(--text-muted); }
 .breakdown-row .bk-value { color: var(--td-secondary-1); font-weight: 600; }
 
-/* Responsive */
+/* ===== STAGGER ANIMATION ===== */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.stagger > * {
+  opacity: 0;
+  animation: fadeUp 400ms var(--ease-out) forwards;
+}
+.stagger > *:nth-child(1) { animation-delay: 0ms; }
+.stagger > *:nth-child(2) { animation-delay: 60ms; }
+.stagger > *:nth-child(3) { animation-delay: 120ms; }
+.stagger > *:nth-child(4) { animation-delay: 180ms; }
+.stagger > *:nth-child(5) { animation-delay: 240ms; }
+.stagger > *:nth-child(6) { animation-delay: 300ms; }
+
+/* ===== RESPONSIVE ===== */
 @media (max-width: 600px) {
   body { padding: 1rem 0.5rem; }
   .header h1 { font-size: 1.5rem; }
-  .tabs { overflow-x: auto; }
+  .header { padding: 1.75rem 1rem; }
+  .tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; }
   .tab-btn { padding: 0.7rem 1rem; font-size: 0.8rem; white-space: nowrap; }
+  .two-col { grid-template-columns: 1fr; }
+  .result-banner { padding: 1.25rem 1.5rem; }
+  .result-banner .big-number { font-size: 1.8rem; }
+}
+
+/* ===== REDUCED MOTION ===== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 </style>
 </head>
@@ -470,9 +630,10 @@ input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus,
   <div class="card">
     <h3>How would you like to enter your data?</h3>
     <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0.5rem 0 1rem;">Choose guided mode if you have raw customer/activity counts. Choose direct mode if you already know your profile and behavior totals.</p>
-    <div class="mode-toggle">
-      <button class="active" onclick="setPBMode('guided')">Guided (Recommended)</button>
-      <button onclick="setPBMode('direct')">Direct Entry</button>
+    <div class="mode-toggle" id="mode-toggle">
+      <div class="mode-indicator" id="mode-indicator" style="width: 50%; transform: translateX(0);"></div>
+      <button class="active" onclick="setPBMode('guided', this)">Guided (Recommended)</button>
+      <button onclick="setPBMode('direct', this)">Direct Entry</button>
     </div>
 
     <!-- GUIDED MODE -->
@@ -513,7 +674,7 @@ input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus,
             <label>Estimated overlap/dedup rate <span class="unit">(% of additional source that overlaps with primary)</span></label>
             <div class="input-row">
               <input type="range" id="pb-overlap-slider" min="0" max="80" value="35" step="5" oninput="document.getElementById('pb-overlap-val').textContent=this.value; calcPBGuided();">
-              <span id="pb-overlap-val" style="font-size: 0.85rem; font-weight: 600; min-width: 35px;">35</span><span class="unit">%</span>
+              <span id="pb-overlap-val" style="font-size: 0.85rem; font-weight: 600; min-width: 35px; color: var(--td-primary);">35</span><span class="unit">%</span>
             </div>
           </div>
 
@@ -522,7 +683,7 @@ input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus,
           <div class="highlight-box">
             <h3 style="font-size: 0.9rem;"><strong>Anonymous / Unknown Profiles</strong></h3>
             <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0.5rem 0;">Do you plan to include anonymous web/app visitors in the CDP? These are device IDs, cookies, etc. with no addressable identifier.</p>
-            <p style="font-size: 0.78rem; color: var(--td-primary); font-weight: 600; margin-bottom: 0.75rem;">Conversion: 20 unknown profiles = 1 profile unit for billing</p>
+            <p style="font-size: 0.8rem; color: var(--td-primary); font-weight: 600; margin-bottom: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(73,79,255,0.06); border-radius: 6px; display: inline-block;">20 unknown profiles = 1 profile unit for billing</p>
             <div class="input-group">
               <label>Annual anonymous web/app visitors</label>
               <div class="input-row">
@@ -628,7 +789,7 @@ input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus,
         <div class="card" style="margin-top: 1rem;">
           <h3 style="font-size: 1rem;">ICDP Tier Alignment</h3>
           <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1rem;">Your P+B estimate maps to the following platform tier:</p>
-          <div style="overflow-x: auto;">
+          <div style="overflow-x: auto; max-height: 360px; overflow-y: auto; border-radius: 8px;">
             <table class="tier-table" id="pb-tier-table">
               <thead>
                 <tr><th>Tier</th><th>Group</th><th>P+B Range (Low)</th><th>P+B Range (High)</th></tr>
@@ -687,7 +848,7 @@ input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus,
     </div>
   </div>
 
-  <div class="two-col">
+  <div class="two-col stagger">
 
     <!-- AI Foundry -->
     <div class="card">
@@ -862,7 +1023,7 @@ input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus,
   <div class="card">
     <h3 style="font-size: 1rem;">AI Suite Credits — Tier Reference</h3>
     <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1rem;">Your estimated tier: <strong id="ai-your-tier" style="color: var(--td-primary); font-size: 1.1rem;">0</strong></p>
-    <div style="overflow-x: auto; max-height: 400px; overflow-y: auto;">
+    <div style="overflow-x: auto; max-height: 400px; overflow-y: auto; border-radius: 8px;">
       <table class="tier-table" id="ai-tier-table">
         <thead><tr><th>Tier</th><th>Annual Credits (Min)</th><th>Annual Credits (Max)</th></tr></thead>
         <tbody id="ai-tier-body"></tbody>
@@ -886,7 +1047,7 @@ input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus,
     </div>
   </div>
 
-  <div class="two-col">
+  <div class="two-col stagger">
     <!-- P+B Summary -->
     <div class="card">
       <h3 style="font-size: 1rem;">CDP Platform (P+B)</h3>
@@ -925,7 +1086,7 @@ input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus,
 </div>
 
 <!-- ==================== SUBMIT MODAL ==================== -->
-<div class="modal-overlay" id="submit-modal">
+<div class="modal-overlay" id="submit-modal" onclick="if(event.target===this)closeSubmitModal()">
   <div class="modal">
     <h3>Submit Your Estimate</h3>
     <p>Enter your details and we'll prepare a pricing proposal based on your inputs.</p>
@@ -944,6 +1105,12 @@ input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus,
 </div>
 
 <script>
+// ====== EASING HELPER — VALUE BUMP ======
+function bumpValue(el) {
+  el.classList.add('bump');
+  setTimeout(() => el.classList.remove('bump'), 200);
+}
+
 // ====== TAB NAVIGATION ======
 function switchTab(tab) {
   document.querySelectorAll('.tab-btn').forEach((btn, i) => {
@@ -953,15 +1120,35 @@ function switchTab(tab) {
   document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
   document.getElementById('tab-' + tab).classList.add('active');
   if (tab === 'summary') updateSummary();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // ====== P+B MODE ======
-function setPBMode(mode) {
-  document.querySelectorAll('.mode-toggle button').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
+function setPBMode(mode, btn) {
+  const toggle = document.getElementById('mode-toggle');
+  const buttons = toggle.querySelectorAll('button');
+  const indicator = document.getElementById('mode-indicator');
+  buttons.forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  const idx = Array.from(buttons).indexOf(btn);
+  indicator.style.width = btn.offsetWidth + 'px';
+  indicator.style.transform = `translateX(${btn.offsetLeft - 4}px)`;
+
   document.getElementById('pb-guided').classList.toggle('active', mode === 'guided');
   document.getElementById('pb-direct').classList.toggle('active', mode === 'direct');
 }
+
+// Init mode indicator position
+requestAnimationFrame(() => {
+  const toggle = document.getElementById('mode-toggle');
+  const firstBtn = toggle.querySelector('button.active');
+  const indicator = document.getElementById('mode-indicator');
+  if (firstBtn && indicator) {
+    indicator.style.width = firstBtn.offsetWidth + 'px';
+    indicator.style.transform = `translateX(${firstBtn.offsetLeft - 4}px)`;
+  }
+});
 
 // ====== WIZARD ======
 let currentWizardStep = 1;
@@ -993,7 +1180,10 @@ function calcPBGuided() {
   const totalProfiles = totalKnown + unknownEquiv;
   const profilesM = totalProfiles / 1000000;
 
-  document.getElementById('pb-profiles-result').textContent = profilesM > 0 ? profilesM.toFixed(2) + 'M' : '—';
+  const resultEl = document.getElementById('pb-profiles-result');
+  resultEl.textContent = profilesM > 0 ? profilesM.toFixed(2) + 'M' : '—';
+  if (profilesM > 0) bumpValue(resultEl);
+
   document.getElementById('pb-profiles-breakdown').textContent = profilesM > 0 ?
     `${(totalKnown/1e6).toFixed(2)}M known + ${(unknownEquiv/1e6).toFixed(2)}M unknown equiv (${(unknownRaw/1e6).toFixed(1)}M ÷ 20)` : '';
 
@@ -1004,7 +1194,6 @@ function calcPBGuided() {
     document.getElementById('pb-unknown-calc').textContent = '';
   }
 
-  // Behaviors
   const tx = parseFloat(document.getElementById('pb-transactions').value) || 0;
   const msg = parseFloat(document.getElementById('pb-messages').value) || 0;
   const pv = parseFloat(document.getElementById('pb-pageviews').value) || 0;
@@ -1012,7 +1201,10 @@ function calcPBGuided() {
   const totalBehaviors = tx + msg + pv + other;
   const behaviorsB = totalBehaviors / 1e9;
 
-  document.getElementById('pb-behaviors-result').textContent = behaviorsB > 0 ? behaviorsB.toFixed(2) + 'B' : '—';
+  const behavEl = document.getElementById('pb-behaviors-result');
+  behavEl.textContent = behaviorsB > 0 ? behaviorsB.toFixed(2) + 'B' : '—';
+  if (behaviorsB > 0) bumpValue(behavEl);
+
   document.getElementById('pb-behaviors-breakdown').textContent = behaviorsB > 0 ?
     `${(tx/1e9).toFixed(2)}B tx + ${(msg/1e9).toFixed(2)}B msg + ${(pv/1e9).toFixed(2)}B web + ${(other/1e9).toFixed(2)}B other` : '';
 }
@@ -1038,7 +1230,10 @@ function calcPBResults() {
 
   const pbUnits = profilesM + behaviorsB;
 
-  document.getElementById('pb-total-units').textContent = pbUnits.toFixed(2);
+  const totalEl = document.getElementById('pb-total-units');
+  totalEl.textContent = pbUnits.toFixed(2);
+  bumpValue(totalEl);
+
   document.getElementById('pb-sum-known').textContent = (totalKnown / 1e6).toFixed(2) + 'M';
   document.getElementById('pb-sum-unknown').textContent = (unknownEquiv / 1e6).toFixed(2) + 'M';
   document.getElementById('pb-sum-profiles').textContent = profilesM.toFixed(2) + 'M';
@@ -1052,7 +1247,9 @@ function calcPBResults() {
 function calcPBDirect() {
   const p = parseFloat(document.getElementById('pb-direct-profiles').value) || 0;
   const b = parseFloat(document.getElementById('pb-direct-behaviors').value) || 0;
-  document.getElementById('pb-direct-total').textContent = (p + b).toFixed(2);
+  const el = document.getElementById('pb-direct-total');
+  el.textContent = (p + b).toFixed(2);
+  bumpValue(el);
 }
 
 // ====== P+B TIER TABLE ======
@@ -1125,7 +1322,11 @@ function calcAI() {
 
   const total = foundryCredits + engageCredits + rtPzCredits + rtTrigCredits + signalsCredits;
   const annual = total * 12;
-  document.getElementById('ai-total-monthly').textContent = total.toFixed(2);
+
+  const monthlyEl = document.getElementById('ai-total-monthly');
+  monthlyEl.textContent = total.toFixed(2);
+  bumpValue(monthlyEl);
+
   document.getElementById('ai-total-annual').textContent = annual.toFixed(2) + ' Credits / Year';
 
   const tier = getAITier(annual);
@@ -1223,6 +1424,7 @@ function openSubmitModal() {
   updateSummary();
   document.getElementById('submit-modal').classList.add('show');
   document.getElementById('submit-status').style.display = 'none';
+  document.getElementById('submit-name').focus();
 }
 function closeSubmitModal() {
   document.getElementById('submit-modal').classList.remove('show');
@@ -1241,8 +1443,8 @@ function submitToSheet() {
   const btn = document.getElementById('submit-btn');
   btn.textContent = 'Submitting...';
   btn.disabled = true;
+  btn.style.opacity = '0.7';
 
-  // Gather all inputs
   const pb = getPBValues();
   const isGuided = document.getElementById('pb-guided').classList.contains('active');
 
@@ -1306,12 +1508,14 @@ function submitToSheet() {
   })
   .then(() => {
     showStatus('Submitted successfully! Our team will be in touch.', 'success');
-    btn.textContent = 'Submitted ✓';
+    btn.textContent = 'Submitted';
+    btn.style.opacity = '1';
   })
   .catch(err => {
     showStatus('Something went wrong. Please try again.', 'error');
     btn.textContent = 'Submit';
     btn.disabled = false;
+    btn.style.opacity = '1';
   });
 }
 
