@@ -1508,8 +1508,10 @@ function submitToSheet() {
     body: JSON.stringify(payload)
   })
   .then(() => {
-    showStatus('Submitted successfully! Our team will be in touch.', 'success');
-    btn.textContent = 'Submitted';
+    closeSubmitModal();
+    alert('Submitted successfully! Our team will be in touch.');
+    btn.textContent = 'Submit';
+    btn.disabled = false;
     btn.style.opacity = '1';
   })
   .catch(err => {
