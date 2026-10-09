@@ -3,222 +3,340 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#F9FEFF">
 <title>Treasure AI — Pricing Estimator</title>
+<link rel="preload" href="assets/fonts/manrope-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/poppins-600.woff2" as="font" type="font/woff2" crossorigin>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
+/* ===== FONTS (self-hosted, Treasure AI design system) ===== */
+@font-face{font-family:"Manrope";font-weight:400;font-display:swap;src:url("assets/fonts/manrope-400.woff2") format("woff2")}
+@font-face{font-family:"Manrope";font-weight:600;font-display:swap;src:url("assets/fonts/manrope-600.woff2") format("woff2")}
+@font-face{font-family:"Manrope";font-weight:700;font-display:swap;src:url("assets/fonts/manrope-700.woff2") format("woff2")}
+@font-face{font-family:"Poppins";font-weight:500;font-display:swap;src:url("assets/fonts/poppins-500.woff2") format("woff2")}
+@font-face{font-family:"Poppins";font-weight:600;font-display:swap;src:url("assets/fonts/poppins-600.woff2") format("woff2")}
+
+/* ===== TOKENS (TD2026) ===== */
 :root {
-  --td-primary: #494FFF;
-  --td-secondary-1: #8753FF;
-  --td-secondary-2: #C466D4;
-  --td-accent-lime: #9DCC4C;
-  --td-accent-red: #EE2328;
-  --td-accent-salmon: #F69068;
-  --td-gradient: linear-gradient(135deg, #494FFF, #8753FF, #C466D4);
-  --bg: #f8f9fc;
-  --card-bg: #ffffff;
-  --text: #1a1a2e;
-  --text-muted: #666;
-  --border: rgba(73,79,255,0.12);
-  --radius: 16px;
-  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
-  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --td-black: #000000;
+  --td-blue-deep: #2D40AA;
+  --td-navy: #21307F;
+  --td-white-cool: #F9FEFF;
+  --td-periwinkle: #847BF2;
+  --td-orchid: #C466D4;
+  --td-link: #494FFF;
+  --td-amber: #FBAE40;
+  --td-coral: #F26B43;
+
+  --tint-sky-pale: #E3EFFE;
+  --tint-sky: #B4DFFE;
+  --tint-violet-pale: #E5E3FC;
+  --tint-cream-pale: #FFF1DD;
+
+  --text: #000000;
+  --text-secondary: #3F3F3F;
+  --text-muted: #7F7F7F;
+  --hairline: #C8C8C8;
+  --gray-150: #E7E7E7;
+  --gray-100: #F0F0F0;
+
+  --font-display: "Poppins", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Manrope", "Helvetica Neue", Arial, sans-serif;
+
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 24px;
+  --radius-pill: 999px;
+
+  --shadow-card: 0 2px 10px rgba(45,64,170,.08);
+  --shadow-raised: 0 6px 24px rgba(45,64,170,.12);
+  --shadow-pill: 0 1px 3px rgba(0,0,0,.10), inset 0 1px 0 rgba(255,255,255,.55);
+
+  --gradient-cta: linear-gradient(90deg, #847BF2 0%, #C466D4 100%);
+  --field-dusk: url("assets/dusk.jpg") center/cover no-repeat;
+
+  --ease: cubic-bezier(.4, 0, .2, 1);
+  --dur-fast: 120ms;
+  --dur: 200ms;
+  --dur-slow: 400ms;
 }
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  padding: 2rem 1rem;
-}
-a { color: var(--td-primary); }
-
-/* ===== HEADER ===== */
-.header {
-  text-align: center;
-  margin-bottom: 2rem;
-  padding: 2.5rem 1.5rem;
-  background: var(--td-gradient);
-  border-radius: var(--radius);
-  max-width: 1100px;
-  margin-left: auto;
-  margin-right: auto;
-  opacity: 0;
-  transform: translateY(8px);
-  animation: fadeUp 500ms var(--ease-out) forwards;
-}
-.header h1 {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #fff;
-  margin-bottom: 0.5rem;
-  letter-spacing: -0.02em;
-}
-.header p {
-  color: rgba(255,255,255,0.85);
-  font-size: 0.95rem;
-  max-width: 600px;
-  margin: 0 auto;
+  font-family: var(--font-body);
+  font-size: 15px;
   line-height: 1.5;
+  color: var(--text);
+  background: var(--td-white-cool);
+  min-height: 100vh;
+  padding: 24px 20px 120px;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--td-link); }
+strong { font-weight: 600; }
+.wrap { max-width: 1120px; margin: 0 auto; }
+.num, .value, .big-number, .bk-value, td { font-variant-numeric: tabular-nums; }
+
+:focus-visible { outline: 2px solid var(--td-link); outline-offset: 2px; }
+
+/* ===== HERO ===== */
+.hero {
+  position: relative;
+  overflow: hidden;
+  background: var(--field-dusk);
+  border-radius: var(--radius-xl);
+  padding: 32px 40px 40px;
+  margin-bottom: 20px;
+}
+.hero-logo { display: block; height: 28px; width: auto; margin-bottom: 40px; }
+.eyebrow {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--td-navy);
+  margin-bottom: 10px;
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(30px, 4vw, 44px);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  max-width: 620px;
+  margin-bottom: 14px;
+}
+.hero p.lede {
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  max-width: 560px;
+}
+.hero-shape {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 125%;
+  width: auto;
+  pointer-events: none;
 }
 
-/* ===== TABS ===== */
-.tabs {
-  display: flex;
-  max-width: 1100px;
-  margin: 1.5rem auto;
-  border-bottom: 2px solid #e8e8f0;
-  gap: 0;
-  opacity: 0;
-  animation: fadeUp 500ms var(--ease-out) 80ms forwards;
+/* ===== STEP NAV (tabs) ===== */
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 6px;
+  background: #fff;
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-card);
+  margin-bottom: 24px;
 }
 .tab-btn {
-  padding: 0.85rem 1.5rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #888;
-  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 16px;
   border: none;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
   cursor: pointer;
-  position: relative;
-  transition: color 200ms var(--ease-out);
+  transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease);
 }
-.tab-btn:hover { color: var(--text); }
-.tab-btn:active { transform: scale(0.97); }
-.tab-btn.active { color: var(--td-primary); }
-.tab-btn.active::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: var(--td-primary);
-  border-radius: 3px 3px 0 0;
-  animation: scaleX 250ms var(--ease-out);
-  transform-origin: center;
+.tab-btn .step-num {
+  display: inline-grid;
+  place-items: center;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: var(--gray-100);
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 700;
+  transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease);
 }
-@keyframes scaleX {
-  from { transform: scaleX(0); }
-  to { transform: scaleX(1); }
+.tab-btn.active { background: var(--tint-sky-pale); color: var(--td-blue-deep); }
+.tab-btn.active .step-num { background: var(--td-blue-deep); color: #fff; }
+@media (hover: hover) and (pointer: fine) {
+  .tab-btn:not(.active):hover { background: #F6F9FF; color: var(--text); }
 }
-.tab-content {
-  display: none;
-  max-width: 1100px;
-  margin: 0 auto;
+
+/* ===== TAB CONTENT ===== */
+.tab-content { display: none; }
+.tab-content.active { display: block; animation: fadeUp var(--dur-slow) var(--ease); }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-.tab-content.active {
-  display: block;
-  animation: fadeUp 300ms var(--ease-out);
+
+.section-head { margin: 8px 0 16px; }
+.section-head h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 26px;
+  line-height: 1.15;
+  margin-bottom: 6px;
 }
+.section-head p { color: var(--text-secondary); max-width: 720px; }
 
 /* ===== CARDS ===== */
 .card {
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  transition: border-color 250ms var(--ease-out), box-shadow 250ms var(--ease-out), transform 250ms var(--ease-out);
+  background: #fff;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 24px;
+  margin-bottom: 20px;
 }
-.card:hover {
-  border-color: rgba(73,79,255,0.25);
-  box-shadow: 0 8px 32px rgba(73,79,255,0.08);
-  transform: translateY(-1px);
-}
-.card h3 {
-  font-size: 1.15rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
+.card-head {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 12px;
+  margin-bottom: 14px;
 }
-.badge {
-  font-size: 0.65rem;
-  padding: 0.2rem 0.55rem;
-  border-radius: 20px;
-  background: rgba(73,79,255,0.1);
-  color: var(--td-primary);
+.card-head h3 {
+  font-family: var(--font-display);
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  font-size: 18px;
+  line-height: 1.2;
+}
+.card-head .badge { margin-left: auto; }
+.icon-tile {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 40px; height: 40px;
+  border-radius: var(--radius-md);
+  background: var(--tint-sky-pale);
+}
+.icon-tile img { width: 24px; height: 24px; display: block; }
+.badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--tint-violet-pale);
+  color: var(--td-navy);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1.4;
+  white-space: nowrap;
 }
 .definition {
-  font-size: 0.82rem;
-  color: #555;
+  font-size: 14px;
   line-height: 1.6;
-  padding: 0.85rem 1rem;
-  background: rgba(73,79,255,0.03);
-  border-radius: 10px;
-  border-left: 3px solid var(--td-secondary-1);
-  margin-bottom: 1.2rem;
+  color: var(--text-secondary);
+  margin-bottom: 18px;
 }
-.definition strong { color: var(--td-primary); }
+.definition strong { color: var(--text); }
+
+.grid-2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; }
+.grid-2 > * { min-width: 0; }
+.grid-2 > .card { margin-bottom: 0; }
+.grid-2 + .card, .grid-2 + .result-banner { margin-top: 20px; }
+.full-width { grid-column: 1 / -1; }
+
+/* P+B equation */
+.equation {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 4px 0 18px;
+}
+.equation .term {
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  background: var(--tint-sky-pale);
+  color: var(--td-blue-deep);
+  font-weight: 600;
+  font-size: 14px;
+}
+.equation .term.total { background: var(--gradient-cta); color: #fff; box-shadow: var(--shadow-pill); }
+.equation .op { font-weight: 600; color: var(--text-muted); }
+.facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.fact { padding: 14px 16px; border-radius: var(--radius-md); background: var(--td-white-cool); border: 1px solid var(--gray-150); font-size: 13.5px; color: var(--text-secondary); }
+.fact .eyebrow { margin-bottom: 4px; }
 
 /* ===== FORM ELEMENTS ===== */
-.input-group { margin-bottom: 1rem; }
+.input-group { margin-bottom: 18px; }
 .input-group label {
   display: block;
-  font-size: 0.8rem;
-  color: #444;
-  margin-bottom: 0.4rem;
-  font-weight: 500;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 8px;
 }
-.input-group .unit { font-size: 0.7rem; color: #999; }
-.input-row {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+.input-group .unit { font-weight: 400; color: var(--text-muted); font-size: 12.5px; }
+.input-row { display: flex; align-items: center; gap: 14px; }
+
+input[type="number"], input[type="text"], input[type="email"], select {
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--text);
+  background: #fff;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+  padding: 9px 12px;
+  outline: none;
+  transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
 }
-.input-row input[type="range"] {
+input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus, select:focus {
+  border-color: var(--td-link);
+  box-shadow: 0 0 0 3px rgba(73,79,255,.12);
+}
+.input-row input[type="number"] { width: 112px; text-align: right; font-variant-numeric: tabular-nums; }
+.input-row .unit { min-width: 0; }
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 36px;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%232D40AA' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  min-width: 160px;
+}
+
+/* Range: filled portion uses the CTA gradient; --fill is set from JS */
+input[type="range"] {
+  --fill: 0%;
   flex: 1;
+  min-width: 0;
   -webkit-appearance: none;
   appearance: none;
   height: 6px;
-  border-radius: 3px;
-  background: #e0e0f0;
+  border-radius: var(--radius-pill);
+  background:
+    linear-gradient(90deg, #847BF2, #C466D4) 0 / var(--fill) 100% no-repeat,
+    var(--tint-violet-pale);
   outline: none;
-  transition: background 200ms var(--ease-out);
-}
-.input-row input[type="range"]:hover {
-  background: #d0d0e8;
-}
-.input-row input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: var(--td-primary);
   cursor: pointer;
-  box-shadow: 0 2px 10px rgba(73,79,255,0.4);
-  transition: transform 160ms var(--ease-out), box-shadow 160ms var(--ease-out);
 }
-.input-row input[type="range"]::-webkit-slider-thumb:hover {
-  transform: scale(1.15);
-  box-shadow: 0 4px 16px rgba(73,79,255,0.5);
-}
-.input-row input[type="range"]::-webkit-slider-thumb:active {
-  transform: scale(0.95);
-}
-input[type="number"], input[type="text"], input[type="email"], select {
-  padding: 0.5rem 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px; height: 20px;
+  border-radius: 50%;
   background: #fff;
-  color: var(--text);
-  font-size: 0.88rem;
-  outline: none;
-  transition: border-color 200ms var(--ease-out), box-shadow 200ms var(--ease-out);
+  border: 2px solid var(--td-blue-deep);
+  box-shadow: var(--shadow-card);
+  transition: box-shadow var(--dur) var(--ease);
 }
-input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus, select:focus {
-  border-color: var(--td-primary);
-  box-shadow: 0 0 0 3px rgba(73,79,255,0.1);
+input[type="range"]::-moz-range-thumb {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid var(--td-blue-deep);
+  box-shadow: var(--shadow-card);
 }
-.input-row input[type="number"] {
-  width: 100px;
-  text-align: right;
+input[type="range"]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 4px rgba(73,79,255,.18); }
+@media (hover: hover) and (pointer: fine) {
+  input[type="range"]::-webkit-slider-thumb:hover { box-shadow: var(--shadow-raised); }
 }
 
 /* ===== CREDIT OUTPUT ===== */
@@ -226,420 +344,374 @@ input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus,
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.7rem 1rem;
-  background: rgba(73,79,255,0.04);
-  border-radius: 10px;
-  margin-top: 0.75rem;
-  transition: background 200ms var(--ease-out);
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  background: var(--tint-sky-pale);
+  margin-top: 6px;
 }
-.credit-output:hover { background: rgba(73,79,255,0.07); }
-.credit-output .label { font-size: 0.78rem; color: var(--text-muted); }
+.credit-output .label { font-size: 13px; font-weight: 600; color: var(--td-navy); letter-spacing: .02em; }
 .credit-output .value {
-  font-size: 1.2rem;
+  font-size: 22px;
   font-weight: 700;
-  color: var(--td-primary);
-  transition: transform 160ms var(--ease-spring);
+  color: var(--td-blue-deep);
+  transition: color var(--dur) var(--ease);
 }
-.credit-output .value.bump { transform: scale(1.08); }
-.conversion-note {
-  font-size: 0.68rem;
-  color: #999;
-  margin-top: 0.4rem;
-  text-align: right;
-}
-
-/* ===== WIZARD ===== */
-.wizard-steps {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0;
-  margin-bottom: 2rem;
-}
-.wizard-step {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-.wizard-step .step-num {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.8rem;
-  font-weight: 700;
-  background: #e8e8f0;
-  color: #888;
-  transition: background 300ms var(--ease-out), color 300ms var(--ease-out), transform 300ms var(--ease-spring);
-}
-.wizard-step.active .step-num {
-  background: var(--td-primary);
-  color: #fff;
-  transform: scale(1.1);
-  box-shadow: 0 4px 14px rgba(73,79,255,0.35);
-}
-.wizard-step.done .step-num {
-  background: var(--td-accent-lime);
-  color: #fff;
-  transform: scale(1);
-}
-.wizard-step .step-label {
-  font-size: 0.78rem;
-  color: #888;
-  font-weight: 500;
-  transition: color 250ms var(--ease-out);
-}
-.wizard-step.active .step-label { color: var(--td-primary); font-weight: 600; }
-.wizard-step.done .step-label { color: #5a9e1a; }
-.wizard-connector {
-  width: 44px;
-  height: 2px;
-  background: #e8e8f0;
-  margin: 0 0.6rem;
-  border-radius: 1px;
-  transition: background 400ms var(--ease-out);
-  position: relative;
-  overflow: hidden;
-}
-.wizard-connector::after {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; bottom: 0;
-  width: 0;
-  background: var(--td-accent-lime);
-  border-radius: 1px;
-  transition: width 400ms var(--ease-in-out);
-}
-.wizard-connector.done { background: transparent; }
-.wizard-connector.done::after { width: 100%; }
-
-.wizard-panel { display: none; }
-.wizard-panel.active {
-  display: block;
-  animation: wizardIn 350ms var(--ease-out);
-}
-@keyframes wizardIn {
-  from { opacity: 0; transform: translateX(12px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-
-/* ===== BUTTONS ===== */
-.btn {
-  padding: 0.75rem 1.8rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: transform 160ms var(--ease-out), box-shadow 200ms var(--ease-out);
-  position: relative;
-  overflow: hidden;
-}
-.btn::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(255,255,255,0.1);
-  opacity: 0;
-  transition: opacity 200ms var(--ease-out);
-}
-.btn:hover::after { opacity: 1; }
-.btn:active { transform: scale(0.97); }
-.btn-primary {
-  background: var(--td-gradient);
-  color: #fff;
-  box-shadow: 0 4px 16px rgba(73,79,255,0.25);
-}
-.btn-primary:hover { box-shadow: 0 8px 28px rgba(73,79,255,0.35); }
-.btn-secondary {
-  background: #fff;
-  color: var(--td-primary);
-  border: 2px solid rgba(73,79,255,0.3);
-}
-.btn-secondary:hover {
-  background: rgba(73,79,255,0.04);
-  border-color: var(--td-primary);
-}
-.btn-group {
-  display: flex;
-  gap: 1rem;
-  justify-content: flex-end;
-  margin-top: 1.5rem;
-}
+.value.bump, .big-number.bump { color: var(--td-link); }
+.conversion-note { font-size: 12px; color: var(--text-muted); margin-top: 8px; line-height: 1.5; }
 
 /* ===== MODE TOGGLE ===== */
 .mode-toggle {
-  display: flex;
-  background: #f0f0f8;
-  border-radius: 10px;
-  padding: 4px;
-  margin-bottom: 1.5rem;
-  width: fit-content;
   position: relative;
+  display: inline-flex;
+  padding: 4px;
+  border-radius: var(--radius-pill);
+  background: var(--gray-100);
+  margin: 4px 0 24px;
 }
 .mode-toggle button {
-  padding: 0.6rem 1.2rem;
-  font-size: 0.82rem;
-  font-weight: 600;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  background: transparent;
-  color: #888;
-  transition: color 200ms var(--ease-out);
   position: relative;
   z-index: 1;
+  padding: 9px 20px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color var(--dur) var(--ease);
 }
-.mode-toggle button.active {
-  color: var(--td-primary);
-}
-.mode-toggle button:active { transform: scale(0.97); }
+.mode-toggle button.active { color: var(--td-blue-deep); }
 .mode-indicator {
   position: absolute;
-  top: 4px;
-  left: 4px;
+  top: 4px; left: 4px;
   height: calc(100% - 8px);
-  border-radius: 8px;
+  border-radius: var(--radius-pill);
   background: #fff;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  transition: transform 300ms var(--ease-out), width 300ms var(--ease-out);
-  z-index: 0;
+  box-shadow: var(--shadow-card);
+  transition: transform var(--dur) var(--ease), width var(--dur) var(--ease);
 }
 
-/* ===== RESULTS / SUMMARY ===== */
-.result-banner {
-  background: var(--td-gradient);
-  border-radius: var(--radius);
-  padding: 1.5rem 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+/* ===== SEGMENTED CHOICE (pick one) ===== */
+.segmented {
+  display: inline-flex;
+  padding: 4px;
+  border-radius: var(--radius-pill);
+  background: var(--gray-100);
+  margin-bottom: 8px;
 }
-.result-banner h2 { color: #fff; font-size: 1.1rem; font-weight: 600; }
-.result-banner .big-number {
-  font-size: 2.4rem;
-  font-weight: 800;
-  color: #fff;
-  transition: transform 200ms var(--ease-spring);
-}
-.result-banner .big-number.bump { transform: scale(1.05); }
-.result-banner .sub { font-size: 0.85rem; color: rgba(255,255,255,0.8); }
-
-/* ===== TIER TABLE ===== */
-.tier-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.85rem;
-}
-.tier-table thead { background: var(--td-gradient); }
-.tier-table thead th {
-  padding: 0.75rem 1rem;
-  text-align: left;
-  font-size: 0.72rem;
+.segmented button {
+  padding: 8px 18px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: 13.5px;
   font-weight: 600;
-  color: #fff;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
 }
-.tier-table tbody tr {
-  border-bottom: 1px solid #f0f0f5;
-  transition: background 200ms var(--ease-out), transform 200ms var(--ease-out);
+.segmented button[aria-pressed="true"] { background: #fff; color: var(--td-blue-deep); box-shadow: var(--shadow-card); }
+.choice-note { font-size: 12.5px; color: var(--text-muted); margin-bottom: 16px; }
+.is-hidden { display: none; }
+
+/* ===== WIZARD ===== */
+.wizard-steps { display: flex; align-items: center; margin-bottom: 20px; }
+.wizard-step { display: flex; align-items: center; gap: 8px; }
+.wizard-step .step-num {
+  display: grid; place-items: center;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--gray-100);
+  color: var(--text-muted);
+  font-size: 12px; font-weight: 700;
+  transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease);
 }
-.tier-table tbody tr:hover { background: rgba(73,79,255,0.03); }
-.tier-table td { padding: 0.6rem 1rem; }
-.tier-table .tier-name { font-weight: 700; color: var(--td-primary); }
-.tier-highlight {
-  background: rgba(73,79,255,0.08) !important;
-  transform: scale(1.005);
-  box-shadow: inset 3px 0 0 var(--td-primary);
+.wizard-step .step-label { font-size: 13px; font-weight: 600; color: var(--text-muted); transition: color var(--dur) var(--ease); }
+.wizard-step.active .step-num { background: var(--td-blue-deep); color: #fff; }
+.wizard-step.active .step-label { color: var(--td-blue-deep); }
+.wizard-step.done .step-num { background: var(--tint-sky-pale); color: var(--td-blue-deep); }
+.wizard-step.done .step-label { color: var(--text); }
+.wizard-connector {
+  flex: 0 0 48px; height: 2px; margin: 0 12px;
+  border-radius: 1px;
+  background: var(--gray-150);
+  position: relative; overflow: hidden;
+}
+.wizard-connector::after {
+  content: ''; position: absolute; inset: 0;
+  background: var(--gradient-cta);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform var(--dur-slow) var(--ease);
+}
+.wizard-connector.done::after { transform: scaleX(1); }
+.wizard-panel { display: none; }
+.wizard-panel.active { display: block; animation: fadeUp var(--dur-slow) var(--ease); }
+.step-card { border: 1px solid var(--tint-sky); box-shadow: none; }
+.step-card h3 { font-family: var(--font-display); font-weight: 600; font-size: 17px; margin-bottom: 4px; }
+.step-card > p { font-size: 14px; color: var(--text-secondary); margin-bottom: 20px; }
+.breakdown-note { font-size: 12px; color: var(--text-muted); text-align: right; margin-top: 6px; }
+
+/* ===== BUTTONS ===== */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 12px 26px;
+  border: none;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  transition: filter var(--dur) var(--ease), box-shadow var(--dur) var(--ease), transform var(--dur-fast) var(--ease), background-color var(--dur) var(--ease);
+}
+.btn-primary { background: var(--gradient-cta); color: #fff; box-shadow: var(--shadow-pill); }
+.btn-secondary { background: #fff; color: var(--td-blue-deep); box-shadow: inset 0 0 0 1.5px var(--td-blue-deep); }
+.btn:active { transform: translateY(1px); }
+.btn-primary:active { box-shadow: none; }
+.btn:disabled { opacity: .4; cursor: default; }
+@media (hover: hover) and (pointer: fine) {
+  .btn-primary:hover { filter: brightness(1.04); box-shadow: var(--shadow-raised); }
+  .btn-secondary:hover { background: #F6F9FF; }
+}
+.btn-group { display: flex; gap: 12px; justify-content: flex-end; flex-wrap: wrap; margin-top: 24px; }
+.btn-lg { padding: 16px 40px; font-size: 16px; }
+
+/* ===== RESULT BANNER (Dusk field) ===== */
+.result-banner {
+  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
+  padding: 24px 28px;
+  border-radius: var(--radius-lg);
+  background: var(--field-dusk);
+  margin-bottom: 20px;
+}
+.result-banner h2 { font-family: var(--font-display); font-weight: 600; font-size: 20px; line-height: 1.2; }
+.result-banner .sub { font-size: 13.5px; color: var(--text-secondary); margin-top: 2px; }
+.result-banner .big-number {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 44px;
+  line-height: 1;
+  color: var(--td-blue-deep);
+  text-align: right;
+  transition: color var(--dur) var(--ease);
 }
 
-/* ===== HIGHLIGHT BOX ===== */
+/* ===== TIER RESULT LINE + TABLE ===== */
+.tier-line {
+  display: flex; flex-wrap: wrap; gap: 10px 24px;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  background: var(--td-white-cool);
+  border: 1px solid var(--gray-150);
+  margin-bottom: 16px;
+  font-size: 14px; color: var(--text-secondary);
+}
+.tier-line strong { color: var(--td-blue-deep); font-weight: 700; }
+.tier-scroll { max-height: 380px; overflow: auto; border-radius: var(--radius-md); border: 1px solid var(--gray-150); }
+.tier-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.tier-table thead th {
+  position: sticky; top: 0; z-index: 1;
+  padding: 12px 16px;
+  text-align: left;
+  background: var(--tint-sky-pale);
+  color: var(--td-blue-deep);
+  font-size: 12px; font-weight: 600;
+  letter-spacing: .08em; text-transform: uppercase;
+  border-bottom: 1px solid var(--tint-sky);
+}
+.tier-table td { padding: 10px 16px; border-bottom: 1px solid var(--gray-150); }
+.tier-table tbody tr:last-child td { border-bottom: none; }
+.tier-table .tier-name { font-weight: 700; color: var(--td-blue-deep); }
+.tier-table tbody tr { transition: background-color var(--dur) var(--ease); }
+.tier-highlight { background: var(--tint-violet-pale); box-shadow: inset 3px 0 0 var(--td-blue-deep); }
+
+/* ===== HIGHLIGHT / INFO BOX ===== */
 .highlight-box {
-  background: rgba(157,204,76,0.08);
-  border: 1px solid rgba(157,204,76,0.25);
-  border-radius: 12px;
-  padding: 1.1rem 1.25rem;
-  margin: 1rem 0;
-  transition: border-color 250ms var(--ease-out);
+  padding: 16px 18px;
+  border-radius: var(--radius-md);
+  background: var(--tint-cream-pale);
+  margin: 4px 0 18px;
+  font-size: 14px; color: var(--text-secondary);
 }
-.highlight-box:hover { border-color: rgba(157,204,76,0.5); }
-.highlight-box.info {
-  background: rgba(73,79,255,0.04);
-  border-color: rgba(73,79,255,0.15);
+.highlight-box h4 { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.highlight-box.info { background: var(--tint-sky-pale); }
+.chip-note {
+  display: inline-block;
+  margin: 8px 0 12px;
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  background: #fff;
+  font-size: 13px; font-weight: 600; color: var(--td-blue-deep);
 }
-.highlight-box.info:hover { border-color: rgba(73,79,255,0.35); }
+.calc-note { font-size: 13px; color: var(--td-navy); margin-top: 6px; }
+hr.soft { border: none; border-top: 1px solid var(--gray-150); margin: 20px 0; }
+
+/* ===== BREAKDOWN ROWS ===== */
+.breakdown-row {
+  display: flex; justify-content: space-between; gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--gray-150);
+  font-size: 14px;
+}
+.breakdown-row:last-child { border-bottom: none; }
+.breakdown-row .bk-label { color: var(--text-secondary); }
+.breakdown-row .bk-value { font-weight: 700; color: var(--text); }
+.breakdown-row.total { border-top: 1.5px solid var(--td-blue-deep); border-bottom: none; margin-top: 6px; padding-top: 12px; }
+.breakdown-row.total .bk-label { color: var(--text); font-weight: 600; }
+.breakdown-row.total .bk-value { color: var(--td-blue-deep); font-size: 17px; }
+
+/* Summary tier tiles */
+.kpi {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px;
+}
+.kpi > div { padding: 14px 16px; border-radius: var(--radius-md); background: var(--tint-sky-pale); }
+.kpi .eyebrow { margin-bottom: 4px; }
+.kpi strong { display: block; font-family: var(--font-display); font-weight: 600; font-size: 20px; color: var(--td-blue-deep); line-height: 1.2; }
+
+.submit-area { text-align: center; margin-top: 32px; }
+.submit-area p { font-size: 13px; color: var(--text-muted); margin-top: 12px; }
+
+/* ===== STICKY ESTIMATE BAR ===== */
+.estimate-bar {
+  position: fixed;
+  left: 50%; bottom: 16px;
+  transform: translateX(-50%);
+  z-index: 50;
+  width: min(1080px, calc(100% - 32px));
+  display: flex; align-items: center; gap: 24px;
+  padding: 12px 12px 12px 24px;
+  border-radius: var(--radius-pill);
+  background: #fff;
+  box-shadow: var(--shadow-raised);
+  transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+.estimate-bar.hidden { opacity: 0; transform: translate(-50%, 12px); pointer-events: none; }
+.eb-item { display: flex; flex-direction: column; min-width: 0; }
+.eb-item .eyebrow { font-size: 10.5px; margin: 0; color: var(--text-muted); white-space: nowrap; }
+.eb-item .eb-value { font-weight: 700; font-size: 15px; color: var(--td-blue-deep); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.eb-divider { width: 1px; align-self: stretch; background: var(--gray-150); }
+.estimate-bar .btn { margin-left: auto; padding: 12px 22px; }
 
 /* ===== MODAL ===== */
 .modal-overlay {
-  display: none;
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0);
-  z-index: 1000;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-  transition: background 250ms var(--ease-out);
+  position: fixed; inset: 0; z-index: 1000;
+  display: none; align-items: center; justify-content: center;
+  padding: 16px;
+  background: rgba(33,48,127,.28);
 }
-.modal-overlay.show {
-  display: flex;
-  background: rgba(0,0,0,0.5);
-  animation: overlayIn 250ms var(--ease-out) forwards;
-}
-@keyframes overlayIn {
-  from { background: rgba(0,0,0,0); }
-  to { background: rgba(0,0,0,0.5); }
-}
+.modal-overlay.show { display: flex; animation: fadeIn var(--dur) var(--ease); }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 .modal {
+  width: 100%; max-width: 440px;
+  padding: 32px;
+  border-radius: var(--radius-lg);
   background: #fff;
-  border-radius: var(--radius);
-  padding: 2rem;
-  max-width: 440px;
-  width: 100%;
-  box-shadow: 0 24px 64px rgba(0,0,0,0.2);
-  transform: scale(0.95);
-  opacity: 0;
-  animation: modalIn 300ms var(--ease-out) 50ms forwards;
-  transform-origin: center;
+  box-shadow: var(--shadow-raised);
+  animation: fadeUp var(--dur-slow) var(--ease);
 }
-@keyframes modalIn {
-  from { transform: scale(0.95); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
-.modal h3 {
-  font-size: 1.2rem;
-  margin-bottom: 0.5rem;
-  color: var(--text);
-}
-.modal p {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  margin-bottom: 1.5rem;
-  line-height: 1.5;
-}
-.modal .input-group { margin-bottom: 1.1rem; }
-.modal .input-group label { font-size: 0.82rem; margin-bottom: 0.35rem; display: block; font-weight: 500; }
+.modal h3 { font-family: var(--font-display); font-weight: 600; font-size: 22px; margin-bottom: 6px; }
+.modal p { font-size: 14px; color: var(--text-secondary); margin-bottom: 24px; }
 .modal .input-group input { width: 100%; }
-.modal .btn { width: 100%; text-align: center; }
-.modal .status-msg {
-  text-align: center;
-  font-size: 0.85rem;
-  margin-top: 1rem;
-  padding: 0.6rem;
-  border-radius: 8px;
-  animation: fadeUp 250ms var(--ease-out);
-}
-.modal .status-msg.success { background: rgba(157,204,76,0.12); color: #2d7a2d; }
-.modal .status-msg.error { background: rgba(238,35,40,0.08); color: var(--td-accent-red); }
+.modal .btn { width: 100%; }
+.modal .btn + .btn { margin-top: 10px; }
+.status-msg { margin-top: 14px; padding: 10px 12px; border-radius: var(--radius-md); font-size: 14px; text-align: center; }
+.status-msg.error { background: var(--tint-cream-pale); color: var(--text); box-shadow: inset 0 0 0 1px var(--td-amber); }
+.status-msg.success { background: var(--tint-sky-pale); color: var(--td-blue-deep); }
 
-/* ===== TWO-COL GRID ===== */
-.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-@media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
-.full-width { grid-column: 1 / -1; }
-
-/* ===== BREAKDOWN ===== */
-.breakdown-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #f0f0f5;
-  font-size: 0.82rem;
-  transition: background 150ms var(--ease-out);
-}
-.breakdown-row:hover { background: rgba(73,79,255,0.02); }
-.breakdown-row:last-child { border-bottom: none; }
-.breakdown-row .bk-label { color: var(--text-muted); }
-.breakdown-row .bk-value { color: var(--td-secondary-1); font-weight: 600; }
-
-/* ===== STAGGER ANIMATION ===== */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.stagger > * {
-  opacity: 0;
-  animation: fadeUp 400ms var(--ease-out) forwards;
-}
-.stagger > *:nth-child(1) { animation-delay: 0ms; }
-.stagger > *:nth-child(2) { animation-delay: 60ms; }
-.stagger > *:nth-child(3) { animation-delay: 120ms; }
-.stagger > *:nth-child(4) { animation-delay: 180ms; }
-.stagger > *:nth-child(5) { animation-delay: 240ms; }
-.stagger > *:nth-child(6) { animation-delay: 300ms; }
+/* ===== STAGGER ===== */
+.stagger > * { opacity: 0; animation: fadeUp var(--dur-slow) var(--ease) forwards; }
+.stagger > *:nth-child(2) { animation-delay: 40ms; }
+.stagger > *:nth-child(3) { animation-delay: 80ms; }
+.stagger > *:nth-child(4) { animation-delay: 120ms; }
+.stagger > *:nth-child(5) { animation-delay: 160ms; }
 
 /* ===== RESPONSIVE ===== */
-@media (max-width: 600px) {
-  body { padding: 1rem 0.5rem; }
-  .header h1 { font-size: 1.5rem; }
-  .header { padding: 1.75rem 1rem; }
-  .tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  .tab-btn { padding: 0.7rem 1rem; font-size: 0.8rem; white-space: nowrap; }
-  .two-col { grid-template-columns: 1fr; }
-  .result-banner { padding: 1.25rem 1.5rem; }
-  .result-banner .big-number { font-size: 1.8rem; }
+@media (max-width: 860px) {
+  .grid-2, .facts { grid-template-columns: minmax(0, 1fr); }
+  .hero-shape { opacity: .45; }
+}
+@media (max-width: 640px) {
+  body { padding: 12px 12px 150px; }
+  .hero { padding: 24px 22px 28px; border-radius: 18px; }
+  .hero-logo { height: 22px; margin-bottom: 28px; }
+  .hero-shape { display: none; }
+  .steps { border-radius: var(--radius-lg); grid-template-columns: 1fr; }
+  .tab-btn { justify-content: flex-start; }
+  .card { padding: 18px; }
+  .result-banner .big-number { font-size: 34px; }
+  .input-row input[type="number"] { width: 96px; }
+  .wizard-step .step-label { display: none; }
+  .estimate-bar { bottom: 10px; width: calc(100% - 20px); border-radius: var(--radius-lg); gap: 12px; padding: 10px 10px 10px 14px; }
+  .eb-divider, .eb-optional { display: none; }
+  .eb-item .eb-value { font-size: 14px; }
+  .estimate-bar .btn { padding: 11px 16px; font-size: 14px; white-space: nowrap; flex: none; }
+  .eb-item .eyebrow { font-size: 10px; letter-spacing: .06em; }
+  .estimate-bar .btn .btn-long { display: none; }
+  .kpi { grid-template-columns: 1fr; }
 }
 
-/* ===== REDUCED MOTION ===== */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-  }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-delay: 0ms !important; transition-duration: .01ms !important; }
+  .stagger > * { opacity: 1; }
 }
 </style>
 </head>
 <body>
+<div class="wrap">
 
-<!-- Header -->
-<div class="header">
-  <h1>Treasure AI — Pricing Estimator</h1>
-  <p>Estimate your platform usage across CDP (Profiles + Behaviors) and AI Suite Credits to understand your pricing tier.</p>
-</div>
+<!-- Hero -->
+<header class="hero">
+  <img class="hero-logo" src="assets/logo.png" alt="Treasure AI" width="215" height="28">
+  <p class="eyebrow">Pricing Estimator</p>
+  <h1>Find your platform tier and AI credits</h1>
+  <p class="lede">Size the CDP from <strong>profiles and behaviors</strong>, add the AI Suite products you plan to use, and send us your estimate. It takes about five minutes.</p>
+  <img class="hero-shape" src="assets/shape-suites.png" alt="" aria-hidden="true">
+</header>
 
-<!-- Tabs -->
-<div class="tabs">
-  <button class="tab-btn active" onclick="switchTab('pb')">P+B (CDP Platform)</button>
-  <button class="tab-btn" onclick="switchTab('ai')">AI Suite Credits</button>
-  <button class="tab-btn" onclick="switchTab('summary')">Summary & Submit</button>
-</div>
+<!-- Step navigation -->
+<nav class="steps" role="tablist" aria-label="Estimator steps">
+  <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="tab-pb" onclick="switchTab('pb')"><span class="step-num">1</span>CDP Platform (P+B)</button>
+  <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-ai" onclick="switchTab('ai')"><span class="step-num">2</span>AI Suite Credits</button>
+  <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-summary" onclick="switchTab('summary')"><span class="step-num">3</span>Summary &amp; Submit</button>
+</nav>
 
 <!-- ==================== P+B TAB ==================== -->
-<div id="tab-pb" class="tab-content active">
+<section id="tab-pb" class="tab-content active" role="tabpanel">
 
-  <!-- Definitions -->
   <div class="card">
-    <h3>What are Profiles + Behaviors (P+B)?</h3>
-    <div class="definition" style="margin-top: 0.75rem;">
-      <strong>P+B Units</strong> determine your CDP platform tier.<br><br>
-      <strong>P+B Units = Profiles (in Millions) + Behaviors (in Billions)</strong><br><br>
-      <strong>Profiles</strong> — The unified "golden record" for an individual or account after identity resolution (ID stitching). Measured in millions.<br>
-      • <strong>Known profiles</strong>: Contain at least one addressable identifier (email, phone, loyalty ID, login ID). Each counts as 1.<br>
-      • <strong>Unknown profiles</strong>: No addressable identifier (anonymous cookies, device IDs). <strong>20 unknown = 1 profile</strong> for billing.<br><br>
-      <strong>Behaviors</strong> — Events tied to a profile: purchases, site visits, email sends/opens, app events, support calls, etc. Measured in billions.<br><br>
-      <em>Example: 7M profiles + 2.5B behaviors = 9.5 P+B Units</em>
+    <div class="card-head">
+      <span class="icon-tile"><img src="assets/icons/user-network.png" alt=""></span>
+      <h3>What are Profiles + Behaviors?</h3>
+    </div>
+    <p class="definition"><strong>P+B Units</strong> set your CDP platform tier. Profiles are counted in millions and behaviors in billions, then added together.</p>
+    <div class="equation" aria-label="P+B Units equals Profiles in millions plus Behaviors in billions">
+      <span class="term">Profiles (M)</span><span class="op">+</span><span class="term">Behaviors (B)</span><span class="op">=</span><span class="term total">P+B Units</span>
+    </div>
+    <div class="facts">
+      <div class="fact"><p class="eyebrow">Known profiles</p>Unified records with an email, phone, loyalty or login ID. Each counts as 1.</div>
+      <div class="fact"><p class="eyebrow">Unknown profiles</p>Anonymous cookies and device IDs. <strong>20 unknown = 1 profile</strong> for billing.</div>
+      <div class="fact"><p class="eyebrow">Behaviors</p>Events tied to a profile: purchases, visits, sends, app events. Example: 7M + 2.5B = 9.5 units.</div>
     </div>
   </div>
 
-  <!-- Mode Toggle -->
   <div class="card">
-    <h3>How would you like to enter your data?</h3>
-    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0.5rem 0 1rem;">Choose guided mode if you have raw customer/activity counts. Choose direct mode if you already know your profile and behavior totals.</p>
-    <div class="mode-toggle" id="mode-toggle">
+    <div class="card-head">
+      <span class="icon-tile"><img src="assets/icons/sliders.png" alt=""></span>
+      <h3>How would you like to enter your data?</h3>
+    </div>
+    <p class="definition">Choose <strong>Guided</strong> if you have raw customer and activity counts, or <strong>Direct Entry</strong> if you already know your profile and behavior totals.</p>
+    <div class="mode-toggle" id="mode-toggle" role="group" aria-label="Entry mode">
       <div class="mode-indicator" id="mode-indicator" style="width: 50%; transform: translateX(0);"></div>
-      <button class="active" onclick="setPBMode('guided', this)">Guided (Recommended)</button>
-      <button onclick="setPBMode('direct', this)">Direct Entry</button>
+      <button class="active" aria-pressed="true" onclick="setPBMode('guided', this)">Guided (Recommended)</button>
+      <button aria-pressed="false" onclick="setPBMode('direct', this)">Direct Entry</button>
     </div>
 
     <!-- GUIDED MODE -->
     <div id="pb-guided" class="wizard-panel active">
 
-      <!-- Wizard Steps -->
       <div class="wizard-steps">
         <div class="wizard-step active" id="ws-1"><span class="step-num">1</span><span class="step-label">Profiles</span></div>
         <div class="wizard-connector" id="wc-1"></div>
@@ -650,55 +722,55 @@ input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus,
 
       <!-- Step 1: Profiles -->
       <div class="wizard-panel active" id="wizard-step-1">
-        <div class="card" style="border-color: rgba(73,79,255,0.25);">
-          <h3 style="font-size: 1rem;">Step 1: Who are your customers?</h3>
-          <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1.2rem;">Enter approximate counts for people/accounts you actively market to or service.</p>
+        <div class="card step-card">
+          <h3>Who are your customers?</h3>
+          <p>Approximate counts of the people or accounts you market to or serve.</p>
 
           <div class="input-group">
-            <label>Known Customers / Members / Contacts <span class="unit">(unique individuals with email, phone, or login ID)</span></label>
+            <label for="pb-known-raw">Known customers / members / contacts <span class="unit">unique people with an email, phone, or login ID</span></label>
             <div class="input-row">
-              <input type="number" id="pb-known-raw" min="0" value="" placeholder="e.g. 5000000" style="width: 180px;" oninput="calcPBGuided()">
-              <span class="unit" style="font-size: 0.78rem;">people</span>
+              <input type="number" id="pb-known-raw" min="0" value="" placeholder="e.g. 5000000" inputmode="numeric" style="width: 200px;" oninput="calcPBGuided()">
+              <span class="unit">people</span>
             </div>
           </div>
 
           <div class="input-group">
-            <label>Additional system sources <span class="unit">(if you have contacts in multiple systems — e.g. CRM + ESP + loyalty)</span></label>
+            <label for="pb-additional-raw">Additional system sources <span class="unit">contacts in other systems, e.g. CRM + ESP + loyalty</span></label>
             <div class="input-row">
-              <input type="number" id="pb-additional-raw" min="0" value="" placeholder="e.g. 3000000" style="width: 180px;" oninput="calcPBGuided()">
-              <span class="unit" style="font-size: 0.78rem;">people (we'll apply 30-40% overlap dedup)</span>
+              <input type="number" id="pb-additional-raw" min="0" value="" placeholder="e.g. 3000000" inputmode="numeric" style="width: 200px;" oninput="calcPBGuided()">
+              <span class="unit">people (deduplicated by the overlap rate below)</span>
             </div>
           </div>
 
           <div class="input-group">
-            <label>Estimated overlap/dedup rate <span class="unit">(% of additional source that overlaps with primary)</span></label>
+            <label for="pb-overlap-slider">Estimated overlap rate <span class="unit">% of additional sources already in your primary list</span></label>
             <div class="input-row">
               <input type="range" id="pb-overlap-slider" min="0" max="80" value="35" step="5" oninput="document.getElementById('pb-overlap-val').textContent=this.value; calcPBGuided();">
-              <span id="pb-overlap-val" style="font-size: 0.85rem; font-weight: 600; min-width: 35px; color: var(--td-primary);">35</span><span class="unit">%</span>
+              <span class="num" style="font-weight: 700; color: var(--td-blue-deep); min-width: 44px; text-align: right;"><span id="pb-overlap-val">35</span>%</span>
             </div>
           </div>
 
-          <hr style="border: none; border-top: 1px solid #eee; margin: 1.2rem 0;">
+          <hr class="soft">
 
           <div class="highlight-box">
-            <h3 style="font-size: 0.9rem;"><strong>Anonymous / Unknown Profiles</strong></h3>
-            <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0.5rem 0;">Do you plan to include anonymous web/app visitors in the CDP? These are device IDs, cookies, etc. with no addressable identifier.</p>
-            <p style="font-size: 0.8rem; color: var(--td-primary); font-weight: 600; margin-bottom: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(73,79,255,0.06); border-radius: 6px; display: inline-block;">20 unknown profiles = 1 profile unit for billing</p>
-            <div class="input-group">
-              <label>Annual anonymous web/app visitors</label>
+            <h4>Anonymous / unknown profiles</h4>
+            <p>Plan to include anonymous web or app visitors (cookies, device IDs) in the CDP?</p>
+            <span class="chip-note">20 unknown profiles = 1 profile unit for billing</span>
+            <div class="input-group" style="margin-bottom: 0;">
+              <label for="pb-unknown-raw">Annual anonymous web/app visitors</label>
               <div class="input-row">
-                <input type="number" id="pb-unknown-raw" min="0" value="" placeholder="e.g. 100000000" style="width: 180px;" oninput="calcPBGuided()">
+                <input type="number" id="pb-unknown-raw" min="0" value="" placeholder="e.g. 100000000" inputmode="numeric" style="width: 200px;" oninput="calcPBGuided()">
                 <span class="unit">visitors / year</span>
               </div>
             </div>
-            <div id="pb-unknown-calc" style="font-size: 0.8rem; color: var(--td-secondary-1); font-weight: 500; margin-top: 0.5rem;"></div>
+            <div id="pb-unknown-calc" class="calc-note"></div>
           </div>
 
-          <div class="credit-output" style="margin-top: 1.2rem;">
+          <div class="credit-output">
             <span class="label">Estimated Total Profiles</span>
             <span class="value" id="pb-profiles-result">—</span>
           </div>
-          <div style="font-size: 0.72rem; color: #999; text-align: right; margin-top: 0.3rem;" id="pb-profiles-breakdown"></div>
+          <div class="breakdown-note" id="pb-profiles-breakdown"></div>
 
           <div class="btn-group">
             <button class="btn btn-primary" onclick="wizardNext(2)">Next: Behaviors →</button>
@@ -708,51 +780,51 @@ input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus,
 
       <!-- Step 2: Behaviors -->
       <div class="wizard-panel" id="wizard-step-2">
-        <div class="card" style="border-color: rgba(73,79,255,0.25);">
-          <h3 style="font-size: 1rem;">Step 2: What do your customers do?</h3>
-          <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1.2rem;">Enter approximate <strong>annual</strong> volumes by channel. Don't worry about being exact — ballpark estimates work.</p>
+        <div class="card step-card">
+          <h3>What do your customers do?</h3>
+          <p>Approximate <strong>annual</strong> volumes by channel. Ballpark numbers are fine.</p>
 
           <div class="input-group">
-            <label>Transactions / Orders per year <span class="unit">(e-commerce, in-store, subscriptions)</span></label>
+            <label for="pb-transactions">Transactions / orders per year <span class="unit">e-commerce, in-store, subscriptions</span></label>
             <div class="input-row">
-              <input type="number" id="pb-transactions" min="0" value="" placeholder="e.g. 50000000" style="width: 180px;" oninput="calcPBGuided()">
+              <input type="number" id="pb-transactions" min="0" value="" placeholder="e.g. 50000000" inputmode="numeric" style="width: 200px;" oninput="calcPBGuided()">
               <span class="unit">per year</span>
             </div>
           </div>
 
           <div class="input-group">
-            <label>Email / SMS / Push sends per year <span class="unit">(from all ESPs / messaging platforms)</span></label>
+            <label for="pb-messages">Email / SMS / push sends per year <span class="unit">from all ESPs and messaging platforms</span></label>
             <div class="input-row">
-              <input type="number" id="pb-messages" min="0" value="" placeholder="e.g. 200000000" style="width: 180px;" oninput="calcPBGuided()">
+              <input type="number" id="pb-messages" min="0" value="" placeholder="e.g. 200000000" inputmode="numeric" style="width: 200px;" oninput="calcPBGuided()">
               <span class="unit">per year</span>
             </div>
           </div>
 
           <div class="input-group">
-            <label>Web / App page views or events per year <span class="unit">(not necessarily all raw logs — events you'd want in the CDP)</span></label>
+            <label for="pb-pageviews">Web / app page views or events per year <span class="unit">events you'd want in the CDP, not every raw log</span></label>
             <div class="input-row">
-              <input type="number" id="pb-pageviews" min="0" value="" placeholder="e.g. 500000000" style="width: 180px;" oninput="calcPBGuided()">
+              <input type="number" id="pb-pageviews" min="0" value="" placeholder="e.g. 500000000" inputmode="numeric" style="width: 200px;" oninput="calcPBGuided()">
               <span class="unit">per year</span>
             </div>
           </div>
 
           <div class="input-group">
-            <label>Other events per year <span class="unit">(call center, in-store interactions, IoT, etc.)</span></label>
+            <label for="pb-other-events">Other events per year <span class="unit">call center, in-store interactions, IoT</span></label>
             <div class="input-row">
-              <input type="number" id="pb-other-events" min="0" value="" placeholder="e.g. 10000000" style="width: 180px;" oninput="calcPBGuided()">
+              <input type="number" id="pb-other-events" min="0" value="" placeholder="e.g. 10000000" inputmode="numeric" style="width: 200px;" oninput="calcPBGuided()">
               <span class="unit">per year</span>
             </div>
           </div>
 
-          <div class="credit-output" style="margin-top: 1.2rem;">
+          <div class="credit-output">
             <span class="label">Estimated Total Behaviors</span>
             <span class="value" id="pb-behaviors-result">—</span>
           </div>
-          <div style="font-size: 0.72rem; color: #999; text-align: right; margin-top: 0.3rem;" id="pb-behaviors-breakdown"></div>
+          <div class="breakdown-note" id="pb-behaviors-breakdown"></div>
 
           <div class="btn-group">
             <button class="btn btn-secondary" onclick="wizardNext(1)">← Back</button>
-            <button class="btn btn-primary" onclick="wizardNext(3)">Next: See Results →</button>
+            <button class="btn btn-primary" onclick="wizardNext(3)">Next: See results →</button>
           </div>
         </div>
       </div>
@@ -761,38 +833,40 @@ input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus,
       <div class="wizard-panel" id="wizard-step-3">
         <div class="result-banner">
           <div>
-            <h2>Your Estimated P+B</h2>
+            <h2>Your estimated P+B</h2>
             <div class="sub">Profiles (M) + Behaviors (B)</div>
           </div>
-          <div style="text-align: right;">
+          <div>
             <div class="big-number" id="pb-total-units">—</div>
-            <div class="sub">P+B Units</div>
+            <div class="sub" style="text-align: right;">P+B Units</div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-head"><h3>Breakdown</h3></div>
+            <div class="breakdown-row"><span class="bk-label">Known profiles</span><span class="bk-value" id="pb-sum-known">—</span></div>
+            <div class="breakdown-row"><span class="bk-label">Unknown profiles (÷ 20)</span><span class="bk-value" id="pb-sum-unknown">—</span></div>
+            <div class="breakdown-row"><span class="bk-label">Total profiles</span><span class="bk-value" id="pb-sum-profiles">—</span></div>
+            <div class="breakdown-row"><span class="bk-label">Total behaviors</span><span class="bk-value" id="pb-sum-behaviors">—</span></div>
+            <div class="breakdown-row total"><span class="bk-label">P+B Units</span><span class="bk-value" id="pb-sum-total">—</span></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><span class="icon-tile"><img src="assets/icons/trend-circle.png" alt=""></span><h3>Plan for growth</h3></div>
+            <p class="definition" style="margin-bottom: 0;">We recommend adding <strong>20–30% for year 2–3 growth</strong> and new data sources. Your scoped tier should leave room for that.</p>
           </div>
         </div>
 
         <div class="card">
-          <h3 style="font-size: 1rem;">Breakdown</h3>
-          <div class="breakdown-row"><span class="bk-label">Known Profiles</span><span class="bk-value" id="pb-sum-known">—</span></div>
-          <div class="breakdown-row"><span class="bk-label">Unknown Profiles (÷ 20)</span><span class="bk-value" id="pb-sum-unknown">—</span></div>
-          <div class="breakdown-row"><span class="bk-label">Total Profiles</span><span class="bk-value" id="pb-sum-profiles">—</span></div>
-          <div class="breakdown-row"><span class="bk-label">Total Behaviors</span><span class="bk-value" id="pb-sum-behaviors">—</span></div>
-          <div class="breakdown-row" style="border-top: 2px solid var(--td-primary); margin-top: 0.5rem; padding-top: 0.75rem;">
-            <span class="bk-label" style="font-weight: 600; color: var(--text);">P+B Units</span>
-            <span class="bk-value" style="font-size: 1.1rem;" id="pb-sum-total">—</span>
+          <div class="card-head"><h3>ICDP tier alignment</h3></div>
+          <div class="tier-line">
+            <span>Your tier: <strong id="pb-your-tier">—</strong></span>
+            <span>Room left in tier: <strong id="pb-headroom">—</strong></span>
           </div>
-        </div>
-
-        <div class="highlight-box info">
-          <p style="font-size: 0.82rem; margin: 0;"><strong>Growth buffer:</strong> We recommend adding 20-30% for Year 2-3 growth and additional data sources. Your scoped tier should accommodate this headroom.</p>
-        </div>
-
-        <div class="card" style="margin-top: 1rem;">
-          <h3 style="font-size: 1rem;">ICDP Tier Alignment</h3>
-          <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1rem;">Your P+B estimate maps to the following platform tier:</p>
-          <div style="overflow-x: auto; max-height: 360px; overflow-y: auto; border-radius: 8px;">
+          <div class="tier-scroll">
             <table class="tier-table" id="pb-tier-table">
               <thead>
-                <tr><th>Tier</th><th>Group</th><th>P+B Range (Low)</th><th>P+B Range (High)</th></tr>
+                <tr><th>Tier</th><th>Group</th><th>P+B Low</th><th>P+B High</th></tr>
               </thead>
               <tbody id="pb-tier-body"></tbody>
             </table>
@@ -801,7 +875,7 @@ input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus,
 
         <div class="btn-group">
           <button class="btn btn-secondary" onclick="wizardNext(2)">← Back</button>
-          <button class="btn btn-primary" onclick="switchTab('ai')">Continue to AI Credits →</button>
+          <button class="btn btn-primary" onclick="switchTab('ai')">Continue to AI credits →</button>
         </div>
       </div>
 
@@ -809,62 +883,66 @@ input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus,
 
     <!-- DIRECT MODE -->
     <div id="pb-direct" class="wizard-panel">
-      <div class="two-col">
+      <div class="grid-2" style="gap: 24px;">
         <div class="input-group">
-          <label>Total Profiles <span class="unit">(in Millions)</span></label>
+          <label for="pb-direct-profiles">Total profiles <span class="unit">in millions</span></label>
           <div class="input-row">
-            <input type="range" id="pb-direct-profiles-slider" min="0" max="500" value="0" step="1" oninput="document.getElementById('pb-direct-profiles').value=this.value; calcPBDirect();">
-            <input type="number" id="pb-direct-profiles" min="0" value="0" style="width: 100px;" oninput="document.getElementById('pb-direct-profiles-slider').value=this.value; calcPBDirect();">
+            <input type="range" id="pb-direct-profiles-slider" min="0" max="500" value="0" step="1" aria-label="Total profiles slider" oninput="document.getElementById('pb-direct-profiles').value=this.value; calcPBDirect();">
+            <input type="number" id="pb-direct-profiles" min="0" value="0" inputmode="decimal" oninput="document.getElementById('pb-direct-profiles-slider').value=this.value; calcPBDirect();">
             <span class="unit">M</span>
           </div>
         </div>
         <div class="input-group">
-          <label>Total Behaviors <span class="unit">(in Billions)</span></label>
+          <label for="pb-direct-behaviors">Total behaviors <span class="unit">in billions</span></label>
           <div class="input-row">
-            <input type="range" id="pb-direct-behaviors-slider" min="0" max="100" value="0" step="0.5" oninput="document.getElementById('pb-direct-behaviors').value=this.value; calcPBDirect();">
-            <input type="number" id="pb-direct-behaviors" min="0" value="0" step="0.1" style="width: 100px;" oninput="document.getElementById('pb-direct-behaviors-slider').value=this.value; calcPBDirect();">
+            <input type="range" id="pb-direct-behaviors-slider" min="0" max="100" value="0" step="0.5" aria-label="Total behaviors slider" oninput="document.getElementById('pb-direct-behaviors').value=this.value; calcPBDirect();">
+            <input type="number" id="pb-direct-behaviors" min="0" value="0" step="0.1" inputmode="decimal" oninput="document.getElementById('pb-direct-behaviors-slider').value=this.value; calcPBDirect();">
             <span class="unit">B</span>
           </div>
         </div>
       </div>
-      <div class="credit-output" style="margin-top: 1rem;">
+      <div class="credit-output">
         <span class="label">P+B Units</span>
         <span class="value" id="pb-direct-total">0.00</span>
       </div>
+      <div class="tier-line" style="margin: 12px 0 0;">
+        <span>ICDP Tier: <strong id="pb-direct-tier">Tier 2 (Group I)</strong></span>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-primary" onclick="switchTab('ai')">Continue to AI credits →</button>
+      </div>
     </div>
 
   </div>
-</div>
+</section>
 
 <!-- ==================== AI CREDITS TAB ==================== -->
-<div id="tab-ai" class="tab-content">
+<section id="tab-ai" class="tab-content" role="tabpanel">
 
-  <!-- Definitions -->
-  <div class="card">
-    <h3>What are AI Suite Credits?</h3>
-    <div class="definition" style="margin-top: 0.75rem;">
-      <strong>AI Credits</strong> are a consumption-based unit for Treasure AI services. Each product converts usage into credits at a defined rate. Your total annual credits determine your AI Suite tier and entitlement.<br><br>
-      Credits are calculated monthly, then annualized (× 12) to determine your tier.
-    </div>
+  <div class="section-head">
+    <h2>AI Suite credits</h2>
+    <p>Each product turns usage into credits at its own rate. Credits are counted monthly, then <strong>annualized (× 12)</strong> to set your AI Suite tier.</p>
   </div>
 
-  <div class="two-col stagger">
+  <div class="grid-2 stagger">
 
     <!-- AI Foundry -->
     <div class="card">
-      <h3>AI Foundry <span class="badge">All Suites</span></h3>
-      <div class="definition">
-        Powers conversational AI across Treasure AI Studio, Code, and AI Agents. A <strong>Conversation</strong> = an average of five back-and-forth exchanges between two entities using standard LLMs. Metered across Studio, Code, and Agent Foundry on Production Instances.
+      <div class="card-head">
+        <span class="icon-tile"><img src="assets/icons/chat-people.png" alt=""></span>
+        <h3>AI Foundry</h3>
+        <span class="badge">All Suites</span>
       </div>
+      <p class="definition">Powers conversational AI across Treasure AI Studio, Code, and AI Agents. A <strong>Conversation</strong> is an average of five back-and-forth exchanges using standard LLMs, metered on Production Instances.</p>
       <div class="input-group">
-        <label>Total Conversations / month <span class="unit">(Thousands × 1,000)</span></label>
+        <label for="ai-foundry-input">Total conversations / month <span class="unit">thousands (× 1,000)</span></label>
         <div class="input-row">
-          <input type="range" id="ai-foundry-slider" min="0" max="500" value="0" step="1" oninput="document.getElementById('ai-foundry-input').value=this.value; calcAI();">
-          <input type="number" id="ai-foundry-input" min="0" max="10000" value="0" step="1" oninput="document.getElementById('ai-foundry-slider').value=this.value; calcAI();">
+          <input type="range" id="ai-foundry-slider" min="0" max="500" value="0" step="1" aria-label="Conversations slider" oninput="document.getElementById('ai-foundry-input').value=this.value; calcAI();">
+          <input type="number" id="ai-foundry-input" min="0" max="10000" value="0" step="1" inputmode="decimal" oninput="document.getElementById('ai-foundry-slider').value=this.value; calcAI();">
         </div>
       </div>
       <div class="credit-output">
-        <span class="label">Credits / Month</span>
+        <span class="label">Credits / month</span>
         <span class="value" id="ai-foundry-credits">0.00</span>
       </div>
       <div class="conversion-note">1 Credit = 600 Conversations</div>
@@ -872,254 +950,314 @@ input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus,
 
     <!-- Agentic Engage -->
     <div class="card">
-      <h3>Agentic Engage <span class="badge">Engagement Suite</span></h3>
-      <div class="definition">
-        AI-powered customer engagement via email, push notifications, and messaging at scale. <strong>Email Messages</strong> counted from messages sent via Engage Studio in Production Instances. Supports personalized, AI-optimized content delivery.
+      <div class="card-head">
+        <span class="icon-tile"><img src="assets/icons/mail.png" alt=""></span>
+        <h3>Agentic Engage</h3>
+        <span class="badge">Engagement Suite</span>
+      </div>
+      <p class="definition">AI-powered engagement across email, SMS, mobile push, and messaging. Email is charged <strong>either by emails sent or by email clicks</strong>, not both. SMS and Mobile Push are added on top.</p>
+      <div class="input-group" style="margin-bottom: 0;">
+        <label id="engage-email-metering-label">Charge email by</label>
+        <div class="segmented" role="group" aria-labelledby="engage-email-metering-label">
+          <button type="button" aria-pressed="true" data-metering="sends" onclick="setEmailMetering('sends')">Emails sent</button>
+          <button type="button" aria-pressed="false" data-metering="clicks" onclick="setEmailMetering('clicks')">Email clicks</button>
+        </div>
+        <p class="choice-note">Pick one: 1 credit = 1M emails sent, <strong>or</strong> 1 credit = 20K email clicks.</p>
+      </div>
+      <div class="input-group" id="engage-sends-group">
+        <label for="ai-engage-input">Emails sent / month <span class="unit">millions</span></label>
+        <div class="input-row">
+          <input type="range" id="ai-engage-slider" min="0" max="50" value="0" step="0.5" aria-label="Emails slider" oninput="document.getElementById('ai-engage-input').value=this.value; calcAI();">
+          <input type="number" id="ai-engage-input" min="0" max="1000" value="0" step="0.1" inputmode="decimal" oninput="document.getElementById('ai-engage-slider').value=this.value; calcAI();">
+        </div>
+      </div>
+      <div class="input-group is-hidden" id="engage-clicks-group">
+        <label for="ai-engage-clicks-input">Email clicks / month <span class="unit">thousands</span></label>
+        <div class="input-row">
+          <input type="range" id="ai-engage-clicks-slider" min="0" max="1000" value="0" step="10" aria-label="Email clicks slider" oninput="document.getElementById('ai-engage-clicks-input').value=this.value; calcAI();">
+          <input type="number" id="ai-engage-clicks-input" min="0" max="100000" value="0" step="1" inputmode="decimal" oninput="document.getElementById('ai-engage-clicks-slider').value=this.value; calcAI();">
+        </div>
       </div>
       <div class="input-group">
-        <label>Emails Sent / month <span class="unit">(Millions × 1,000,000)</span></label>
+        <label for="ai-engage-sms-input">SMS messages / month <span class="unit">thousands</span></label>
         <div class="input-row">
-          <input type="range" id="ai-engage-slider" min="0" max="50" value="0" step="0.5" oninput="document.getElementById('ai-engage-input').value=this.value; calcAI();">
-          <input type="number" id="ai-engage-input" min="0" max="1000" value="0" step="0.1" oninput="document.getElementById('ai-engage-slider').value=this.value; calcAI();">
+          <input type="range" id="ai-engage-sms-slider" min="0" max="1000" value="0" step="10" aria-label="SMS slider" oninput="document.getElementById('ai-engage-sms-input').value=this.value; calcAI();">
+          <input type="number" id="ai-engage-sms-input" min="0" max="100000" value="0" step="1" inputmode="decimal" oninput="document.getElementById('ai-engage-sms-slider').value=this.value; calcAI();">
+        </div>
+      </div>
+      <div class="input-group">
+        <label for="ai-engage-push-input">Mobile push messages / month <span class="unit">millions</span></label>
+        <div class="input-row">
+          <input type="range" id="ai-engage-push-slider" min="0" max="500" value="0" step="5" aria-label="Mobile push slider" oninput="document.getElementById('ai-engage-push-input').value=this.value; calcAI();">
+          <input type="number" id="ai-engage-push-input" min="0" max="10000" value="0" step="1" inputmode="decimal" oninput="document.getElementById('ai-engage-push-slider').value=this.value; calcAI();">
         </div>
       </div>
       <div class="credit-output">
-        <span class="label">Credits / Month</span>
+        <span class="label">Credits / month</span>
         <span class="value" id="ai-engage-credits">0.00</span>
       </div>
-      <div class="conversion-note">1 Credit = 1 Million Email Messages</div>
+      <div class="conversion-note">Email: 1 Credit = 1M Emails Sent <strong>or</strong> 20K Email Clicks (choose one) · 1 Credit = 10K SMS Messages · 10M Mobile Push Messages</div>
     </div>
 
     <!-- RT Personalization -->
     <div class="card">
-      <h3>RT Personalization <span class="badge">Personalization Suite</span></h3>
-      <div class="definition">
-        Delivers sub-second API responses with customer attributes from the RT Decision Engine. <strong>RT Profiles</strong> = collections of customer attributes held in the engine (measured as the 4th highest daily count per month). <strong>Personalization Calls</strong> = API calls returning up to 20 attributes per request.
+      <div class="card-head">
+        <span class="icon-tile"><img src="assets/icons/user-circle.png" alt=""></span>
+        <h3>RT Personalization</h3>
+        <span class="badge">Personalization Suite</span>
       </div>
+      <p class="definition">Sub-second API responses with customer attributes from the RT Decision Engine. <strong>RT Profiles</strong> are measured as the 4th-highest daily count each month. <strong>Personalization Calls</strong> return up to 20 attributes per request.</p>
       <div class="input-group">
-        <label>Total RT Profiles <span class="unit">(Millions)</span></label>
+        <label for="ai-rt-profiles-input">Total RT profiles <span class="unit">millions</span></label>
         <div class="input-row">
-          <input type="range" id="ai-rt-profiles-slider" min="0" max="50" value="0" step="0.5" oninput="document.getElementById('ai-rt-profiles-input').value=this.value; calcAI();">
-          <input type="number" id="ai-rt-profiles-input" min="0" max="500" value="0" step="0.1" oninput="document.getElementById('ai-rt-profiles-slider').value=this.value; calcAI();">
+          <input type="range" id="ai-rt-profiles-slider" min="0" max="50" value="0" step="0.5" aria-label="RT profiles slider" oninput="document.getElementById('ai-rt-profiles-input').value=this.value; calcAI();">
+          <input type="number" id="ai-rt-profiles-input" min="0" max="500" value="0" step="0.1" inputmode="decimal" oninput="document.getElementById('ai-rt-profiles-slider').value=this.value; calcAI();">
         </div>
       </div>
       <div class="input-group">
-        <label>Personalization Calls / month <span class="unit">(Millions)</span></label>
+        <label for="ai-rt-calls-input">Personalization calls / month <span class="unit">millions</span></label>
         <div class="input-row">
-          <input type="range" id="ai-rt-calls-slider" min="0" max="500" value="0" step="5" oninput="document.getElementById('ai-rt-calls-input').value=this.value; calcAI();">
-          <input type="number" id="ai-rt-calls-input" min="0" max="5000" value="0" step="1" oninput="document.getElementById('ai-rt-calls-slider').value=this.value; calcAI();">
+          <input type="range" id="ai-rt-calls-slider" min="0" max="500" value="0" step="5" aria-label="Personalization calls slider" oninput="document.getElementById('ai-rt-calls-input').value=this.value; calcAI();">
+          <input type="number" id="ai-rt-calls-input" min="0" max="5000" value="0" step="1" inputmode="decimal" oninput="document.getElementById('ai-rt-calls-slider').value=this.value; calcAI();">
         </div>
       </div>
       <div class="credit-output">
-        <span class="label">Credits / Month</span>
+        <span class="label">Credits / month</span>
         <span class="value" id="ai-rt-pz-credits">0.00</span>
       </div>
-      <div class="conversion-note">1 Credit = 1M RT Profiles | 1 Credit = 10M Personalization Calls</div>
+      <div class="conversion-note">1 Credit = 1M RT Profiles · 10M Personalization Calls</div>
     </div>
 
     <!-- RT Triggers -->
     <div class="card">
-      <h3>RT Triggers <span class="badge">Personalization & Engagement</span></h3>
-      <div class="definition">
-        Fire downstream actions (webhooks, messaging, journey entry) when streaming events meet criteria — ~3 min end-to-end latency. <strong>Incoming Events</strong> = streaming events into RT Decision Engine. <strong>Trigger Activations</strong> = outgoing events from engine to external systems.
+      <div class="card-head">
+        <span class="icon-tile"><img src="assets/icons/click-sparkle.png" alt=""></span>
+        <h3>RT Triggers</h3>
+        <span class="badge">Personalization &amp; Engagement</span>
       </div>
+      <p class="definition">Fires downstream actions (webhooks, messaging, journey entry) when streaming events meet your criteria, with about 3 minutes end-to-end latency. <strong>Incoming Events</strong> flow into the RT Decision Engine; <strong>Trigger Activations</strong> flow out to external systems.</p>
       <div class="input-group">
-        <label>RT Profiles <span class="unit">(Millions)</span></label>
+        <label for="ai-trig-profiles-input">RT profiles <span class="unit">millions</span></label>
         <div class="input-row">
-          <input type="range" id="ai-trig-profiles-slider" min="0" max="50" value="0" step="0.5" oninput="document.getElementById('ai-trig-profiles-input').value=this.value; calcAI();">
-          <input type="number" id="ai-trig-profiles-input" min="0" max="500" value="0" step="0.1" oninput="document.getElementById('ai-trig-profiles-slider').value=this.value; calcAI();">
+          <input type="range" id="ai-trig-profiles-slider" min="0" max="50" value="0" step="0.5" aria-label="Trigger RT profiles slider" oninput="document.getElementById('ai-trig-profiles-input').value=this.value; calcAI();">
+          <input type="number" id="ai-trig-profiles-input" min="0" max="500" value="0" step="0.1" inputmode="decimal" oninput="document.getElementById('ai-trig-profiles-slider').value=this.value; calcAI();">
         </div>
       </div>
       <div class="input-group">
-        <label>Incoming Trigger Events / month <span class="unit">(Millions)</span></label>
+        <label for="ai-trig-events-input">Incoming trigger events / month <span class="unit">millions</span></label>
         <div class="input-row">
-          <input type="range" id="ai-trig-events-slider" min="0" max="500" value="0" step="5" oninput="document.getElementById('ai-trig-events-input').value=this.value; calcAI();">
-          <input type="number" id="ai-trig-events-input" min="0" max="5000" value="0" step="1" oninput="document.getElementById('ai-trig-events-slider').value=this.value; calcAI();">
+          <input type="range" id="ai-trig-events-slider" min="0" max="500" value="0" step="5" aria-label="Incoming events slider" oninput="document.getElementById('ai-trig-events-input').value=this.value; calcAI();">
+          <input type="number" id="ai-trig-events-input" min="0" max="5000" value="0" step="1" inputmode="decimal" oninput="document.getElementById('ai-trig-events-slider').value=this.value; calcAI();">
         </div>
       </div>
       <div class="input-group">
-        <label>Outgoing Trigger Activations / month <span class="unit">(Millions)</span></label>
+        <label for="ai-trig-activations-input">Outgoing trigger activations / month <span class="unit">millions</span></label>
         <div class="input-row">
-          <input type="range" id="ai-trig-activations-slider" min="0" max="500" value="0" step="5" oninput="document.getElementById('ai-trig-activations-input').value=this.value; calcAI();">
-          <input type="number" id="ai-trig-activations-input" min="0" max="5000" value="0" step="1" oninput="document.getElementById('ai-trig-activations-slider').value=this.value; calcAI();">
+          <input type="range" id="ai-trig-activations-slider" min="0" max="500" value="0" step="5" aria-label="Outgoing activations slider" oninput="document.getElementById('ai-trig-activations-input').value=this.value; calcAI();">
+          <input type="number" id="ai-trig-activations-input" min="0" max="5000" value="0" step="1" inputmode="decimal" oninput="document.getElementById('ai-trig-activations-slider').value=this.value; calcAI();">
         </div>
       </div>
       <div class="credit-output">
-        <span class="label">Credits / Month</span>
+        <span class="label">Credits / month</span>
         <span class="value" id="ai-rt-trig-credits">0.00</span>
       </div>
-      <div class="conversion-note">1 Credit = 1M Profiles | 1 Credit = 15M Events | 1 Credit = 25M Activations</div>
+      <div class="conversion-note">1 Credit = 1M Profiles · 15M Events · 25M Activations<br>RT Profiles are charged once: profiles already counted under RT Personalization aren't charged again.</div>
     </div>
 
     <!-- AI Signals -->
     <div class="card full-width">
-      <h3>AI Signals <span class="badge">Multiple Suites</span></h3>
-      <div class="definition">
-        Enterprise AutoML within Treasure Workflows — automates preprocessing, feature engineering, model selection, training, and evaluation. Includes <strong>AutoML Framework Packages</strong>, <strong>Framework Add-Ons</strong>, and <strong>Solution Notebooks</strong> (churn prediction, propensity scoring, lead scoring). Credits apply to Predictions generated by ML and RFM models.
+      <div class="card-head">
+        <span class="icon-tile"><img src="assets/icons/lightbulb.png" alt=""></span>
+        <h3>AI Signals</h3>
+        <span class="badge">Included with AEP</span>
       </div>
-      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+      <p class="definition">Enterprise AutoML inside Treasure Workflows: preprocessing, feature engineering, model selection, training, and evaluation. <strong>AI Signals is included with AEP</strong>, so there's nothing to select. Credits come from predictions only.</p>
+      <div class="grid-2" style="gap: 24px;">
         <div class="input-group">
-          <label>AutoML Framework</label>
-          <select id="ai-signals-framework" onchange="calcAI()">
-            <option value="none">No AutoML</option>
-            <option value="basic">Basic</option>
-            <option value="advanced">Advanced</option>
-          </select>
-        </div>
-        <div class="input-group">
-          <label>Framework Add-Ons</label>
-          <select id="ai-signals-addons" onchange="calcAI()">
-            <option value="none">No Add-On</option>
-            <option value="basic">Basic Add-On</option>
-            <option value="advanced">Advanced Add-On</option>
-          </select>
-        </div>
-        <div class="input-group">
-          <label>Solution Notebook</label>
-          <select id="ai-signals-notebook" onchange="calcAI()">
-            <option value="no">No</option>
-            <option value="yes">Yes</option>
-          </select>
-        </div>
-      </div>
-      <div class="two-col" style="gap: 1rem;">
-        <div class="input-group">
-          <label>ML Model Predictions / month <span class="unit">(Millions)</span></label>
+          <label for="ai-signals-ml-input">ML model predictions / month <span class="unit">millions</span></label>
           <div class="input-row">
-            <input type="range" id="ai-signals-ml-slider" min="0" max="500" value="0" step="5" oninput="document.getElementById('ai-signals-ml-input').value=this.value; calcAI();">
-            <input type="number" id="ai-signals-ml-input" min="0" max="5000" value="0" step="1" oninput="document.getElementById('ai-signals-ml-slider').value=this.value; calcAI();">
+            <input type="range" id="ai-signals-ml-slider" min="0" max="500" value="0" step="5" aria-label="ML predictions slider" oninput="document.getElementById('ai-signals-ml-input').value=this.value; calcAI();">
+            <input type="number" id="ai-signals-ml-input" min="0" max="5000" value="0" step="1" inputmode="decimal" oninput="document.getElementById('ai-signals-ml-slider').value=this.value; calcAI();">
           </div>
         </div>
         <div class="input-group">
-          <label>RFM Model Predictions / month <span class="unit">(Millions)</span></label>
+          <label for="ai-signals-rfm-input">RFM model predictions / month <span class="unit">millions</span></label>
           <div class="input-row">
-            <input type="range" id="ai-signals-rfm-slider" min="0" max="1000" value="0" step="10" oninput="document.getElementById('ai-signals-rfm-input').value=this.value; calcAI();">
-            <input type="number" id="ai-signals-rfm-input" min="0" max="10000" value="0" step="1" oninput="document.getElementById('ai-signals-rfm-slider').value=this.value; calcAI();">
+            <input type="range" id="ai-signals-rfm-slider" min="0" max="1000" value="0" step="10" aria-label="RFM predictions slider" oninput="document.getElementById('ai-signals-rfm-input').value=this.value; calcAI();">
+            <input type="number" id="ai-signals-rfm-input" min="0" max="10000" value="0" step="1" inputmode="decimal" oninput="document.getElementById('ai-signals-rfm-slider').value=this.value; calcAI();">
           </div>
         </div>
       </div>
       <div class="credit-output">
-        <span class="label">Credits / Month</span>
+        <span class="label">Credits / month</span>
         <span class="value" id="ai-signals-credits">0.00</span>
       </div>
-      <div class="conversion-note">1 Credit = 40M ML Predictions | 1 Credit = 100M RFM Predictions</div>
+      <div class="conversion-note">1 Credit = 40M ML Predictions · 100M RFM Predictions</div>
     </div>
 
   </div>
 
   <!-- AI Totals -->
-  <div class="result-banner" style="margin-top: 1.5rem;">
-    <div>
-      <h2>Total AI Credits</h2>
-      <div class="sub" id="ai-total-annual">0.00 Credits / Year</div>
-    </div>
-    <div style="text-align: right;">
-      <div class="big-number" id="ai-total-monthly">0.00</div>
-      <div class="sub">Credits / Month</div>
-    </div>
-  </div>
-
-  <!-- AI Tier -->
-  <div class="card">
-    <h3 style="font-size: 1rem;">AI Suite Credits — Tier Reference</h3>
-    <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1rem;">Your estimated tier: <strong id="ai-your-tier" style="color: var(--td-primary); font-size: 1.1rem;">0</strong></p>
-    <div style="overflow-x: auto; max-height: 400px; overflow-y: auto; border-radius: 8px;">
-      <table class="tier-table" id="ai-tier-table">
-        <thead><tr><th>Tier</th><th>Annual Credits (Min)</th><th>Annual Credits (Max)</th></tr></thead>
-        <tbody id="ai-tier-body"></tbody>
-      </table>
-    </div>
-  </div>
-
-  <div class="btn-group" style="margin-top: 1.5rem;">
-    <button class="btn btn-secondary" onclick="switchTab('pb')">← Back to P+B</button>
-    <button class="btn btn-primary" onclick="switchTab('summary')">Review & Submit →</button>
-  </div>
-</div>
-
-<!-- ==================== SUMMARY & SUBMIT TAB ==================== -->
-<div id="tab-summary" class="tab-content">
-
   <div class="result-banner">
     <div>
-      <h2>Your Pricing Estimate</h2>
-      <div class="sub">Combined P+B + AI Credits Summary</div>
+      <h2>Total AI credits</h2>
+      <div class="sub" id="ai-total-annual">0.00 Credits / Year</div>
+    </div>
+    <div>
+      <div class="big-number" id="ai-total-monthly">0.00</div>
+      <div class="sub" style="text-align: right;">Credits / month</div>
     </div>
   </div>
 
-  <div class="two-col stagger">
+  <div class="grid-2">
+    <!-- Headroom Buffer -->
+    <div class="card">
+      <div class="card-head">
+        <span class="icon-tile"><img src="assets/icons/shield-check.png" alt=""></span>
+        <h3>Headroom buffer</h3>
+      </div>
+      <p class="definition">Credits are annual entitlements. We size the tier with a <strong>small buffer</strong> so there's room to grow.</p>
+      <div class="input-group">
+        <label for="ai-buffer">Buffer</label>
+        <select id="ai-buffer" onchange="calcAI()">
+          <option value="0">None</option>
+          <option value="5">5%</option>
+          <option value="10" selected>10%</option>
+        </select>
+      </div>
+      <div class="breakdown-row"><span class="bk-label">Annual credits</span><span class="bk-value" id="ai-annual-base">0.00</span></div>
+      <div class="breakdown-row"><span class="bk-label">+ Buffer</span><span class="bk-value" id="ai-annual-buffer">0.00</span></div>
+      <div class="breakdown-row total"><span class="bk-label">Annual credits incl. buffer</span><span class="bk-value" id="ai-annual-with-buffer">0.00</span></div>
+    </div>
+
+    <!-- AI Tier -->
+    <div class="card">
+      <div class="card-head">
+        <span class="icon-tile"><img src="assets/icons/bar-chart.png" alt=""></span>
+        <h3>AI Suite tier</h3>
+      </div>
+      <div class="tier-line">
+        <span>Your tier (incl. buffer): <strong id="ai-your-tier">0</strong></span>
+        <span>Room left in tier: <strong id="ai-headroom">—</strong></span>
+      </div>
+      <div class="tier-scroll" style="max-height: 300px;">
+        <table class="tier-table" id="ai-tier-table">
+          <thead><tr><th>Tier</th><th>Annual credits (min)</th><th>Annual credits (max)</th></tr></thead>
+          <tbody id="ai-tier-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-group">
+    <button class="btn btn-secondary" onclick="switchTab('pb')">← Back to P+B</button>
+    <button class="btn btn-primary" onclick="switchTab('summary')">Review &amp; submit →</button>
+  </div>
+</section>
+
+<!-- ==================== SUMMARY & SUBMIT TAB ==================== -->
+<section id="tab-summary" class="tab-content" role="tabpanel">
+
+  <div class="section-head">
+    <h2>Your pricing estimate</h2>
+    <p>Here's the <strong>combined P+B and AI credits</strong> picture. Check the numbers, then send them to the Treasure AI team.</p>
+  </div>
+
+  <div class="grid-2 stagger">
     <!-- P+B Summary -->
     <div class="card">
-      <h3 style="font-size: 1rem;">CDP Platform (P+B)</h3>
-      <div class="breakdown-row"><span class="bk-label">Total Profiles</span><span class="bk-value" id="sum-profiles">—</span></div>
-      <div class="breakdown-row"><span class="bk-label">Total Behaviors</span><span class="bk-value" id="sum-behaviors">—</span></div>
-      <div class="breakdown-row" style="border-top: 2px solid var(--td-primary); padding-top: 0.6rem;">
-        <span class="bk-label" style="font-weight: 600;">P+B Units</span>
-        <span class="bk-value" style="font-size: 1.2rem;" id="sum-pb-units">—</span>
+      <div class="card-head">
+        <span class="icon-tile"><img src="assets/icons/user-network.png" alt=""></span>
+        <h3>CDP Platform (P+B)</h3>
       </div>
-      <div style="margin-top: 0.75rem; font-size: 0.82rem; color: var(--text-muted);">ICDP Tier: <strong id="sum-pb-tier" style="color: var(--td-primary);">—</strong></div>
+      <div class="breakdown-row"><span class="bk-label">Total profiles</span><span class="bk-value" id="sum-profiles">—</span></div>
+      <div class="breakdown-row"><span class="bk-label">Total behaviors</span><span class="bk-value" id="sum-behaviors">—</span></div>
+      <div class="breakdown-row total"><span class="bk-label">P+B Units</span><span class="bk-value" id="sum-pb-units">—</span></div>
+      <div class="kpi">
+        <div><p class="eyebrow">ICDP Tier</p><strong id="sum-pb-tier">—</strong></div>
+        <div><p class="eyebrow">Room left in tier</p><strong id="sum-pb-headroom">—</strong></div>
+      </div>
     </div>
 
     <!-- AI Summary -->
     <div class="card">
-      <h3 style="font-size: 1rem;">AI Suite Credits</h3>
+      <div class="card-head">
+        <span class="icon-tile"><img src="assets/icons/pie-chart.png" alt=""></span>
+        <h3>AI Suite credits</h3>
+      </div>
       <div class="breakdown-row"><span class="bk-label">AI Foundry</span><span class="bk-value" id="sum-ai-foundry">0.00</span></div>
       <div class="breakdown-row"><span class="bk-label">Agentic Engage</span><span class="bk-value" id="sum-ai-engage">0.00</span></div>
       <div class="breakdown-row"><span class="bk-label">RT Personalization</span><span class="bk-value" id="sum-ai-rtpz">0.00</span></div>
       <div class="breakdown-row"><span class="bk-label">RT Triggers</span><span class="bk-value" id="sum-ai-rttrig">0.00</span></div>
       <div class="breakdown-row"><span class="bk-label">AI Signals</span><span class="bk-value" id="sum-ai-signals">0.00</span></div>
-      <div class="breakdown-row" style="border-top: 2px solid var(--td-primary); padding-top: 0.6rem;">
-        <span class="bk-label" style="font-weight: 600;">Total / Year</span>
-        <span class="bk-value" style="font-size: 1.2rem;" id="sum-ai-annual">0.00</span>
+      <div class="breakdown-row total"><span class="bk-label">Total / year</span><span class="bk-value" id="sum-ai-annual">0.00</span></div>
+      <div class="breakdown-row"><span class="bk-label">Buffer</span><span class="bk-value" id="sum-ai-buffer-pct">10%</span></div>
+      <div class="breakdown-row"><span class="bk-label">Total / year incl. buffer</span><span class="bk-value" id="sum-ai-annual-buffered">0.00</span></div>
+      <div class="kpi">
+        <div><p class="eyebrow">AI Tier</p><strong id="sum-ai-tier">0</strong></div>
+        <div><p class="eyebrow">Room left in tier</p><strong id="sum-ai-headroom">—</strong></div>
       </div>
-      <div style="margin-top: 0.75rem; font-size: 0.82rem; color: var(--text-muted);">AI Tier: <strong id="sum-ai-tier" style="color: var(--td-primary);">0</strong></div>
     </div>
   </div>
 
-  <!-- Submit Button -->
-  <div style="text-align: center; margin-top: 2rem;">
-    <button class="btn btn-primary" style="padding: 1rem 3rem; font-size: 1.05rem;" onclick="openSubmitModal()">
-      Submit My Inputs
-    </button>
-    <p style="font-size: 0.75rem; color: #999; margin-top: 0.75rem;">Your inputs will be shared with the Treasure Data team to prepare a tailored pricing proposal.</p>
+  <div class="submit-area">
+    <button class="btn btn-primary btn-lg" onclick="openSubmitModal()">Submit my inputs</button>
+    <p>Your inputs go to the Treasure AI team so we can prepare a tailored pricing proposal.</p>
   </div>
+</section>
+
+</div><!-- end wrap -->
+
+<!-- ==================== STICKY ESTIMATE BAR ==================== -->
+<div class="estimate-bar" id="estimate-bar" aria-live="polite">
+  <div class="eb-item"><span class="eyebrow">ICDP Tier</span><span class="eb-value" id="eb-pb-tier">Tier 2</span></div>
+  <span class="eb-divider"></span>
+  <div class="eb-item"><span class="eyebrow">AI credits / yr<span class="eb-optional"> incl. buffer</span></span><span class="eb-value" id="eb-ai-credits">0.00</span></div>
+  <span class="eb-divider"></span>
+  <div class="eb-item"><span class="eyebrow">AI Tier</span><span class="eb-value" id="eb-ai-tier">0</span></div>
+  <button class="btn btn-primary" onclick="switchTab('summary')">Review<span class="btn-long"> &amp; submit</span> →</button>
 </div>
 
 <!-- ==================== SUBMIT MODAL ==================== -->
 <div class="modal-overlay" id="submit-modal" onclick="if(event.target===this)closeSubmitModal()">
-  <div class="modal">
-    <h3>Submit Your Estimate</h3>
-    <p>Enter your details and we'll prepare a pricing proposal based on your inputs.</p>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="submit-title">
+    <h3 id="submit-title">Submit your estimate</h3>
+    <p>Add your details and we'll prepare a pricing proposal from your inputs.</p>
     <div class="input-group">
-      <label>Full Name *</label>
-      <input type="text" id="submit-name" placeholder="Jane Smith" required>
+      <label for="submit-name">Full name *</label>
+      <input type="text" id="submit-name" placeholder="Jane Smith" autocomplete="name" required>
     </div>
     <div class="input-group">
-      <label>Work Email *</label>
-      <input type="email" id="submit-email" placeholder="jane@company.com" required>
+      <label for="submit-email">Work email *</label>
+      <input type="email" id="submit-email" placeholder="jane@company.com" autocomplete="email" required>
     </div>
     <button class="btn btn-primary" onclick="submitToSheet()" id="submit-btn">Submit</button>
-    <button class="btn btn-secondary" style="width: 100%; margin-top: 0.75rem;" onclick="closeSubmitModal()">Cancel</button>
+    <button class="btn btn-secondary" onclick="closeSubmitModal()">Cancel</button>
     <div class="status-msg" id="submit-status" style="display: none;"></div>
   </div>
 </div>
 
 <script>
-// ====== EASING HELPER — VALUE BUMP ======
+// ====== VALUE UPDATE CUE ======
+// Brief colour shift on recalculated numbers (fade only, no scale pop)
 function bumpValue(el) {
   el.classList.add('bump');
   setTimeout(() => el.classList.remove('bump'), 200);
 }
 
 // ====== TAB NAVIGATION ======
+const TAB_ORDER = ['pb', 'ai', 'summary'];
 function switchTab(tab) {
   document.querySelectorAll('.tab-btn').forEach((btn, i) => {
-    btn.classList.remove('active');
-    if ((tab === 'pb' && i === 0) || (tab === 'ai' && i === 1) || (tab === 'summary' && i === 2)) btn.classList.add('active');
+    const active = TAB_ORDER[i] === tab;
+    btn.classList.toggle('active', active);
+    btn.setAttribute('aria-selected', active ? 'true' : 'false');
   });
   document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
   document.getElementById('tab-' + tab).classList.add('active');
   if (tab === 'summary') updateSummary();
+  if (tab === 'ai') highlightAITier(computeAI().tier.name); // table was hidden, so re-centre its row
+  updateEstimateBar();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -1128,15 +1266,16 @@ function setPBMode(mode, btn) {
   const toggle = document.getElementById('mode-toggle');
   const buttons = toggle.querySelectorAll('button');
   const indicator = document.getElementById('mode-indicator');
-  buttons.forEach(b => b.classList.remove('active'));
+  buttons.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed', 'false'); });
   btn.classList.add('active');
+  btn.setAttribute('aria-pressed', 'true');
 
-  const idx = Array.from(buttons).indexOf(btn);
   indicator.style.width = btn.offsetWidth + 'px';
   indicator.style.transform = `translateX(${btn.offsetLeft - 4}px)`;
 
   document.getElementById('pb-guided').classList.toggle('active', mode === 'guided');
   document.getElementById('pb-direct').classList.toggle('active', mode === 'direct');
+  updateEstimateBar();
 }
 
 // Init mode indicator position
@@ -1167,105 +1306,166 @@ function wizardNext(step) {
   if (step === 3) calcPBResults();
 }
 
-// ====== P+B GUIDED CALCULATION ======
-function calcPBGuided() {
-  const known = parseFloat(document.getElementById('pb-known-raw').value) || 0;
-  const additional = parseFloat(document.getElementById('pb-additional-raw').value) || 0;
-  const overlap = parseFloat(document.getElementById('pb-overlap-slider').value) / 100;
-  const unknownRaw = parseFloat(document.getElementById('pb-unknown-raw').value) || 0;
+// ====== RANGE FILL ======
+// Paints the filled part of every slider; sliders are also moved by their number inputs
+function updateRangeFills() {
+  document.querySelectorAll('input[type="range"]').forEach(r => {
+    const min = parseFloat(r.min) || 0;
+    const max = parseFloat(r.max) || 100;
+    const pct = Math.min(100, Math.max(0, ((parseFloat(r.value) - min) / (max - min)) * 100));
+    r.style.setProperty('--fill', pct + '%');
+  });
+}
 
-  const deduped = additional > 0 ? additional * (1 - overlap) : 0;
+// ====== STICKY ESTIMATE BAR ======
+function updateEstimateBar() {
+  const bar = document.getElementById('estimate-bar');
+  const onSummary = document.getElementById('tab-summary').classList.contains('active');
+  bar.classList.toggle('hidden', onSummary);
+  if (onSummary) return;
+
+  const pbTier = getPBTier(getPBValues().pbUnits);
+  const ai = computeAI();
+  const tierEl = document.getElementById('eb-pb-tier');
+  if (pbTier.tier === null) {
+    tierEl.textContent = 'Exceeds Tier 40';
+  } else {
+    // Group is dropped on small screens to keep the bar on one line
+    const group = document.createElement('span');
+    group.className = 'eb-optional';
+    group.textContent = ' · Group ' + pbTier.group;
+    tierEl.replaceChildren('Tier ' + pbTier.tier, group);
+  }
+  document.getElementById('eb-ai-credits').textContent = ai.annualWithBuffer.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  document.getElementById('eb-ai-tier').textContent = ai.tier.name;
+}
+
+// Inline handlers recalculate first; this runs after them on the same event
+document.addEventListener('input', () => { updateRangeFills(); updateEstimateBar(); });
+document.addEventListener('change', updateEstimateBar);
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && document.getElementById('submit-modal').classList.contains('show')) closeSubmitModal();
+});
+
+// ====== INPUT HELPER ======
+// Reads a numeric input; blanks, invalid and negative values count as 0
+function num(id) {
+  const v = parseFloat(document.getElementById(id).value);
+  return v > 0 ? v : 0;
+}
+
+// ====== P+B GUIDED CALCULATION ======
+function computePBGuided() {
+  const known = num('pb-known-raw');
+  const additional = num('pb-additional-raw');
+  const overlap = num('pb-overlap-slider') / 100;
+  const unknownRaw = num('pb-unknown-raw');
+
+  const deduped = additional * (1 - overlap);
   const totalKnown = known + deduped;
   const unknownEquiv = unknownRaw / 20;
-  const totalProfiles = totalKnown + unknownEquiv;
-  const profilesM = totalProfiles / 1000000;
+  const profilesM = (totalKnown + unknownEquiv) / 1e6;
+
+  const tx = num('pb-transactions');
+  const msg = num('pb-messages');
+  const pv = num('pb-pageviews');
+  const other = num('pb-other-events');
+  const behaviorsB = (tx + msg + pv + other) / 1e9;
+
+  return { totalKnown, unknownRaw, unknownEquiv, profilesM, tx, msg, pv, other, behaviorsB, pbUnits: profilesM + behaviorsB };
+}
+
+function calcPBGuided() {
+  const g = computePBGuided();
 
   const resultEl = document.getElementById('pb-profiles-result');
-  resultEl.textContent = profilesM > 0 ? profilesM.toFixed(2) + 'M' : '—';
-  if (profilesM > 0) bumpValue(resultEl);
+  resultEl.textContent = g.profilesM > 0 ? g.profilesM.toFixed(2) + 'M' : '—';
+  if (g.profilesM > 0) bumpValue(resultEl);
 
-  document.getElementById('pb-profiles-breakdown').textContent = profilesM > 0 ?
-    `${(totalKnown/1e6).toFixed(2)}M known + ${(unknownEquiv/1e6).toFixed(2)}M unknown equiv (${(unknownRaw/1e6).toFixed(1)}M ÷ 20)` : '';
+  document.getElementById('pb-profiles-breakdown').textContent = g.profilesM > 0 ?
+    `${(g.totalKnown/1e6).toFixed(2)}M known + ${(g.unknownEquiv/1e6).toFixed(2)}M unknown equiv (${(g.unknownRaw/1e6).toFixed(1)}M ÷ 20)` : '';
 
-  if (unknownRaw > 0) {
-    document.getElementById('pb-unknown-calc').textContent =
-      `${(unknownRaw/1e6).toFixed(1)}M anonymous ÷ 20 = ${(unknownEquiv/1e6).toFixed(2)}M profile equivalents`;
-  } else {
-    document.getElementById('pb-unknown-calc').textContent = '';
-  }
-
-  const tx = parseFloat(document.getElementById('pb-transactions').value) || 0;
-  const msg = parseFloat(document.getElementById('pb-messages').value) || 0;
-  const pv = parseFloat(document.getElementById('pb-pageviews').value) || 0;
-  const other = parseFloat(document.getElementById('pb-other-events').value) || 0;
-  const totalBehaviors = tx + msg + pv + other;
-  const behaviorsB = totalBehaviors / 1e9;
+  document.getElementById('pb-unknown-calc').textContent = g.unknownRaw > 0 ?
+    `${(g.unknownRaw/1e6).toFixed(1)}M anonymous ÷ 20 = ${(g.unknownEquiv/1e6).toFixed(2)}M profile equivalents` : '';
 
   const behavEl = document.getElementById('pb-behaviors-result');
-  behavEl.textContent = behaviorsB > 0 ? behaviorsB.toFixed(2) + 'B' : '—';
-  if (behaviorsB > 0) bumpValue(behavEl);
+  behavEl.textContent = g.behaviorsB > 0 ? g.behaviorsB.toFixed(2) + 'B' : '—';
+  if (g.behaviorsB > 0) bumpValue(behavEl);
 
-  document.getElementById('pb-behaviors-breakdown').textContent = behaviorsB > 0 ?
-    `${(tx/1e9).toFixed(2)}B tx + ${(msg/1e9).toFixed(2)}B msg + ${(pv/1e9).toFixed(2)}B web + ${(other/1e9).toFixed(2)}B other` : '';
+  document.getElementById('pb-behaviors-breakdown').textContent = g.behaviorsB > 0 ?
+    `${(g.tx/1e9).toFixed(2)}B tx + ${(g.msg/1e9).toFixed(2)}B msg + ${(g.pv/1e9).toFixed(2)}B web + ${(g.other/1e9).toFixed(2)}B other` : '';
 }
 
 function calcPBResults() {
   calcPBGuided();
-  const known = parseFloat(document.getElementById('pb-known-raw').value) || 0;
-  const additional = parseFloat(document.getElementById('pb-additional-raw').value) || 0;
-  const overlap = parseFloat(document.getElementById('pb-overlap-slider').value) / 100;
-  const unknownRaw = parseFloat(document.getElementById('pb-unknown-raw').value) || 0;
-
-  const deduped = additional > 0 ? additional * (1 - overlap) : 0;
-  const totalKnown = known + deduped;
-  const unknownEquiv = unknownRaw / 20;
-  const totalProfiles = totalKnown + unknownEquiv;
-  const profilesM = totalProfiles / 1e6;
-
-  const tx = parseFloat(document.getElementById('pb-transactions').value) || 0;
-  const msg = parseFloat(document.getElementById('pb-messages').value) || 0;
-  const pv = parseFloat(document.getElementById('pb-pageviews').value) || 0;
-  const other = parseFloat(document.getElementById('pb-other-events').value) || 0;
-  const behaviorsB = (tx + msg + pv + other) / 1e9;
-
-  const pbUnits = profilesM + behaviorsB;
+  const g = computePBGuided();
 
   const totalEl = document.getElementById('pb-total-units');
-  totalEl.textContent = pbUnits.toFixed(2);
+  totalEl.textContent = g.pbUnits.toFixed(2);
   bumpValue(totalEl);
 
-  document.getElementById('pb-sum-known').textContent = (totalKnown / 1e6).toFixed(2) + 'M';
-  document.getElementById('pb-sum-unknown').textContent = (unknownEquiv / 1e6).toFixed(2) + 'M';
-  document.getElementById('pb-sum-profiles').textContent = profilesM.toFixed(2) + 'M';
-  document.getElementById('pb-sum-behaviors').textContent = behaviorsB.toFixed(2) + 'B';
-  document.getElementById('pb-sum-total').textContent = pbUnits.toFixed(2);
+  document.getElementById('pb-sum-known').textContent = (g.totalKnown / 1e6).toFixed(2) + 'M';
+  document.getElementById('pb-sum-unknown').textContent = (g.unknownEquiv / 1e6).toFixed(2) + 'M';
+  document.getElementById('pb-sum-profiles').textContent = g.profilesM.toFixed(2) + 'M';
+  document.getElementById('pb-sum-behaviors').textContent = g.behaviorsB.toFixed(2) + 'B';
+  document.getElementById('pb-sum-total').textContent = g.pbUnits.toFixed(2);
 
-  highlightPBTier(pbUnits);
+  highlightPBTier(g.pbUnits);
+  const tier = getPBTier(g.pbUnits);
+  document.getElementById('pb-your-tier').textContent = tier.label;
+  document.getElementById('pb-headroom').textContent = formatHeadroom(tier, g.pbUnits, ' P+B units');
 }
 
 // ====== P+B DIRECT ======
 function calcPBDirect() {
-  const p = parseFloat(document.getElementById('pb-direct-profiles').value) || 0;
-  const b = parseFloat(document.getElementById('pb-direct-behaviors').value) || 0;
+  const p = num('pb-direct-profiles');
+  const b = num('pb-direct-behaviors');
   const el = document.getElementById('pb-direct-total');
   el.textContent = (p + b).toFixed(2);
   bumpValue(el);
+  document.getElementById('pb-direct-tier').textContent = getPBTier(p + b).label;
 }
 
-// ====== P+B TIER TABLE ======
+// ====== P+B TIER TABLE (AEP Tiers) ======
+// [tier, group, P+B low, P+B high]. Each tier caps at its own P+B High.
+// Tier 0 and Tier 1 (DWH only) are not used in this calculator — Tier 2 is the starting point.
 const pbTiers = [
-  [1, 'I', 0, 1.99], [2, 'I', 2, 3.99], [3, 'I', 4, 5.99],
-  [4, 'II', 6, 7.99], [5, 'II', 8, 9.99], [6, 'II', 10, 11.99],
-  [7, 'III', 12, 14.99], [8, 'III', 15, 17.99], [9, 'III', 18, 20.99],
-  [10, 'III', 21, 24.99], [11, 'IV', 25, 29.99], [12, 'IV', 30, 34.99],
-  [13, 'IV', 35, 39.99], [14, 'IV', 40, 49.99], [15, 'V', 50, 59.99],
-  [16, 'V', 60, 74.99], [17, 'V', 75, 99.99], [18, 'V', 100, 124.99],
-  [19, 'VI', 125, 149.99], [20, 'VI', 150, 199.99], [21, 'VI', 200, 249.99],
-  [22, 'VI', 250, 299.99], [23, 'VII', 300, 399.99], [24, 'VII', 400, 499.99],
-  [25, 'VII', 500, 749.99], [26, 'VII', 750, 999.99],
-  [27, 'VIII', 1000, 1499.99], [28, 'VIII', 1500, 1999.99],
-  [29, 'VIII', 2000, 2999.99], [30, 'VIII', 3000, 6499.99]
+  [2, 'I', 0, 1.99],
+  [3, 'II', 2, 3.99], [4, 'II', 4, 5.99], [5, 'II', 6, 7.99], [6, 'II', 8, 9.99],
+  [7, 'III', 10, 14.99], [8, 'III', 15, 19.99], [9, 'III', 20, 24.99],
+  [10, 'IV', 25, 49.99], [11, 'IV', 50, 74.99], [12, 'IV', 75, 99.99],
+  [13, 'V', 100, 149.99], [14, 'V', 150, 199.99], [15, 'V', 200, 249.99], [16, 'V', 250, 299.99],
+  [17, 'V', 300, 349.99], [18, 'V', 350, 399.99], [19, 'V', 400, 449.99], [20, 'V', 450, 499.99],
+  [21, 'VI', 500, 599.99], [22, 'VI', 600, 699.99], [23, 'VI', 700, 799.99], [24, 'VI', 800, 899.99],
+  [25, 'VI', 900, 999.99],
+  [26, 'VII', 1000, 1249.99], [27, 'VII', 1250, 1499.99], [28, 'VII', 1500, 1749.99], [29, 'VII', 1750, 1999.99],
+  [30, 'VII', 2000, 2249.99], [31, 'VII', 2250, 2499.99], [32, 'VII', 2500, 2749.99], [33, 'VII', 2750, 2999.99],
+  [34, 'VIII', 3000, 3499.99], [35, 'VIII', 3500, 3999.99], [36, 'VIII', 4000, 4499.99], [37, 'VIII', 4500, 4999.99],
+  [38, 'VIII', 5000, 5499.99], [39, 'VIII', 5500, 5999.99], [40, 'VIII', 6000, 6499.99]
 ];
+
+function getPBTier(units) {
+  const top = pbTiers[pbTiers.length - 1];
+  if (units > top[3]) {
+    return { tier: null, group: '', high: null, label: 'Exceeds Tier ' + top[0] + ' – contact Deal Desk' };
+  }
+  for (let i = pbTiers.length - 1; i >= 0; i--) {
+    if (units >= pbTiers[i][2]) {
+      const t = pbTiers[i];
+      return { tier: t[0], group: t[1], high: t[3], label: 'Tier ' + t[0] + ' (Group ' + t[1] + ')' };
+    }
+  }
+  return { tier: pbTiers[0][0], group: pbTiers[0][1], high: pbTiers[0][3], label: 'Tier ' + pbTiers[0][0] + ' (Group ' + pbTiers[0][1] + ')' };
+}
+
+// Room left before the next tier; '—' when there is no tier cap to measure against
+function headroomValue(tier, value) {
+  return tier.high ? Math.max(0, tier.high - value) : null;
+}
+function formatHeadroom(tier, value, unit) {
+  const h = headroomValue(tier, value);
+  return h === null ? '—' : h.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + unit;
+}
 
 function buildPBTierTable() {
   const tbody = document.getElementById('pb-tier-body');
@@ -1275,63 +1475,104 @@ function buildPBTierTable() {
 }
 
 function highlightPBTier(units) {
-  let matched = null;
-  for (let i = pbTiers.length - 1; i >= 0; i--) {
-    if (units >= pbTiers[i][2]) { matched = pbTiers[i]; break; }
-  }
+  const matched = getPBTier(units);
   document.querySelectorAll('#pb-tier-body tr').forEach(r => r.classList.remove('tier-highlight'));
-  if (matched) {
-    const row = document.querySelector(`#pb-tier-body tr[data-pb-tier="${matched[0]}"]`);
-    if (row) { row.classList.add('tier-highlight'); row.scrollIntoView({behavior:'smooth', block:'center'}); }
+  if (matched.tier !== null) {
+    const row = document.querySelector(`#pb-tier-body tr[data-pb-tier="${matched.tier}"]`);
+    if (row) { row.classList.add('tier-highlight'); scrollRowIntoTable(row); }
   }
 }
 
-function getPBTierName(units) {
-  for (let i = pbTiers.length - 1; i >= 0; i--) {
-    if (units >= pbTiers[i][2]) return 'Tier ' + pbTiers[i][0] + ' (Group ' + pbTiers[i][1] + ')';
-  }
-  return '—';
+// ====== AI CREDIT RATES ======
+// 1 credit = this many units. Update here when credit definitions / metering change.
+const RATES = {
+  foundryConversations: 600,  // conversations
+  engageEmailsM: 1,           // million email messages
+  engageClicksK: 20,          // thousand email clicks
+  engageSmsK: 10,             // thousand SMS messages
+  engagePushM: 10,            // million mobile push messages
+  rtProfilesM: 1,             // million RT profiles (incurred monthly)
+  rtCallsM: 10,               // million personalization calls
+  trigEventsM: 15,            // million incoming RT trigger events
+  trigActivationsM: 25,       // million outgoing RT trigger activations
+  signalsMlM: 40,             // million predictions - ML models
+  signalsRfmM: 100            // million predictions - RFM model
+};
+
+// ====== EMAIL METERING (choose one) ======
+// Email is charged either by sends (1M per credit) or by clicks (20K per credit) — never both
+let emailMetering = 'sends';
+function setEmailMetering(mode) {
+  emailMetering = mode;
+  document.querySelectorAll('.segmented [data-metering]').forEach(b =>
+    b.setAttribute('aria-pressed', b.dataset.metering === mode ? 'true' : 'false'));
+  document.getElementById('engage-sends-group').classList.toggle('is-hidden', mode !== 'sends');
+  document.getElementById('engage-clicks-group').classList.toggle('is-hidden', mode !== 'clicks');
+  calcAI();
+  updateRangeFills();
+  updateEstimateBar();
 }
 
 // ====== AI CREDITS CALCULATION ======
+// Single source of truth for AI credits — used by the AI tab, the summary and the submission
+function computeAI() {
+  const i = {
+    foundryK: num('ai-foundry-input'),
+    emailMetering,
+    // Only the chosen email metric counts; the other is ignored
+    engageM: emailMetering === 'sends' ? num('ai-engage-input') : 0,
+    clicksK: emailMetering === 'clicks' ? num('ai-engage-clicks-input') : 0,
+    smsK: num('ai-engage-sms-input'),
+    pushM: num('ai-engage-push-input'),
+    rtProfilesM: num('ai-rt-profiles-input'),
+    rtCallsM: num('ai-rt-calls-input'),
+    trigProfilesM: num('ai-trig-profiles-input'),
+    trigEventsM: num('ai-trig-events-input'),
+    trigActivationsM: num('ai-trig-activations-input'),
+    mlM: num('ai-signals-ml-input'),
+    rfmM: num('ai-signals-rfm-input')
+  };
+
+  const foundry = (i.foundryK * 1000) / RATES.foundryConversations;
+  const engage = i.engageM / RATES.engageEmailsM + i.clicksK / RATES.engageClicksK +
+                 i.smsK / RATES.engageSmsK + i.pushM / RATES.engagePushM;
+  const rtPz = i.rtProfilesM / RATES.rtProfilesM + i.rtCallsM / RATES.rtCallsM;
+  // RT Profiles are charged once: Triggers only pays for profiles beyond those already counted in RT Personalization
+  const trigBillableProfilesM = Math.max(0, i.trigProfilesM - i.rtProfilesM);
+  const rtTrig = trigBillableProfilesM / RATES.rtProfilesM + i.trigEventsM / RATES.trigEventsM +
+                 i.trigActivationsM / RATES.trigActivationsM;
+  const signals = i.mlM / RATES.signalsMlM + i.rfmM / RATES.signalsRfmM;
+
+  const monthly = foundry + engage + rtPz + rtTrig + signals;
+  const annual = monthly * 12;
+  const bufferPct = parseFloat(document.getElementById('ai-buffer').value) || 0;
+  const annualWithBuffer = annual * (1 + bufferPct / 100);
+  const tier = getAITier(annualWithBuffer);
+
+  return { inputs: i, credits: { foundry, engage, rtPz, rtTrig, signals }, monthly, annual, bufferPct, annualWithBuffer, tier };
+}
+
 function calcAI() {
-  const foundryK = parseFloat(document.getElementById('ai-foundry-input').value) || 0;
-  const foundryCredits = (foundryK * 1000) / 600;
+  const ai = computeAI();
 
-  const engageM = parseFloat(document.getElementById('ai-engage-input').value) || 0;
-  const engageCredits = engageM;
-
-  const rtProfilesM = parseFloat(document.getElementById('ai-rt-profiles-input').value) || 0;
-  const rtCallsM = parseFloat(document.getElementById('ai-rt-calls-input').value) || 0;
-  const rtPzCredits = rtProfilesM + (rtCallsM / 10);
-
-  const trigProfilesM = parseFloat(document.getElementById('ai-trig-profiles-input').value) || 0;
-  const trigEventsM = parseFloat(document.getElementById('ai-trig-events-input').value) || 0;
-  const trigActivationsM = parseFloat(document.getElementById('ai-trig-activations-input').value) || 0;
-  const rtTrigCredits = trigProfilesM + (trigEventsM / 15) + (trigActivationsM / 25);
-
-  const signalsMlM = parseFloat(document.getElementById('ai-signals-ml-input').value) || 0;
-  const signalsRfmM = parseFloat(document.getElementById('ai-signals-rfm-input').value) || 0;
-  const signalsCredits = (signalsMlM / 40) + (signalsRfmM / 100);
-
-  document.getElementById('ai-foundry-credits').textContent = foundryCredits.toFixed(2);
-  document.getElementById('ai-engage-credits').textContent = engageCredits.toFixed(2);
-  document.getElementById('ai-rt-pz-credits').textContent = rtPzCredits.toFixed(2);
-  document.getElementById('ai-rt-trig-credits').textContent = rtTrigCredits.toFixed(2);
-  document.getElementById('ai-signals-credits').textContent = signalsCredits.toFixed(2);
-
-  const total = foundryCredits + engageCredits + rtPzCredits + rtTrigCredits + signalsCredits;
-  const annual = total * 12;
+  document.getElementById('ai-foundry-credits').textContent = ai.credits.foundry.toFixed(2);
+  document.getElementById('ai-engage-credits').textContent = ai.credits.engage.toFixed(2);
+  document.getElementById('ai-rt-pz-credits').textContent = ai.credits.rtPz.toFixed(2);
+  document.getElementById('ai-rt-trig-credits').textContent = ai.credits.rtTrig.toFixed(2);
+  document.getElementById('ai-signals-credits').textContent = ai.credits.signals.toFixed(2);
 
   const monthlyEl = document.getElementById('ai-total-monthly');
-  monthlyEl.textContent = total.toFixed(2);
+  monthlyEl.textContent = ai.monthly.toFixed(2);
   bumpValue(monthlyEl);
 
-  document.getElementById('ai-total-annual').textContent = annual.toFixed(2) + ' Credits / Year';
+  document.getElementById('ai-total-annual').textContent = ai.annual.toFixed(2) + ' Credits / Year';
+  document.getElementById('ai-annual-base').textContent = ai.annual.toFixed(2);
+  document.getElementById('ai-annual-buffer').textContent = (ai.annualWithBuffer - ai.annual).toFixed(2) + ' (' + ai.bufferPct + '%)';
+  document.getElementById('ai-annual-with-buffer').textContent = ai.annualWithBuffer.toFixed(2);
 
-  const tier = getAITier(annual);
-  document.getElementById('ai-your-tier').textContent = tier;
-  highlightAITier(tier);
+  document.getElementById('ai-your-tier').textContent = ai.tier.name;
+  document.getElementById('ai-headroom').textContent = formatHeadroom(ai.tier, ai.annualWithBuffer, ' credits / yr');
+  highlightAITier(ai.tier.name);
 }
 
 // ====== AI TIER ======
@@ -1350,11 +1591,14 @@ const aiTiers = [
 ];
 
 function getAITier(annual) {
-  if (annual <= 0) return '0';
-  for (let i = aiTiers.length - 1; i >= 0; i--) {
-    if (annual >= aiTiers[i][1]) return aiTiers[i][0];
+  const top = aiTiers[aiTiers.length - 1];
+  if (annual > top[2]) return { name: 'Exceeds Tier ' + top[0] + ' – contact Deal Desk', high: null };
+  if (annual > 0) {
+    for (let i = aiTiers.length - 1; i >= 1; i--) {
+      if (annual >= aiTiers[i][1]) return { name: aiTiers[i][0], high: aiTiers[i][2] };
+    }
   }
-  return '0';
+  return { name: '0', high: null };
 }
 
 function buildAITierTable() {
@@ -1367,56 +1611,52 @@ function buildAITierTable() {
 function highlightAITier(tier) {
   document.querySelectorAll('#ai-tier-body tr').forEach(r => r.classList.remove('tier-highlight'));
   const row = document.querySelector(`#ai-tier-body tr[data-ai-tier="${tier}"]`);
-  if (row) row.classList.add('tier-highlight');
+  if (row) { row.classList.add('tier-highlight'); scrollRowIntoTable(row); }
+}
+
+// Centres a highlighted row inside its scrollable tier table without moving the page
+function scrollRowIntoTable(row) {
+  const box = row.closest('.tier-scroll');
+  if (!box || !box.offsetParent) return;
+  const target = row.offsetTop - box.clientHeight / 2 + row.offsetHeight / 2;
+  box.scrollTo({ top: Math.max(0, target), behavior: 'smooth' });
 }
 
 // ====== SUMMARY ======
+function isPBGuided() {
+  return document.getElementById('pb-guided').classList.contains('active');
+}
+
 function getPBValues() {
-  const isGuided = document.getElementById('pb-guided').classList.contains('active');
-  if (isGuided) {
-    const known = parseFloat(document.getElementById('pb-known-raw').value) || 0;
-    const additional = parseFloat(document.getElementById('pb-additional-raw').value) || 0;
-    const overlap = parseFloat(document.getElementById('pb-overlap-slider').value) / 100;
-    const unknownRaw = parseFloat(document.getElementById('pb-unknown-raw').value) || 0;
-    const deduped = additional > 0 ? additional * (1 - overlap) : 0;
-    const totalKnown = known + deduped;
-    const unknownEquiv = unknownRaw / 20;
-    const profilesM = (totalKnown + unknownEquiv) / 1e6;
-    const tx = parseFloat(document.getElementById('pb-transactions').value) || 0;
-    const msg = parseFloat(document.getElementById('pb-messages').value) || 0;
-    const pv = parseFloat(document.getElementById('pb-pageviews').value) || 0;
-    const other = parseFloat(document.getElementById('pb-other-events').value) || 0;
-    const behaviorsB = (tx + msg + pv + other) / 1e9;
-    return { profilesM, behaviorsB, pbUnits: profilesM + behaviorsB };
-  } else {
-    const p = parseFloat(document.getElementById('pb-direct-profiles').value) || 0;
-    const b = parseFloat(document.getElementById('pb-direct-behaviors').value) || 0;
-    return { profilesM: p, behaviorsB: b, pbUnits: p + b };
+  if (isPBGuided()) {
+    const g = computePBGuided();
+    return { profilesM: g.profilesM, behaviorsB: g.behaviorsB, pbUnits: g.pbUnits };
   }
+  const p = num('pb-direct-profiles');
+  const b = num('pb-direct-behaviors');
+  return { profilesM: p, behaviorsB: b, pbUnits: p + b };
 }
 
 function updateSummary() {
   const pb = getPBValues();
+  const pbTier = getPBTier(pb.pbUnits);
   document.getElementById('sum-profiles').textContent = pb.profilesM.toFixed(2) + 'M';
   document.getElementById('sum-behaviors').textContent = pb.behaviorsB.toFixed(2) + 'B';
   document.getElementById('sum-pb-units').textContent = pb.pbUnits.toFixed(2);
-  document.getElementById('sum-pb-tier').textContent = getPBTierName(pb.pbUnits);
+  document.getElementById('sum-pb-tier').textContent = pbTier.label;
+  document.getElementById('sum-pb-headroom').textContent = formatHeadroom(pbTier, pb.pbUnits, ' P+B units');
 
-  const foundryCredits = parseFloat(document.getElementById('ai-foundry-credits').textContent) || 0;
-  const engageCredits = parseFloat(document.getElementById('ai-engage-credits').textContent) || 0;
-  const rtPzCredits = parseFloat(document.getElementById('ai-rt-pz-credits').textContent) || 0;
-  const rtTrigCredits = parseFloat(document.getElementById('ai-rt-trig-credits').textContent) || 0;
-  const signalsCredits = parseFloat(document.getElementById('ai-signals-credits').textContent) || 0;
-  const totalMonthly = foundryCredits + engageCredits + rtPzCredits + rtTrigCredits + signalsCredits;
-  const totalAnnual = totalMonthly * 12;
-
-  document.getElementById('sum-ai-foundry').textContent = foundryCredits.toFixed(2);
-  document.getElementById('sum-ai-engage').textContent = engageCredits.toFixed(2);
-  document.getElementById('sum-ai-rtpz').textContent = rtPzCredits.toFixed(2);
-  document.getElementById('sum-ai-rttrig').textContent = rtTrigCredits.toFixed(2);
-  document.getElementById('sum-ai-signals').textContent = signalsCredits.toFixed(2);
-  document.getElementById('sum-ai-annual').textContent = totalAnnual.toFixed(2);
-  document.getElementById('sum-ai-tier').textContent = getAITier(totalAnnual);
+  const ai = computeAI();
+  document.getElementById('sum-ai-foundry').textContent = ai.credits.foundry.toFixed(2);
+  document.getElementById('sum-ai-engage').textContent = ai.credits.engage.toFixed(2);
+  document.getElementById('sum-ai-rtpz').textContent = ai.credits.rtPz.toFixed(2);
+  document.getElementById('sum-ai-rttrig').textContent = ai.credits.rtTrig.toFixed(2);
+  document.getElementById('sum-ai-signals').textContent = ai.credits.signals.toFixed(2);
+  document.getElementById('sum-ai-annual').textContent = ai.annual.toFixed(2);
+  document.getElementById('sum-ai-buffer-pct').textContent = ai.bufferPct + '%';
+  document.getElementById('sum-ai-annual-buffered').textContent = ai.annualWithBuffer.toFixed(2);
+  document.getElementById('sum-ai-tier').textContent = ai.tier.name;
+  document.getElementById('sum-ai-headroom').textContent = formatHeadroom(ai.tier, ai.annualWithBuffer, ' credits / yr');
 }
 
 // ====== SUBMIT MODAL ======
@@ -1431,6 +1671,72 @@ function closeSubmitModal() {
 }
 
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxHwNrtMavJ2Cj9eHWCMEhMd3tPF0x7ck6Y4eEgwkJQY0Ce93gj6-prgeRRtm_5C4I/exec';
+// Submissions from this version go to the "New" tab; the "Old" tab keeps the previous column layout untouched
+const SHEET_TAB = 'New';
+
+const round2 = n => Math.round(n * 100) / 100;
+
+// Column header → value for one submission. Order here is the column order in the sheet.
+function buildSubmission(name, email) {
+  const guided = isPBGuided();
+  const g = computePBGuided();
+  const pb = getPBValues();
+  const pbTier = getPBTier(pb.pbUnits);
+  const ai = computeAI();
+  // Entered value as a number (negatives → 0); blank when the field was left empty
+  const raw = id => (document.getElementById(id).value === '' ? '' : num(id));
+  const blankIfNull = v => (v === null ? '' : round2(v));
+
+  return [
+    ['Name', name],
+    ['Email', email],
+    ['Submission Date', new Date().toISOString()],
+    ['P+B Mode', guided ? 'Guided' : 'Direct'],
+    ['Known Customers', guided ? raw('pb-known-raw') : ''],
+    ['Additional Sources', guided ? raw('pb-additional-raw') : ''],
+    ['Overlap %', guided ? raw('pb-overlap-slider') : ''],
+    ['Anonymous Visitors/Year', guided ? raw('pb-unknown-raw') : ''],
+    ['Transactions/Year', guided ? raw('pb-transactions') : ''],
+    ['Email SMS Push/Year', guided ? raw('pb-messages') : ''],
+    ['Web App Events/Year', guided ? raw('pb-pageviews') : ''],
+    ['Other Events/Year', guided ? raw('pb-other-events') : ''],
+    ['Direct Profiles (M)', guided ? '' : raw('pb-direct-profiles')],
+    ['Direct Behaviors (B)', guided ? '' : raw('pb-direct-behaviors')],
+    ['Total Profiles (M)', round2(pb.profilesM)],
+    ['Total Behaviors (B)', round2(pb.behaviorsB)],
+    ['P+B Units', round2(pb.pbUnits)],
+    ['ICDP Tier', pbTier.tier === null ? pbTier.label : pbTier.tier],
+    ['ICDP Tier Group', pbTier.group ? 'Group ' + pbTier.group : ''],
+    ['ICDP Tier Max (P+B)', blankIfNull(pbTier.high)],
+    ['ICDP Room Left (P+B)', blankIfNull(headroomValue(pbTier, pb.pbUnits))],
+    ['AI Foundry Conversations/mo (K)', ai.inputs.foundryK],
+    ['Agentic Engage Emails/mo (M)', ai.inputs.emailMetering === 'sends' ? ai.inputs.engageM : ''],
+    ['Agentic Engage Email Clicks/mo (K)', ai.inputs.emailMetering === 'clicks' ? ai.inputs.clicksK : ''],
+    ['Agentic Engage SMS/mo (K)', ai.inputs.smsK],
+    ['Agentic Engage Mobile Push/mo (M)', ai.inputs.pushM],
+    ['RT PZ Profiles (M)', ai.inputs.rtProfilesM],
+    ['RT PZ Calls/mo (M)', ai.inputs.rtCallsM],
+    ['RT Trig Profiles (M)', ai.inputs.trigProfilesM],
+    ['RT Trig Events/mo (M)', ai.inputs.trigEventsM],
+    ['RT Trig Activations/mo (M)', ai.inputs.trigActivationsM],
+    ['AI Signals ML Predictions/mo (M)', ai.inputs.mlM],
+    ['AI Signals RFM Predictions/mo (M)', ai.inputs.rfmM],
+    ['AI Foundry Credits/mo', round2(ai.credits.foundry)],
+    ['Agentic Engage Credits/mo', round2(ai.credits.engage)],
+    ['RT PZ Credits/mo', round2(ai.credits.rtPz)],
+    ['RT Trig Credits/mo', round2(ai.credits.rtTrig)],
+    ['AI Signals Credits/mo', round2(ai.credits.signals)],
+    ['AI Credits/Month', round2(ai.monthly)],
+    ['AI Credits/Year', round2(ai.annual)],
+    ['Buffer %', ai.bufferPct],
+    ['AI Credits/Year incl. Buffer', round2(ai.annualWithBuffer)],
+    ['AI Tier', ai.tier.name],
+    ['AI Tier Max (Credits/Year)', blankIfNull(ai.tier.high)],
+    ['AI Room Left (Credits/Year)', blankIfNull(headroomValue(ai.tier, ai.annualWithBuffer))],
+    // Added after the first New-tab release; the Apps Script appends it as the last column
+    ['Agentic Engage Email Metering', ai.inputs.emailMetering === 'sends' ? 'Emails sent' : 'Email clicks']
+  ];
+}
 
 function submitToSheet() {
   const name = document.getElementById('submit-name').value.trim();
@@ -1445,59 +1751,11 @@ function submitToSheet() {
   btn.disabled = true;
   btn.style.opacity = '0.7';
 
-  const pb = getPBValues();
-  const isGuided = document.getElementById('pb-guided').classList.contains('active');
-
+  const row = buildSubmission(name, email);
   const payload = {
-    headers: [
-      'Name', 'Email', 'Submission Date',
-      'P+B Mode',
-      'Known Customers', 'Additional Sources', 'Overlap %', 'Anonymous Visitors/Year',
-      'Transactions/Year', 'Email SMS Push/Year', 'Web App Events/Year', 'Other Events/Year',
-      'Direct Profiles (M)', 'Direct Behaviors (B)',
-      'Total Profiles (M)', 'Total Behaviors (B)', 'P+B Units', 'ICDP Tier',
-      'AI Foundry Conversations/mo (K)', 'Agentic Engage Emails/mo (M)',
-      'RT PZ Profiles (M)', 'RT PZ Calls/mo (M)',
-      'RT Trig Profiles (M)', 'RT Trig Events/mo (M)', 'RT Trig Activations/mo (M)',
-      'AI Signals Framework', 'AI Signals Add-Ons', 'AI Signals Notebook',
-      'AI Signals ML Predictions/mo (M)', 'AI Signals RFM Predictions/mo (M)',
-      'AI Credits/Month', 'AI Credits/Year', 'AI Tier'
-    ],
-    values: [
-      name,
-      email,
-      new Date().toISOString(),
-      isGuided ? 'Guided' : 'Direct',
-      isGuided ? (document.getElementById('pb-known-raw').value || '') : '',
-      isGuided ? (document.getElementById('pb-additional-raw').value || '') : '',
-      isGuided ? document.getElementById('pb-overlap-slider').value : '',
-      isGuided ? (document.getElementById('pb-unknown-raw').value || '') : '',
-      isGuided ? (document.getElementById('pb-transactions').value || '') : '',
-      isGuided ? (document.getElementById('pb-messages').value || '') : '',
-      isGuided ? (document.getElementById('pb-pageviews').value || '') : '',
-      isGuided ? (document.getElementById('pb-other-events').value || '') : '',
-      !isGuided ? (document.getElementById('pb-direct-profiles').value || '') : '',
-      !isGuided ? (document.getElementById('pb-direct-behaviors').value || '') : '',
-      pb.profilesM.toFixed(2),
-      pb.behaviorsB.toFixed(2),
-      pb.pbUnits.toFixed(2),
-      getPBTierName(pb.pbUnits),
-      document.getElementById('ai-foundry-input').value || '',
-      document.getElementById('ai-engage-input').value || '',
-      document.getElementById('ai-rt-profiles-input').value || '',
-      document.getElementById('ai-rt-calls-input').value || '',
-      document.getElementById('ai-trig-profiles-input').value || '',
-      document.getElementById('ai-trig-events-input').value || '',
-      document.getElementById('ai-trig-activations-input').value || '',
-      document.getElementById('ai-signals-framework').value,
-      document.getElementById('ai-signals-addons').value,
-      document.getElementById('ai-signals-notebook').value,
-      document.getElementById('ai-signals-ml-input').value || '',
-      document.getElementById('ai-signals-rfm-input').value || '',
-      document.getElementById('ai-total-monthly').textContent,
-      (parseFloat(document.getElementById('ai-total-monthly').textContent) * 12).toFixed(2),
-      document.getElementById('ai-your-tier').textContent
-    ]
+    sheet: SHEET_TAB,
+    headers: row.map(c => c[0]),
+    values: row.map(c => c[1])
   };
 
   fetch(SHEET_URL, {
@@ -1532,7 +1790,10 @@ function showStatus(msg, type) {
 // ====== INIT ======
 buildPBTierTable();
 buildAITierTable();
+calcPBDirect();
 calcAI();
+updateRangeFills();
+updateEstimateBar();
 </script>
 </body>
 </html>
