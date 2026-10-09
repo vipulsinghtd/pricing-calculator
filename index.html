@@ -788,11 +788,12 @@ input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus,
 
         <div class="card" style="margin-top: 1rem;">
           <h3 style="font-size: 1rem;">ICDP Tier Alignment</h3>
-          <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1rem;">Your P+B estimate maps to the following platform tier:</p>
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.5rem;">Your P+B estimate maps to the following platform tier:</p>
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1rem;">Your tier: <strong id="pb-your-tier" style="color: var(--td-primary); font-size: 1.05rem;">—</strong> &nbsp;·&nbsp; Room left in tier: <strong id="pb-headroom">—</strong></p>
           <div style="overflow-x: auto; max-height: 360px; overflow-y: auto; border-radius: 8px;">
             <table class="tier-table" id="pb-tier-table">
               <thead>
-                <tr><th>Tier</th><th>Group</th><th>P+B Range (Low)</th><th>P+B Range (High)</th></tr>
+                <tr><th>Tier</th><th>Group</th><th>P+B Low</th><th>P+B High</th></tr>
               </thead>
               <tbody id="pb-tier-body"></tbody>
             </table>
@@ -831,6 +832,7 @@ input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus,
         <span class="label">P+B Units</span>
         <span class="value" id="pb-direct-total">0.00</span>
       </div>
+      <div class="conversion-note" style="font-size: 0.8rem; color: var(--text-muted);">ICDP Tier: <strong id="pb-direct-tier" style="color: var(--td-primary);">Tier 2 (Group I)</strong></div>
     </div>
 
   </div>
@@ -874,7 +876,7 @@ input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus,
     <div class="card">
       <h3>Agentic Engage <span class="badge">Engagement Suite</span></h3>
       <div class="definition">
-        AI-powered customer engagement via email, push notifications, and messaging at scale. <strong>Email Messages</strong> counted from messages sent via Engage Studio in Production Instances. Supports personalized, AI-optimized content delivery.
+        AI-powered customer engagement via email, SMS, mobile push, and messaging at scale. <strong>Email Messages</strong> counted from messages sent via Engage Studio in Production Instances. <strong>Email Clicks</strong>, <strong>SMS Messages</strong>, and <strong>Mobile Push Messages</strong> each convert to credits at their own rate and are added together.
       </div>
       <div class="input-group">
         <label>Emails Sent / month <span class="unit">(Millions × 1,000,000)</span></label>
@@ -883,11 +885,32 @@ input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus,
           <input type="number" id="ai-engage-input" min="0" max="1000" value="0" step="0.1" oninput="document.getElementById('ai-engage-slider').value=this.value; calcAI();">
         </div>
       </div>
+      <div class="input-group">
+        <label>Email Clicks / month <span class="unit">(Thousands × 1,000)</span></label>
+        <div class="input-row">
+          <input type="range" id="ai-engage-clicks-slider" min="0" max="1000" value="0" step="10" oninput="document.getElementById('ai-engage-clicks-input').value=this.value; calcAI();">
+          <input type="number" id="ai-engage-clicks-input" min="0" max="100000" value="0" step="1" oninput="document.getElementById('ai-engage-clicks-slider').value=this.value; calcAI();">
+        </div>
+      </div>
+      <div class="input-group">
+        <label>SMS Messages / month <span class="unit">(Thousands × 1,000)</span></label>
+        <div class="input-row">
+          <input type="range" id="ai-engage-sms-slider" min="0" max="1000" value="0" step="10" oninput="document.getElementById('ai-engage-sms-input').value=this.value; calcAI();">
+          <input type="number" id="ai-engage-sms-input" min="0" max="100000" value="0" step="1" oninput="document.getElementById('ai-engage-sms-slider').value=this.value; calcAI();">
+        </div>
+      </div>
+      <div class="input-group">
+        <label>Mobile Push Messages / month <span class="unit">(Millions × 1,000,000)</span></label>
+        <div class="input-row">
+          <input type="range" id="ai-engage-push-slider" min="0" max="500" value="0" step="5" oninput="document.getElementById('ai-engage-push-input').value=this.value; calcAI();">
+          <input type="number" id="ai-engage-push-input" min="0" max="10000" value="0" step="1" oninput="document.getElementById('ai-engage-push-slider').value=this.value; calcAI();">
+        </div>
+      </div>
       <div class="credit-output">
         <span class="label">Credits / Month</span>
         <span class="value" id="ai-engage-credits">0.00</span>
       </div>
-      <div class="conversion-note">1 Credit = 1 Million Email Messages</div>
+      <div class="conversion-note">1 Credit = 1M Email Messages | 20K Email Clicks | 10K SMS Messages | 10M Mobile Push Messages</div>
     </div>
 
     <!-- RT Personalization -->
@@ -949,38 +972,14 @@ input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus,
         <span class="value" id="ai-rt-trig-credits">0.00</span>
       </div>
       <div class="conversion-note">1 Credit = 1M Profiles | 1 Credit = 15M Events | 1 Credit = 25M Activations</div>
+      <div class="conversion-note">RT Profiles are charged once: profiles already counted under RT Personalization are not charged again.</div>
     </div>
 
     <!-- AI Signals -->
     <div class="card full-width">
       <h3>AI Signals <span class="badge">Multiple Suites</span></h3>
       <div class="definition">
-        Enterprise AutoML within Treasure Workflows — automates preprocessing, feature engineering, model selection, training, and evaluation. Includes <strong>AutoML Framework Packages</strong>, <strong>Framework Add-Ons</strong>, and <strong>Solution Notebooks</strong> (churn prediction, propensity scoring, lead scoring). Credits apply to Predictions generated by ML and RFM models.
-      </div>
-      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-        <div class="input-group">
-          <label>AutoML Framework</label>
-          <select id="ai-signals-framework" onchange="calcAI()">
-            <option value="none">No AutoML</option>
-            <option value="basic">Basic</option>
-            <option value="advanced">Advanced</option>
-          </select>
-        </div>
-        <div class="input-group">
-          <label>Framework Add-Ons</label>
-          <select id="ai-signals-addons" onchange="calcAI()">
-            <option value="none">No Add-On</option>
-            <option value="basic">Basic Add-On</option>
-            <option value="advanced">Advanced Add-On</option>
-          </select>
-        </div>
-        <div class="input-group">
-          <label>Solution Notebook</label>
-          <select id="ai-signals-notebook" onchange="calcAI()">
-            <option value="no">No</option>
-            <option value="yes">Yes</option>
-          </select>
-        </div>
+        Enterprise AutoML within Treasure Workflows — automates preprocessing, feature engineering, model selection, training, and evaluation. <strong>AI Signals is included with AEP</strong> — no package selection needed. Credits are based on predictions only, generated by ML and RFM models.
       </div>
       <div class="two-col" style="gap: 1rem;">
         <div class="input-group">
@@ -1019,10 +1018,31 @@ input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus,
     </div>
   </div>
 
+  <!-- Headroom Buffer -->
+  <div class="card">
+    <h3 style="font-size: 1rem;">Headroom Buffer</h3>
+    <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1rem;">Credits are annual entitlements. We size the tier with a small buffer so there is room to grow.</p>
+    <div class="two-col" style="gap: 1rem; align-items: start;">
+      <div class="input-group">
+        <label>Buffer</label>
+        <select id="ai-buffer" onchange="calcAI()">
+          <option value="0">None</option>
+          <option value="5">5%</option>
+          <option value="10" selected>10%</option>
+        </select>
+      </div>
+      <div>
+        <div class="breakdown-row"><span class="bk-label">Annual Credits</span><span class="bk-value" id="ai-annual-base">0.00</span></div>
+        <div class="breakdown-row"><span class="bk-label">+ Buffer</span><span class="bk-value" id="ai-annual-buffer">0.00</span></div>
+        <div class="breakdown-row"><span class="bk-label" style="font-weight: 600; color: var(--text);">Annual Credits incl. Buffer</span><span class="bk-value" id="ai-annual-with-buffer">0.00</span></div>
+      </div>
+    </div>
+  </div>
+
   <!-- AI Tier -->
   <div class="card">
     <h3 style="font-size: 1rem;">AI Suite Credits — Tier Reference</h3>
-    <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1rem;">Your estimated tier: <strong id="ai-your-tier" style="color: var(--td-primary); font-size: 1.1rem;">0</strong></p>
+    <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1rem;">Your estimated tier (incl. buffer): <strong id="ai-your-tier" style="color: var(--td-primary); font-size: 1.1rem;">0</strong> &nbsp;·&nbsp; Room left in tier: <strong id="ai-headroom">—</strong></p>
     <div style="overflow-x: auto; max-height: 400px; overflow-y: auto; border-radius: 8px;">
       <table class="tier-table" id="ai-tier-table">
         <thead><tr><th>Tier</th><th>Annual Credits (Min)</th><th>Annual Credits (Max)</th></tr></thead>
@@ -1058,6 +1078,7 @@ input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus,
         <span class="bk-value" style="font-size: 1.2rem;" id="sum-pb-units">—</span>
       </div>
       <div style="margin-top: 0.75rem; font-size: 0.82rem; color: var(--text-muted);">ICDP Tier: <strong id="sum-pb-tier" style="color: var(--td-primary);">—</strong></div>
+      <div style="margin-top: 0.35rem; font-size: 0.82rem; color: var(--text-muted);">Room left in tier: <strong id="sum-pb-headroom">—</strong></div>
     </div>
 
     <!-- AI Summary -->
@@ -1072,7 +1093,10 @@ input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus,
         <span class="bk-label" style="font-weight: 600;">Total / Year</span>
         <span class="bk-value" style="font-size: 1.2rem;" id="sum-ai-annual">0.00</span>
       </div>
+      <div class="breakdown-row"><span class="bk-label">Buffer</span><span class="bk-value" id="sum-ai-buffer-pct">10%</span></div>
+      <div class="breakdown-row"><span class="bk-label">Total / Year incl. Buffer</span><span class="bk-value" id="sum-ai-annual-buffered">0.00</span></div>
       <div style="margin-top: 0.75rem; font-size: 0.82rem; color: var(--text-muted);">AI Tier: <strong id="sum-ai-tier" style="color: var(--td-primary);">0</strong></div>
+      <div style="margin-top: 0.35rem; font-size: 0.82rem; color: var(--text-muted);">Room left in tier: <strong id="sum-ai-headroom">—</strong></div>
     </div>
   </div>
 
@@ -1167,105 +1191,125 @@ function wizardNext(step) {
   if (step === 3) calcPBResults();
 }
 
-// ====== P+B GUIDED CALCULATION ======
-function calcPBGuided() {
-  const known = parseFloat(document.getElementById('pb-known-raw').value) || 0;
-  const additional = parseFloat(document.getElementById('pb-additional-raw').value) || 0;
-  const overlap = parseFloat(document.getElementById('pb-overlap-slider').value) / 100;
-  const unknownRaw = parseFloat(document.getElementById('pb-unknown-raw').value) || 0;
+// ====== INPUT HELPER ======
+// Reads a numeric input; blanks, invalid and negative values count as 0
+function num(id) {
+  const v = parseFloat(document.getElementById(id).value);
+  return v > 0 ? v : 0;
+}
 
-  const deduped = additional > 0 ? additional * (1 - overlap) : 0;
+// ====== P+B GUIDED CALCULATION ======
+function computePBGuided() {
+  const known = num('pb-known-raw');
+  const additional = num('pb-additional-raw');
+  const overlap = num('pb-overlap-slider') / 100;
+  const unknownRaw = num('pb-unknown-raw');
+
+  const deduped = additional * (1 - overlap);
   const totalKnown = known + deduped;
   const unknownEquiv = unknownRaw / 20;
-  const totalProfiles = totalKnown + unknownEquiv;
-  const profilesM = totalProfiles / 1000000;
+  const profilesM = (totalKnown + unknownEquiv) / 1e6;
+
+  const tx = num('pb-transactions');
+  const msg = num('pb-messages');
+  const pv = num('pb-pageviews');
+  const other = num('pb-other-events');
+  const behaviorsB = (tx + msg + pv + other) / 1e9;
+
+  return { totalKnown, unknownRaw, unknownEquiv, profilesM, tx, msg, pv, other, behaviorsB, pbUnits: profilesM + behaviorsB };
+}
+
+function calcPBGuided() {
+  const g = computePBGuided();
 
   const resultEl = document.getElementById('pb-profiles-result');
-  resultEl.textContent = profilesM > 0 ? profilesM.toFixed(2) + 'M' : '—';
-  if (profilesM > 0) bumpValue(resultEl);
+  resultEl.textContent = g.profilesM > 0 ? g.profilesM.toFixed(2) + 'M' : '—';
+  if (g.profilesM > 0) bumpValue(resultEl);
 
-  document.getElementById('pb-profiles-breakdown').textContent = profilesM > 0 ?
-    `${(totalKnown/1e6).toFixed(2)}M known + ${(unknownEquiv/1e6).toFixed(2)}M unknown equiv (${(unknownRaw/1e6).toFixed(1)}M ÷ 20)` : '';
+  document.getElementById('pb-profiles-breakdown').textContent = g.profilesM > 0 ?
+    `${(g.totalKnown/1e6).toFixed(2)}M known + ${(g.unknownEquiv/1e6).toFixed(2)}M unknown equiv (${(g.unknownRaw/1e6).toFixed(1)}M ÷ 20)` : '';
 
-  if (unknownRaw > 0) {
-    document.getElementById('pb-unknown-calc').textContent =
-      `${(unknownRaw/1e6).toFixed(1)}M anonymous ÷ 20 = ${(unknownEquiv/1e6).toFixed(2)}M profile equivalents`;
-  } else {
-    document.getElementById('pb-unknown-calc').textContent = '';
-  }
-
-  const tx = parseFloat(document.getElementById('pb-transactions').value) || 0;
-  const msg = parseFloat(document.getElementById('pb-messages').value) || 0;
-  const pv = parseFloat(document.getElementById('pb-pageviews').value) || 0;
-  const other = parseFloat(document.getElementById('pb-other-events').value) || 0;
-  const totalBehaviors = tx + msg + pv + other;
-  const behaviorsB = totalBehaviors / 1e9;
+  document.getElementById('pb-unknown-calc').textContent = g.unknownRaw > 0 ?
+    `${(g.unknownRaw/1e6).toFixed(1)}M anonymous ÷ 20 = ${(g.unknownEquiv/1e6).toFixed(2)}M profile equivalents` : '';
 
   const behavEl = document.getElementById('pb-behaviors-result');
-  behavEl.textContent = behaviorsB > 0 ? behaviorsB.toFixed(2) + 'B' : '—';
-  if (behaviorsB > 0) bumpValue(behavEl);
+  behavEl.textContent = g.behaviorsB > 0 ? g.behaviorsB.toFixed(2) + 'B' : '—';
+  if (g.behaviorsB > 0) bumpValue(behavEl);
 
-  document.getElementById('pb-behaviors-breakdown').textContent = behaviorsB > 0 ?
-    `${(tx/1e9).toFixed(2)}B tx + ${(msg/1e9).toFixed(2)}B msg + ${(pv/1e9).toFixed(2)}B web + ${(other/1e9).toFixed(2)}B other` : '';
+  document.getElementById('pb-behaviors-breakdown').textContent = g.behaviorsB > 0 ?
+    `${(g.tx/1e9).toFixed(2)}B tx + ${(g.msg/1e9).toFixed(2)}B msg + ${(g.pv/1e9).toFixed(2)}B web + ${(g.other/1e9).toFixed(2)}B other` : '';
 }
 
 function calcPBResults() {
   calcPBGuided();
-  const known = parseFloat(document.getElementById('pb-known-raw').value) || 0;
-  const additional = parseFloat(document.getElementById('pb-additional-raw').value) || 0;
-  const overlap = parseFloat(document.getElementById('pb-overlap-slider').value) / 100;
-  const unknownRaw = parseFloat(document.getElementById('pb-unknown-raw').value) || 0;
-
-  const deduped = additional > 0 ? additional * (1 - overlap) : 0;
-  const totalKnown = known + deduped;
-  const unknownEquiv = unknownRaw / 20;
-  const totalProfiles = totalKnown + unknownEquiv;
-  const profilesM = totalProfiles / 1e6;
-
-  const tx = parseFloat(document.getElementById('pb-transactions').value) || 0;
-  const msg = parseFloat(document.getElementById('pb-messages').value) || 0;
-  const pv = parseFloat(document.getElementById('pb-pageviews').value) || 0;
-  const other = parseFloat(document.getElementById('pb-other-events').value) || 0;
-  const behaviorsB = (tx + msg + pv + other) / 1e9;
-
-  const pbUnits = profilesM + behaviorsB;
+  const g = computePBGuided();
 
   const totalEl = document.getElementById('pb-total-units');
-  totalEl.textContent = pbUnits.toFixed(2);
+  totalEl.textContent = g.pbUnits.toFixed(2);
   bumpValue(totalEl);
 
-  document.getElementById('pb-sum-known').textContent = (totalKnown / 1e6).toFixed(2) + 'M';
-  document.getElementById('pb-sum-unknown').textContent = (unknownEquiv / 1e6).toFixed(2) + 'M';
-  document.getElementById('pb-sum-profiles').textContent = profilesM.toFixed(2) + 'M';
-  document.getElementById('pb-sum-behaviors').textContent = behaviorsB.toFixed(2) + 'B';
-  document.getElementById('pb-sum-total').textContent = pbUnits.toFixed(2);
+  document.getElementById('pb-sum-known').textContent = (g.totalKnown / 1e6).toFixed(2) + 'M';
+  document.getElementById('pb-sum-unknown').textContent = (g.unknownEquiv / 1e6).toFixed(2) + 'M';
+  document.getElementById('pb-sum-profiles').textContent = g.profilesM.toFixed(2) + 'M';
+  document.getElementById('pb-sum-behaviors').textContent = g.behaviorsB.toFixed(2) + 'B';
+  document.getElementById('pb-sum-total').textContent = g.pbUnits.toFixed(2);
 
-  highlightPBTier(pbUnits);
+  highlightPBTier(g.pbUnits);
+  const tier = getPBTier(g.pbUnits);
+  document.getElementById('pb-your-tier').textContent = tier.label;
+  document.getElementById('pb-headroom').textContent = formatHeadroom(tier, g.pbUnits, ' P+B units');
 }
 
 // ====== P+B DIRECT ======
 function calcPBDirect() {
-  const p = parseFloat(document.getElementById('pb-direct-profiles').value) || 0;
-  const b = parseFloat(document.getElementById('pb-direct-behaviors').value) || 0;
+  const p = num('pb-direct-profiles');
+  const b = num('pb-direct-behaviors');
   const el = document.getElementById('pb-direct-total');
   el.textContent = (p + b).toFixed(2);
   bumpValue(el);
+  document.getElementById('pb-direct-tier').textContent = getPBTier(p + b).label;
 }
 
-// ====== P+B TIER TABLE ======
+// ====== P+B TIER TABLE (AEP Tiers) ======
+// [tier, group, P+B low, P+B high]. Each tier caps at its own P+B High.
+// Tier 0 and Tier 1 (DWH only) are not used in this calculator — Tier 2 is the starting point.
 const pbTiers = [
-  [1, 'I', 0, 1.99], [2, 'I', 2, 3.99], [3, 'I', 4, 5.99],
-  [4, 'II', 6, 7.99], [5, 'II', 8, 9.99], [6, 'II', 10, 11.99],
-  [7, 'III', 12, 14.99], [8, 'III', 15, 17.99], [9, 'III', 18, 20.99],
-  [10, 'III', 21, 24.99], [11, 'IV', 25, 29.99], [12, 'IV', 30, 34.99],
-  [13, 'IV', 35, 39.99], [14, 'IV', 40, 49.99], [15, 'V', 50, 59.99],
-  [16, 'V', 60, 74.99], [17, 'V', 75, 99.99], [18, 'V', 100, 124.99],
-  [19, 'VI', 125, 149.99], [20, 'VI', 150, 199.99], [21, 'VI', 200, 249.99],
-  [22, 'VI', 250, 299.99], [23, 'VII', 300, 399.99], [24, 'VII', 400, 499.99],
-  [25, 'VII', 500, 749.99], [26, 'VII', 750, 999.99],
-  [27, 'VIII', 1000, 1499.99], [28, 'VIII', 1500, 1999.99],
-  [29, 'VIII', 2000, 2999.99], [30, 'VIII', 3000, 6499.99]
+  [2, 'I', 0, 1.99],
+  [3, 'II', 2, 3.99], [4, 'II', 4, 5.99], [5, 'II', 6, 7.99], [6, 'II', 8, 9.99],
+  [7, 'III', 10, 14.99], [8, 'III', 15, 19.99], [9, 'III', 20, 24.99],
+  [10, 'IV', 25, 49.99], [11, 'IV', 50, 74.99], [12, 'IV', 75, 99.99],
+  [13, 'V', 100, 149.99], [14, 'V', 150, 199.99], [15, 'V', 200, 249.99], [16, 'V', 250, 299.99],
+  [17, 'V', 300, 349.99], [18, 'V', 350, 399.99], [19, 'V', 400, 449.99], [20, 'V', 450, 499.99],
+  [21, 'VI', 500, 599.99], [22, 'VI', 600, 699.99], [23, 'VI', 700, 799.99], [24, 'VI', 800, 899.99],
+  [25, 'VI', 900, 999.99],
+  [26, 'VII', 1000, 1249.99], [27, 'VII', 1250, 1499.99], [28, 'VII', 1500, 1749.99], [29, 'VII', 1750, 1999.99],
+  [30, 'VII', 2000, 2249.99], [31, 'VII', 2250, 2499.99], [32, 'VII', 2500, 2749.99], [33, 'VII', 2750, 2999.99],
+  [34, 'VIII', 3000, 3499.99], [35, 'VIII', 3500, 3999.99], [36, 'VIII', 4000, 4499.99], [37, 'VIII', 4500, 4999.99],
+  [38, 'VIII', 5000, 5499.99], [39, 'VIII', 5500, 5999.99], [40, 'VIII', 6000, 6499.99]
 ];
+
+function getPBTier(units) {
+  const top = pbTiers[pbTiers.length - 1];
+  if (units > top[3]) {
+    return { tier: null, group: '', high: null, label: 'Exceeds Tier ' + top[0] + ' – contact Deal Desk' };
+  }
+  for (let i = pbTiers.length - 1; i >= 0; i--) {
+    if (units >= pbTiers[i][2]) {
+      const t = pbTiers[i];
+      return { tier: t[0], group: t[1], high: t[3], label: 'Tier ' + t[0] + ' (Group ' + t[1] + ')' };
+    }
+  }
+  return { tier: pbTiers[0][0], group: pbTiers[0][1], high: pbTiers[0][3], label: 'Tier ' + pbTiers[0][0] + ' (Group ' + pbTiers[0][1] + ')' };
+}
+
+// Room left before the next tier; '—' when there is no tier cap to measure against
+function headroomValue(tier, value) {
+  return tier.high ? Math.max(0, tier.high - value) : null;
+}
+function formatHeadroom(tier, value, unit) {
+  const h = headroomValue(tier, value);
+  return h === null ? '—' : h.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + unit;
+}
 
 function buildPBTierTable() {
   const tbody = document.getElementById('pb-tier-body');
@@ -1275,63 +1319,88 @@ function buildPBTierTable() {
 }
 
 function highlightPBTier(units) {
-  let matched = null;
-  for (let i = pbTiers.length - 1; i >= 0; i--) {
-    if (units >= pbTiers[i][2]) { matched = pbTiers[i]; break; }
-  }
+  const matched = getPBTier(units);
   document.querySelectorAll('#pb-tier-body tr').forEach(r => r.classList.remove('tier-highlight'));
-  if (matched) {
-    const row = document.querySelector(`#pb-tier-body tr[data-pb-tier="${matched[0]}"]`);
+  if (matched.tier !== null) {
+    const row = document.querySelector(`#pb-tier-body tr[data-pb-tier="${matched.tier}"]`);
     if (row) { row.classList.add('tier-highlight'); row.scrollIntoView({behavior:'smooth', block:'center'}); }
   }
 }
 
-function getPBTierName(units) {
-  for (let i = pbTiers.length - 1; i >= 0; i--) {
-    if (units >= pbTiers[i][2]) return 'Tier ' + pbTiers[i][0] + ' (Group ' + pbTiers[i][1] + ')';
-  }
-  return '—';
-}
+// ====== AI CREDIT RATES ======
+// 1 credit = this many units. Update here when credit definitions / metering change.
+const RATES = {
+  foundryConversations: 600,  // conversations
+  engageEmailsM: 1,           // million email messages
+  engageClicksK: 20,          // thousand email clicks
+  engageSmsK: 10,             // thousand SMS messages
+  engagePushM: 10,            // million mobile push messages
+  rtProfilesM: 1,             // million RT profiles (incurred monthly)
+  rtCallsM: 10,               // million personalization calls
+  trigEventsM: 15,            // million incoming RT trigger events
+  trigActivationsM: 25,       // million outgoing RT trigger activations
+  signalsMlM: 40,             // million predictions - ML models
+  signalsRfmM: 100            // million predictions - RFM model
+};
 
 // ====== AI CREDITS CALCULATION ======
+// Single source of truth for AI credits — used by the AI tab, the summary and the submission
+function computeAI() {
+  const i = {
+    foundryK: num('ai-foundry-input'),
+    engageM: num('ai-engage-input'),
+    clicksK: num('ai-engage-clicks-input'),
+    smsK: num('ai-engage-sms-input'),
+    pushM: num('ai-engage-push-input'),
+    rtProfilesM: num('ai-rt-profiles-input'),
+    rtCallsM: num('ai-rt-calls-input'),
+    trigProfilesM: num('ai-trig-profiles-input'),
+    trigEventsM: num('ai-trig-events-input'),
+    trigActivationsM: num('ai-trig-activations-input'),
+    mlM: num('ai-signals-ml-input'),
+    rfmM: num('ai-signals-rfm-input')
+  };
+
+  const foundry = (i.foundryK * 1000) / RATES.foundryConversations;
+  const engage = i.engageM / RATES.engageEmailsM + i.clicksK / RATES.engageClicksK +
+                 i.smsK / RATES.engageSmsK + i.pushM / RATES.engagePushM;
+  const rtPz = i.rtProfilesM / RATES.rtProfilesM + i.rtCallsM / RATES.rtCallsM;
+  // RT Profiles are charged once: Triggers only pays for profiles beyond those already counted in RT Personalization
+  const trigBillableProfilesM = Math.max(0, i.trigProfilesM - i.rtProfilesM);
+  const rtTrig = trigBillableProfilesM / RATES.rtProfilesM + i.trigEventsM / RATES.trigEventsM +
+                 i.trigActivationsM / RATES.trigActivationsM;
+  const signals = i.mlM / RATES.signalsMlM + i.rfmM / RATES.signalsRfmM;
+
+  const monthly = foundry + engage + rtPz + rtTrig + signals;
+  const annual = monthly * 12;
+  const bufferPct = parseFloat(document.getElementById('ai-buffer').value) || 0;
+  const annualWithBuffer = annual * (1 + bufferPct / 100);
+  const tier = getAITier(annualWithBuffer);
+
+  return { inputs: i, credits: { foundry, engage, rtPz, rtTrig, signals }, monthly, annual, bufferPct, annualWithBuffer, tier };
+}
+
 function calcAI() {
-  const foundryK = parseFloat(document.getElementById('ai-foundry-input').value) || 0;
-  const foundryCredits = (foundryK * 1000) / 600;
+  const ai = computeAI();
 
-  const engageM = parseFloat(document.getElementById('ai-engage-input').value) || 0;
-  const engageCredits = engageM;
-
-  const rtProfilesM = parseFloat(document.getElementById('ai-rt-profiles-input').value) || 0;
-  const rtCallsM = parseFloat(document.getElementById('ai-rt-calls-input').value) || 0;
-  const rtPzCredits = rtProfilesM + (rtCallsM / 10);
-
-  const trigProfilesM = parseFloat(document.getElementById('ai-trig-profiles-input').value) || 0;
-  const trigEventsM = parseFloat(document.getElementById('ai-trig-events-input').value) || 0;
-  const trigActivationsM = parseFloat(document.getElementById('ai-trig-activations-input').value) || 0;
-  const rtTrigCredits = trigProfilesM + (trigEventsM / 15) + (trigActivationsM / 25);
-
-  const signalsMlM = parseFloat(document.getElementById('ai-signals-ml-input').value) || 0;
-  const signalsRfmM = parseFloat(document.getElementById('ai-signals-rfm-input').value) || 0;
-  const signalsCredits = (signalsMlM / 40) + (signalsRfmM / 100);
-
-  document.getElementById('ai-foundry-credits').textContent = foundryCredits.toFixed(2);
-  document.getElementById('ai-engage-credits').textContent = engageCredits.toFixed(2);
-  document.getElementById('ai-rt-pz-credits').textContent = rtPzCredits.toFixed(2);
-  document.getElementById('ai-rt-trig-credits').textContent = rtTrigCredits.toFixed(2);
-  document.getElementById('ai-signals-credits').textContent = signalsCredits.toFixed(2);
-
-  const total = foundryCredits + engageCredits + rtPzCredits + rtTrigCredits + signalsCredits;
-  const annual = total * 12;
+  document.getElementById('ai-foundry-credits').textContent = ai.credits.foundry.toFixed(2);
+  document.getElementById('ai-engage-credits').textContent = ai.credits.engage.toFixed(2);
+  document.getElementById('ai-rt-pz-credits').textContent = ai.credits.rtPz.toFixed(2);
+  document.getElementById('ai-rt-trig-credits').textContent = ai.credits.rtTrig.toFixed(2);
+  document.getElementById('ai-signals-credits').textContent = ai.credits.signals.toFixed(2);
 
   const monthlyEl = document.getElementById('ai-total-monthly');
-  monthlyEl.textContent = total.toFixed(2);
+  monthlyEl.textContent = ai.monthly.toFixed(2);
   bumpValue(monthlyEl);
 
-  document.getElementById('ai-total-annual').textContent = annual.toFixed(2) + ' Credits / Year';
+  document.getElementById('ai-total-annual').textContent = ai.annual.toFixed(2) + ' Credits / Year';
+  document.getElementById('ai-annual-base').textContent = ai.annual.toFixed(2);
+  document.getElementById('ai-annual-buffer').textContent = (ai.annualWithBuffer - ai.annual).toFixed(2) + ' (' + ai.bufferPct + '%)';
+  document.getElementById('ai-annual-with-buffer').textContent = ai.annualWithBuffer.toFixed(2);
 
-  const tier = getAITier(annual);
-  document.getElementById('ai-your-tier').textContent = tier;
-  highlightAITier(tier);
+  document.getElementById('ai-your-tier').textContent = ai.tier.name;
+  document.getElementById('ai-headroom').textContent = formatHeadroom(ai.tier, ai.annualWithBuffer, ' credits / yr');
+  highlightAITier(ai.tier.name);
 }
 
 // ====== AI TIER ======
@@ -1350,11 +1419,14 @@ const aiTiers = [
 ];
 
 function getAITier(annual) {
-  if (annual <= 0) return '0';
-  for (let i = aiTiers.length - 1; i >= 0; i--) {
-    if (annual >= aiTiers[i][1]) return aiTiers[i][0];
+  const top = aiTiers[aiTiers.length - 1];
+  if (annual > top[2]) return { name: 'Exceeds Tier ' + top[0] + ' – contact Deal Desk', high: null };
+  if (annual > 0) {
+    for (let i = aiTiers.length - 1; i >= 1; i--) {
+      if (annual >= aiTiers[i][1]) return { name: aiTiers[i][0], high: aiTiers[i][2] };
+    }
   }
-  return '0';
+  return { name: '0', high: null };
 }
 
 function buildAITierTable() {
@@ -1371,52 +1443,40 @@ function highlightAITier(tier) {
 }
 
 // ====== SUMMARY ======
+function isPBGuided() {
+  return document.getElementById('pb-guided').classList.contains('active');
+}
+
 function getPBValues() {
-  const isGuided = document.getElementById('pb-guided').classList.contains('active');
-  if (isGuided) {
-    const known = parseFloat(document.getElementById('pb-known-raw').value) || 0;
-    const additional = parseFloat(document.getElementById('pb-additional-raw').value) || 0;
-    const overlap = parseFloat(document.getElementById('pb-overlap-slider').value) / 100;
-    const unknownRaw = parseFloat(document.getElementById('pb-unknown-raw').value) || 0;
-    const deduped = additional > 0 ? additional * (1 - overlap) : 0;
-    const totalKnown = known + deduped;
-    const unknownEquiv = unknownRaw / 20;
-    const profilesM = (totalKnown + unknownEquiv) / 1e6;
-    const tx = parseFloat(document.getElementById('pb-transactions').value) || 0;
-    const msg = parseFloat(document.getElementById('pb-messages').value) || 0;
-    const pv = parseFloat(document.getElementById('pb-pageviews').value) || 0;
-    const other = parseFloat(document.getElementById('pb-other-events').value) || 0;
-    const behaviorsB = (tx + msg + pv + other) / 1e9;
-    return { profilesM, behaviorsB, pbUnits: profilesM + behaviorsB };
-  } else {
-    const p = parseFloat(document.getElementById('pb-direct-profiles').value) || 0;
-    const b = parseFloat(document.getElementById('pb-direct-behaviors').value) || 0;
-    return { profilesM: p, behaviorsB: b, pbUnits: p + b };
+  if (isPBGuided()) {
+    const g = computePBGuided();
+    return { profilesM: g.profilesM, behaviorsB: g.behaviorsB, pbUnits: g.pbUnits };
   }
+  const p = num('pb-direct-profiles');
+  const b = num('pb-direct-behaviors');
+  return { profilesM: p, behaviorsB: b, pbUnits: p + b };
 }
 
 function updateSummary() {
   const pb = getPBValues();
+  const pbTier = getPBTier(pb.pbUnits);
   document.getElementById('sum-profiles').textContent = pb.profilesM.toFixed(2) + 'M';
   document.getElementById('sum-behaviors').textContent = pb.behaviorsB.toFixed(2) + 'B';
   document.getElementById('sum-pb-units').textContent = pb.pbUnits.toFixed(2);
-  document.getElementById('sum-pb-tier').textContent = getPBTierName(pb.pbUnits);
+  document.getElementById('sum-pb-tier').textContent = pbTier.label;
+  document.getElementById('sum-pb-headroom').textContent = formatHeadroom(pbTier, pb.pbUnits, ' P+B units');
 
-  const foundryCredits = parseFloat(document.getElementById('ai-foundry-credits').textContent) || 0;
-  const engageCredits = parseFloat(document.getElementById('ai-engage-credits').textContent) || 0;
-  const rtPzCredits = parseFloat(document.getElementById('ai-rt-pz-credits').textContent) || 0;
-  const rtTrigCredits = parseFloat(document.getElementById('ai-rt-trig-credits').textContent) || 0;
-  const signalsCredits = parseFloat(document.getElementById('ai-signals-credits').textContent) || 0;
-  const totalMonthly = foundryCredits + engageCredits + rtPzCredits + rtTrigCredits + signalsCredits;
-  const totalAnnual = totalMonthly * 12;
-
-  document.getElementById('sum-ai-foundry').textContent = foundryCredits.toFixed(2);
-  document.getElementById('sum-ai-engage').textContent = engageCredits.toFixed(2);
-  document.getElementById('sum-ai-rtpz').textContent = rtPzCredits.toFixed(2);
-  document.getElementById('sum-ai-rttrig').textContent = rtTrigCredits.toFixed(2);
-  document.getElementById('sum-ai-signals').textContent = signalsCredits.toFixed(2);
-  document.getElementById('sum-ai-annual').textContent = totalAnnual.toFixed(2);
-  document.getElementById('sum-ai-tier').textContent = getAITier(totalAnnual);
+  const ai = computeAI();
+  document.getElementById('sum-ai-foundry').textContent = ai.credits.foundry.toFixed(2);
+  document.getElementById('sum-ai-engage').textContent = ai.credits.engage.toFixed(2);
+  document.getElementById('sum-ai-rtpz').textContent = ai.credits.rtPz.toFixed(2);
+  document.getElementById('sum-ai-rttrig').textContent = ai.credits.rtTrig.toFixed(2);
+  document.getElementById('sum-ai-signals').textContent = ai.credits.signals.toFixed(2);
+  document.getElementById('sum-ai-annual').textContent = ai.annual.toFixed(2);
+  document.getElementById('sum-ai-buffer-pct').textContent = ai.bufferPct + '%';
+  document.getElementById('sum-ai-annual-buffered').textContent = ai.annualWithBuffer.toFixed(2);
+  document.getElementById('sum-ai-tier').textContent = ai.tier.name;
+  document.getElementById('sum-ai-headroom').textContent = formatHeadroom(ai.tier, ai.annualWithBuffer, ' credits / yr');
 }
 
 // ====== SUBMIT MODAL ======
@@ -1431,6 +1491,70 @@ function closeSubmitModal() {
 }
 
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxHwNrtMavJ2Cj9eHWCMEhMd3tPF0x7ck6Y4eEgwkJQY0Ce93gj6-prgeRRtm_5C4I/exec';
+// Submissions from this version go to the "New" tab; the "Old" tab keeps the previous column layout untouched
+const SHEET_TAB = 'New';
+
+const round2 = n => Math.round(n * 100) / 100;
+
+// Column header → value for one submission. Order here is the column order in the sheet.
+function buildSubmission(name, email) {
+  const guided = isPBGuided();
+  const g = computePBGuided();
+  const pb = getPBValues();
+  const pbTier = getPBTier(pb.pbUnits);
+  const ai = computeAI();
+  // Entered value as a number (negatives → 0); blank when the field was left empty
+  const raw = id => (document.getElementById(id).value === '' ? '' : num(id));
+  const blankIfNull = v => (v === null ? '' : round2(v));
+
+  return [
+    ['Name', name],
+    ['Email', email],
+    ['Submission Date', new Date().toISOString()],
+    ['P+B Mode', guided ? 'Guided' : 'Direct'],
+    ['Known Customers', guided ? raw('pb-known-raw') : ''],
+    ['Additional Sources', guided ? raw('pb-additional-raw') : ''],
+    ['Overlap %', guided ? raw('pb-overlap-slider') : ''],
+    ['Anonymous Visitors/Year', guided ? raw('pb-unknown-raw') : ''],
+    ['Transactions/Year', guided ? raw('pb-transactions') : ''],
+    ['Email SMS Push/Year', guided ? raw('pb-messages') : ''],
+    ['Web App Events/Year', guided ? raw('pb-pageviews') : ''],
+    ['Other Events/Year', guided ? raw('pb-other-events') : ''],
+    ['Direct Profiles (M)', guided ? '' : raw('pb-direct-profiles')],
+    ['Direct Behaviors (B)', guided ? '' : raw('pb-direct-behaviors')],
+    ['Total Profiles (M)', round2(pb.profilesM)],
+    ['Total Behaviors (B)', round2(pb.behaviorsB)],
+    ['P+B Units', round2(pb.pbUnits)],
+    ['ICDP Tier', pbTier.tier === null ? pbTier.label : pbTier.tier],
+    ['ICDP Tier Group', pbTier.group ? 'Group ' + pbTier.group : ''],
+    ['ICDP Tier Max (P+B)', blankIfNull(pbTier.high)],
+    ['ICDP Room Left (P+B)', blankIfNull(headroomValue(pbTier, pb.pbUnits))],
+    ['AI Foundry Conversations/mo (K)', ai.inputs.foundryK],
+    ['Agentic Engage Emails/mo (M)', ai.inputs.engageM],
+    ['Agentic Engage Email Clicks/mo (K)', ai.inputs.clicksK],
+    ['Agentic Engage SMS/mo (K)', ai.inputs.smsK],
+    ['Agentic Engage Mobile Push/mo (M)', ai.inputs.pushM],
+    ['RT PZ Profiles (M)', ai.inputs.rtProfilesM],
+    ['RT PZ Calls/mo (M)', ai.inputs.rtCallsM],
+    ['RT Trig Profiles (M)', ai.inputs.trigProfilesM],
+    ['RT Trig Events/mo (M)', ai.inputs.trigEventsM],
+    ['RT Trig Activations/mo (M)', ai.inputs.trigActivationsM],
+    ['AI Signals ML Predictions/mo (M)', ai.inputs.mlM],
+    ['AI Signals RFM Predictions/mo (M)', ai.inputs.rfmM],
+    ['AI Foundry Credits/mo', round2(ai.credits.foundry)],
+    ['Agentic Engage Credits/mo', round2(ai.credits.engage)],
+    ['RT PZ Credits/mo', round2(ai.credits.rtPz)],
+    ['RT Trig Credits/mo', round2(ai.credits.rtTrig)],
+    ['AI Signals Credits/mo', round2(ai.credits.signals)],
+    ['AI Credits/Month', round2(ai.monthly)],
+    ['AI Credits/Year', round2(ai.annual)],
+    ['Buffer %', ai.bufferPct],
+    ['AI Credits/Year incl. Buffer', round2(ai.annualWithBuffer)],
+    ['AI Tier', ai.tier.name],
+    ['AI Tier Max (Credits/Year)', blankIfNull(ai.tier.high)],
+    ['AI Room Left (Credits/Year)', blankIfNull(headroomValue(ai.tier, ai.annualWithBuffer))]
+  ];
+}
 
 function submitToSheet() {
   const name = document.getElementById('submit-name').value.trim();
@@ -1445,59 +1569,11 @@ function submitToSheet() {
   btn.disabled = true;
   btn.style.opacity = '0.7';
 
-  const pb = getPBValues();
-  const isGuided = document.getElementById('pb-guided').classList.contains('active');
-
+  const row = buildSubmission(name, email);
   const payload = {
-    headers: [
-      'Name', 'Email', 'Submission Date',
-      'P+B Mode',
-      'Known Customers', 'Additional Sources', 'Overlap %', 'Anonymous Visitors/Year',
-      'Transactions/Year', 'Email SMS Push/Year', 'Web App Events/Year', 'Other Events/Year',
-      'Direct Profiles (M)', 'Direct Behaviors (B)',
-      'Total Profiles (M)', 'Total Behaviors (B)', 'P+B Units', 'ICDP Tier',
-      'AI Foundry Conversations/mo (K)', 'Agentic Engage Emails/mo (M)',
-      'RT PZ Profiles (M)', 'RT PZ Calls/mo (M)',
-      'RT Trig Profiles (M)', 'RT Trig Events/mo (M)', 'RT Trig Activations/mo (M)',
-      'AI Signals Framework', 'AI Signals Add-Ons', 'AI Signals Notebook',
-      'AI Signals ML Predictions/mo (M)', 'AI Signals RFM Predictions/mo (M)',
-      'AI Credits/Month', 'AI Credits/Year', 'AI Tier'
-    ],
-    values: [
-      name,
-      email,
-      new Date().toISOString(),
-      isGuided ? 'Guided' : 'Direct',
-      isGuided ? (document.getElementById('pb-known-raw').value || '') : '',
-      isGuided ? (document.getElementById('pb-additional-raw').value || '') : '',
-      isGuided ? document.getElementById('pb-overlap-slider').value : '',
-      isGuided ? (document.getElementById('pb-unknown-raw').value || '') : '',
-      isGuided ? (document.getElementById('pb-transactions').value || '') : '',
-      isGuided ? (document.getElementById('pb-messages').value || '') : '',
-      isGuided ? (document.getElementById('pb-pageviews').value || '') : '',
-      isGuided ? (document.getElementById('pb-other-events').value || '') : '',
-      !isGuided ? (document.getElementById('pb-direct-profiles').value || '') : '',
-      !isGuided ? (document.getElementById('pb-direct-behaviors').value || '') : '',
-      pb.profilesM.toFixed(2),
-      pb.behaviorsB.toFixed(2),
-      pb.pbUnits.toFixed(2),
-      getPBTierName(pb.pbUnits),
-      document.getElementById('ai-foundry-input').value || '',
-      document.getElementById('ai-engage-input').value || '',
-      document.getElementById('ai-rt-profiles-input').value || '',
-      document.getElementById('ai-rt-calls-input').value || '',
-      document.getElementById('ai-trig-profiles-input').value || '',
-      document.getElementById('ai-trig-events-input').value || '',
-      document.getElementById('ai-trig-activations-input').value || '',
-      document.getElementById('ai-signals-framework').value,
-      document.getElementById('ai-signals-addons').value,
-      document.getElementById('ai-signals-notebook').value,
-      document.getElementById('ai-signals-ml-input').value || '',
-      document.getElementById('ai-signals-rfm-input').value || '',
-      document.getElementById('ai-total-monthly').textContent,
-      (parseFloat(document.getElementById('ai-total-monthly').textContent) * 12).toFixed(2),
-      document.getElementById('ai-your-tier').textContent
-    ]
+    sheet: SHEET_TAB,
+    headers: row.map(c => c[0]),
+    values: row.map(c => c[1])
   };
 
   fetch(SHEET_URL, {
@@ -1532,6 +1608,7 @@ function showStatus(msg, type) {
 // ====== INIT ======
 buildPBTierTable();
 buildAITierTable();
+calcPBDirect();
 calcAI();
 </script>
 </body>
