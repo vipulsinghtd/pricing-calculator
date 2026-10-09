@@ -7,6 +7,8 @@ Single-page calculator (`index.html`, hosted on GitHub Pages from `main`) that e
 
 Submissions are written to the **Captured Pricing Inputs** Google Sheet through a Google Apps Script web app (`apps-script/Code.gs`).
 
+The UI follows the Treasure AI 2026 design system: Poppins/Manrope (self-hosted in `assets/fonts/`), the TD2026 palette, the logo, brand line icons (`assets/icons/`), the Dusk gradient field and the suites brand shape. Keep new UI within those tokens: deep blue `#2D40AA` for key numbers, pastel tints for fills, the periwinkle→orchid gradient for primary buttons, soft blue-tinted shadows, and fade-only motion.
+
 ## AI credit rates (1 credit =)
 
 | Product | Metric | Units per credit |
