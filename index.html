@@ -393,6 +393,30 @@ input[type="range"]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 4px 
   transition: transform var(--dur) var(--ease), width var(--dur) var(--ease);
 }
 
+/* ===== SEGMENTED CHOICE (pick one) ===== */
+.segmented {
+  display: inline-flex;
+  padding: 4px;
+  border-radius: var(--radius-pill);
+  background: var(--gray-100);
+  margin-bottom: 8px;
+}
+.segmented button {
+  padding: 8px 18px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+.segmented button[aria-pressed="true"] { background: #fff; color: var(--td-blue-deep); box-shadow: var(--shadow-card); }
+.choice-note { font-size: 12.5px; color: var(--text-muted); margin-bottom: 16px; }
+.is-hidden { display: none; }
+
 /* ===== WIZARD ===== */
 .wizard-steps { display: flex; align-items: center; margin-bottom: 20px; }
 .wizard-step { display: flex; align-items: center; gap: 8px; }
@@ -931,15 +955,23 @@ hr.soft { border: none; border-top: 1px solid var(--gray-150); margin: 20px 0; }
         <h3>Agentic Engage</h3>
         <span class="badge">Engagement Suite</span>
       </div>
-      <p class="definition">AI-powered engagement across email, SMS, mobile push, and messaging. <strong>Email Messages</strong> are counted from Engage Studio sends. Email Clicks, SMS, and Mobile Push each convert at their own rate and are added together.</p>
-      <div class="input-group">
+      <p class="definition">AI-powered engagement across email, SMS, mobile push, and messaging. Email is charged <strong>either by emails sent or by email clicks</strong>, not both. SMS and Mobile Push are added on top.</p>
+      <div class="input-group" style="margin-bottom: 0;">
+        <label id="engage-email-metering-label">Charge email by</label>
+        <div class="segmented" role="group" aria-labelledby="engage-email-metering-label">
+          <button type="button" aria-pressed="true" data-metering="sends" onclick="setEmailMetering('sends')">Emails sent</button>
+          <button type="button" aria-pressed="false" data-metering="clicks" onclick="setEmailMetering('clicks')">Email clicks</button>
+        </div>
+        <p class="choice-note">Pick one: 1 credit = 1M emails sent, <strong>or</strong> 1 credit = 20K email clicks.</p>
+      </div>
+      <div class="input-group" id="engage-sends-group">
         <label for="ai-engage-input">Emails sent / month <span class="unit">millions</span></label>
         <div class="input-row">
           <input type="range" id="ai-engage-slider" min="0" max="50" value="0" step="0.5" aria-label="Emails slider" oninput="document.getElementById('ai-engage-input').value=this.value; calcAI();">
           <input type="number" id="ai-engage-input" min="0" max="1000" value="0" step="0.1" inputmode="decimal" oninput="document.getElementById('ai-engage-slider').value=this.value; calcAI();">
         </div>
       </div>
-      <div class="input-group">
+      <div class="input-group is-hidden" id="engage-clicks-group">
         <label for="ai-engage-clicks-input">Email clicks / month <span class="unit">thousands</span></label>
         <div class="input-row">
           <input type="range" id="ai-engage-clicks-slider" min="0" max="1000" value="0" step="10" aria-label="Email clicks slider" oninput="document.getElementById('ai-engage-clicks-input').value=this.value; calcAI();">
@@ -964,7 +996,7 @@ hr.soft { border: none; border-top: 1px solid var(--gray-150); margin: 20px 0; }
         <span class="label">Credits / month</span>
         <span class="value" id="ai-engage-credits">0.00</span>
       </div>
-      <div class="conversion-note">1 Credit = 1M Email Messages · 20K Email Clicks · 10K SMS Messages · 10M Mobile Push Messages</div>
+      <div class="conversion-note">Email: 1 Credit = 1M Emails Sent <strong>or</strong> 20K Email Clicks (choose one) · 1 Credit = 10K SMS Messages · 10M Mobile Push Messages</div>
     </div>
 
     <!-- RT Personalization -->
@@ -1467,13 +1499,29 @@ const RATES = {
   signalsRfmM: 100            // million predictions - RFM model
 };
 
+// ====== EMAIL METERING (choose one) ======
+// Email is charged either by sends (1M per credit) or by clicks (20K per credit) — never both
+let emailMetering = 'sends';
+function setEmailMetering(mode) {
+  emailMetering = mode;
+  document.querySelectorAll('.segmented [data-metering]').forEach(b =>
+    b.setAttribute('aria-pressed', b.dataset.metering === mode ? 'true' : 'false'));
+  document.getElementById('engage-sends-group').classList.toggle('is-hidden', mode !== 'sends');
+  document.getElementById('engage-clicks-group').classList.toggle('is-hidden', mode !== 'clicks');
+  calcAI();
+  updateRangeFills();
+  updateEstimateBar();
+}
+
 // ====== AI CREDITS CALCULATION ======
 // Single source of truth for AI credits — used by the AI tab, the summary and the submission
 function computeAI() {
   const i = {
     foundryK: num('ai-foundry-input'),
-    engageM: num('ai-engage-input'),
-    clicksK: num('ai-engage-clicks-input'),
+    emailMetering,
+    // Only the chosen email metric counts; the other is ignored
+    engageM: emailMetering === 'sends' ? num('ai-engage-input') : 0,
+    clicksK: emailMetering === 'clicks' ? num('ai-engage-clicks-input') : 0,
     smsK: num('ai-engage-sms-input'),
     pushM: num('ai-engage-push-input'),
     rtProfilesM: num('ai-rt-profiles-input'),
@@ -1662,8 +1710,8 @@ function buildSubmission(name, email) {
     ['ICDP Tier Max (P+B)', blankIfNull(pbTier.high)],
     ['ICDP Room Left (P+B)', blankIfNull(headroomValue(pbTier, pb.pbUnits))],
     ['AI Foundry Conversations/mo (K)', ai.inputs.foundryK],
-    ['Agentic Engage Emails/mo (M)', ai.inputs.engageM],
-    ['Agentic Engage Email Clicks/mo (K)', ai.inputs.clicksK],
+    ['Agentic Engage Emails/mo (M)', ai.inputs.emailMetering === 'sends' ? ai.inputs.engageM : ''],
+    ['Agentic Engage Email Clicks/mo (K)', ai.inputs.emailMetering === 'clicks' ? ai.inputs.clicksK : ''],
     ['Agentic Engage SMS/mo (K)', ai.inputs.smsK],
     ['Agentic Engage Mobile Push/mo (M)', ai.inputs.pushM],
     ['RT PZ Profiles (M)', ai.inputs.rtProfilesM],
@@ -1684,7 +1732,9 @@ function buildSubmission(name, email) {
     ['AI Credits/Year incl. Buffer', round2(ai.annualWithBuffer)],
     ['AI Tier', ai.tier.name],
     ['AI Tier Max (Credits/Year)', blankIfNull(ai.tier.high)],
-    ['AI Room Left (Credits/Year)', blankIfNull(headroomValue(ai.tier, ai.annualWithBuffer))]
+    ['AI Room Left (Credits/Year)', blankIfNull(headroomValue(ai.tier, ai.annualWithBuffer))],
+    // Added after the first New-tab release; the Apps Script appends it as the last column
+    ['Agentic Engage Email Metering', ai.inputs.emailMetering === 'sends' ? 'Emails sent' : 'Email clicks']
   ];
 }
 

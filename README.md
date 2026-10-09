@@ -14,8 +14,8 @@ The UI follows the Treasure AI 2026 design system: Poppins/Manrope (self-hosted 
 | Product | Metric | Units per credit |
 |---|---|---|
 | AI Foundry | Conversations | 600 |
-| Agentic Engage | Email Messages | 1 Million |
-| Agentic Engage | Email Clicks | 20 Thousand |
+| Agentic Engage | Email Messages *(or clicks — choose one)* | 1 Million |
+| Agentic Engage | Email Clicks *(or sends — choose one)* | 20 Thousand |
 | Agentic Engage | SMS Messages | 10 Thousand |
 | Agentic Engage | Mobile Push Messages | 10 Million |
 | RT Personalization / RT Triggers | RT Profiles (incurred monthly) | 1 Million |
@@ -29,6 +29,7 @@ All rates live in the `RATES` object in `index.html` — update them there.
 
 ## Rules
 
+- **Email is charged one way, not both.** Users choose *Emails sent* (1 credit = 1M) or *Email clicks* (1 credit = 20K); only the chosen metric counts. SMS and Mobile Push are added on top.
 - **RT Profiles are charged once.** If both RT Personalization and RT Triggers are used, Triggers only pays for profiles above the RT Personalization count.
 - **AI Signals is included with AEP.** There are no package selections; credits come from predictions only.
 - **AI tier** uses annual credits × (1 + buffer). Buffer options: None / 5% / 10% (default 10%). Above Tier AF the calculator shows "contact Deal Desk".

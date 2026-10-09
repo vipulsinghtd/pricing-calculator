@@ -32,7 +32,8 @@ const NEW_HEADERS = [
   'AI Foundry Credits/mo', 'Agentic Engage Credits/mo', 'RT PZ Credits/mo',
   'RT Trig Credits/mo', 'AI Signals Credits/mo',
   'AI Credits/Month', 'AI Credits/Year', 'Buffer %', 'AI Credits/Year incl. Buffer',
-  'AI Tier', 'AI Tier Max (Credits/Year)', 'AI Room Left (Credits/Year)'
+  'AI Tier', 'AI Tier Max (Credits/Year)', 'AI Room Left (Credits/Year)',
+  'Agentic Engage Email Metering'
 ];
 
 function doPost(e) {
