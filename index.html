@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#F9FEFF">
-<title>Treasure AI — Pricing Estimator</title>
+<title>Treasure AI — Scoping Estimator</title>
 <link rel="preload" href="assets/fonts/manrope-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/poppins-600.woff2" as="font" type="font/woff2" crossorigin>
 <style>
@@ -665,7 +665,7 @@ hr.soft { border: none; border-top: 1px solid var(--gray-150); margin: 20px 0; }
 <!-- Hero -->
 <header class="hero">
   <img class="hero-logo" src="assets/logo.png" alt="Treasure AI" width="215" height="28">
-  <p class="eyebrow">Pricing Estimator</p>
+  <p class="eyebrow">Scoping Estimator</p>
   <h1>Find your platform tier and AI credits</h1>
   <p class="lede">Size the CDP from <strong>profiles and behaviors</strong>, add the AI Suite products you plan to use, and send us your estimate. It takes about five minutes.</p>
   <img class="hero-shape" src="assets/shape-suites.png" alt="" aria-hidden="true">
@@ -926,7 +926,7 @@ hr.soft { border: none; border-top: 1px solid var(--gray-150); margin: 20px 0; }
 
   <div class="grid-2 stagger">
 
-    <!-- AI Foundry -->
+    <!-- AI Studio -->
     <div class="card">
       <div class="card-head">
         <span class="icon-tile"><img src="assets/icons/chat-people.png" alt=""></span>
@@ -935,15 +935,15 @@ hr.soft { border: none; border-top: 1px solid var(--gray-150); margin: 20px 0; }
       </div>
       <p class="definition">Powers conversational AI across Treasure AI Studio, Code, and AI Agents. A <strong>Conversation</strong> is an average of five back-and-forth exchanges using standard LLMs, metered on Production Instances.</p>
       <div class="input-group">
-        <label for="ai-foundry-input">Total conversations / month <span class="unit">thousands (× 1,000)</span></label>
+        <label for="ai-studio-input">Total conversations / month <span class="unit">thousands (× 1,000)</span></label>
         <div class="input-row">
-          <input type="range" id="ai-foundry-slider" min="0" max="500" value="0" step="1" aria-label="Conversations slider" oninput="document.getElementById('ai-foundry-input').value=this.value; calcAI();">
-          <input type="number" id="ai-foundry-input" min="0" max="10000" value="0" step="1" inputmode="decimal" oninput="document.getElementById('ai-foundry-slider').value=this.value; calcAI();">
+          <input type="range" id="ai-studio-slider" min="0" max="500" value="0" step="1" aria-label="Conversations slider" oninput="document.getElementById('ai-studio-input').value=this.value; calcAI();">
+          <input type="number" id="ai-studio-input" min="0" max="10000" value="0" step="1" inputmode="decimal" oninput="document.getElementById('ai-studio-slider').value=this.value; calcAI();">
         </div>
       </div>
       <div class="credit-output">
         <span class="label">Credits / month</span>
-        <span class="value" id="ai-foundry-credits">0.00</span>
+        <span class="value" id="ai-studio-credits">0.00</span>
       </div>
       <div class="conversion-note">1 Credit = 600 Conversations</div>
     </div>
@@ -1159,7 +1159,7 @@ hr.soft { border: none; border-top: 1px solid var(--gray-150); margin: 20px 0; }
 <section id="tab-summary" class="tab-content" role="tabpanel">
 
   <div class="section-head">
-    <h2>Your pricing estimate</h2>
+    <h2>Your scoping estimate</h2>
     <p>Here's the <strong>combined P+B and AI credits</strong> picture. Check the numbers, then send them to the Treasure AI team.</p>
   </div>
 
@@ -1185,7 +1185,7 @@ hr.soft { border: none; border-top: 1px solid var(--gray-150); margin: 20px 0; }
         <span class="icon-tile"><img src="assets/icons/pie-chart.png" alt=""></span>
         <h3>AI Suite credits</h3>
       </div>
-      <div class="breakdown-row"><span class="bk-label">AI Foundry</span><span class="bk-value" id="sum-ai-foundry">0.00</span></div>
+      <div class="breakdown-row"><span class="bk-label">AI Studio</span><span class="bk-value" id="sum-ai-studio">0.00</span></div>
       <div class="breakdown-row"><span class="bk-label">Agentic Engage</span><span class="bk-value" id="sum-ai-engage">0.00</span></div>
       <div class="breakdown-row"><span class="bk-label">RT Personalization</span><span class="bk-value" id="sum-ai-rtpz">0.00</span></div>
       <div class="breakdown-row"><span class="bk-label">RT Triggers</span><span class="bk-value" id="sum-ai-rttrig">0.00</span></div>
@@ -1202,7 +1202,7 @@ hr.soft { border: none; border-top: 1px solid var(--gray-150); margin: 20px 0; }
 
   <div class="submit-area">
     <button class="btn btn-primary btn-lg" onclick="openSubmitModal()">Submit my inputs</button>
-    <p>Your inputs go to the Treasure AI team so we can prepare a tailored pricing proposal.</p>
+    <p>Your inputs go to the Treasure AI team so we can prepare a tailored scoping proposal.</p>
   </div>
 </section>
 
@@ -1222,7 +1222,7 @@ hr.soft { border: none; border-top: 1px solid var(--gray-150); margin: 20px 0; }
 <div class="modal-overlay" id="submit-modal" onclick="if(event.target===this)closeSubmitModal()">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="submit-title">
     <h3 id="submit-title">Submit your estimate</h3>
-    <p>Add your details and we'll prepare a pricing proposal from your inputs.</p>
+    <p>Add your details and we'll prepare a scoping proposal from your inputs.</p>
     <div class="input-group">
       <label for="submit-name">Full name *</label>
       <input type="text" id="submit-name" placeholder="Jane Smith" autocomplete="name" required>
@@ -1486,7 +1486,7 @@ function highlightPBTier(units) {
 // ====== AI CREDIT RATES ======
 // 1 credit = this many units. Update here when credit definitions / metering change.
 const RATES = {
-  foundryConversations: 600,  // conversations
+  studioConversations: 600,  // conversations
   engageEmailsM: 1,           // million email messages
   engageClicksK: 20,          // thousand email clicks
   engageSmsK: 10,             // thousand SMS messages
@@ -1517,7 +1517,7 @@ function setEmailMetering(mode) {
 // Single source of truth for AI credits — used by the AI tab, the summary and the submission
 function computeAI() {
   const i = {
-    foundryK: num('ai-foundry-input'),
+    studioK: num('ai-studio-input'),
     emailMetering,
     // Only the chosen email metric counts; the other is ignored
     engageM: emailMetering === 'sends' ? num('ai-engage-input') : 0,
@@ -1533,7 +1533,7 @@ function computeAI() {
     rfmM: num('ai-signals-rfm-input')
   };
 
-  const foundry = (i.foundryK * 1000) / RATES.foundryConversations;
+  const studio = (i.studioK * 1000) / RATES.studioConversations;
   const engage = i.engageM / RATES.engageEmailsM + i.clicksK / RATES.engageClicksK +
                  i.smsK / RATES.engageSmsK + i.pushM / RATES.engagePushM;
   const rtPz = i.rtProfilesM / RATES.rtProfilesM + i.rtCallsM / RATES.rtCallsM;
@@ -1543,19 +1543,19 @@ function computeAI() {
                  i.trigActivationsM / RATES.trigActivationsM;
   const signals = i.mlM / RATES.signalsMlM + i.rfmM / RATES.signalsRfmM;
 
-  const monthly = foundry + engage + rtPz + rtTrig + signals;
+  const monthly = studio + engage + rtPz + rtTrig + signals;
   const annual = monthly * 12;
   const bufferPct = parseFloat(document.getElementById('ai-buffer').value) || 0;
   const annualWithBuffer = annual * (1 + bufferPct / 100);
   const tier = getAITier(annualWithBuffer);
 
-  return { inputs: i, credits: { foundry, engage, rtPz, rtTrig, signals }, monthly, annual, bufferPct, annualWithBuffer, tier };
+  return { inputs: i, credits: { studio, engage, rtPz, rtTrig, signals }, monthly, annual, bufferPct, annualWithBuffer, tier };
 }
 
 function calcAI() {
   const ai = computeAI();
 
-  document.getElementById('ai-foundry-credits').textContent = ai.credits.foundry.toFixed(2);
+  document.getElementById('ai-studio-credits').textContent = ai.credits.studio.toFixed(2);
   document.getElementById('ai-engage-credits').textContent = ai.credits.engage.toFixed(2);
   document.getElementById('ai-rt-pz-credits').textContent = ai.credits.rtPz.toFixed(2);
   document.getElementById('ai-rt-trig-credits').textContent = ai.credits.rtTrig.toFixed(2);
@@ -1647,7 +1647,7 @@ function updateSummary() {
   document.getElementById('sum-pb-headroom').textContent = formatHeadroom(pbTier, pb.pbUnits, ' P+B units');
 
   const ai = computeAI();
-  document.getElementById('sum-ai-foundry').textContent = ai.credits.foundry.toFixed(2);
+  document.getElementById('sum-ai-studio').textContent = ai.credits.studio.toFixed(2);
   document.getElementById('sum-ai-engage').textContent = ai.credits.engage.toFixed(2);
   document.getElementById('sum-ai-rtpz').textContent = ai.credits.rtPz.toFixed(2);
   document.getElementById('sum-ai-rttrig').textContent = ai.credits.rtTrig.toFixed(2);
@@ -1709,7 +1709,7 @@ function buildSubmission(name, email) {
     ['ICDP Tier Group', pbTier.group ? 'Group ' + pbTier.group : ''],
     ['ICDP Tier Max (P+B)', blankIfNull(pbTier.high)],
     ['ICDP Room Left (P+B)', blankIfNull(headroomValue(pbTier, pb.pbUnits))],
-    ['AI Foundry Conversations/mo (K)', ai.inputs.foundryK],
+    ['AI Studio Conversations/mo (K)', ai.inputs.studioK],
     ['Agentic Engage Emails/mo (M)', ai.inputs.emailMetering === 'sends' ? ai.inputs.engageM : ''],
     ['Agentic Engage Email Clicks/mo (K)', ai.inputs.emailMetering === 'clicks' ? ai.inputs.clicksK : ''],
     ['Agentic Engage SMS/mo (K)', ai.inputs.smsK],
@@ -1721,7 +1721,7 @@ function buildSubmission(name, email) {
     ['RT Trig Activations/mo (M)', ai.inputs.trigActivationsM],
     ['AI Signals ML Predictions/mo (M)', ai.inputs.mlM],
     ['AI Signals RFM Predictions/mo (M)', ai.inputs.rfmM],
-    ['AI Foundry Credits/mo', round2(ai.credits.foundry)],
+    ['AI Studio Credits/mo', round2(ai.credits.studio)],
     ['Agentic Engage Credits/mo', round2(ai.credits.engage)],
     ['RT PZ Credits/mo', round2(ai.credits.rtPz)],
     ['RT Trig Credits/mo', round2(ai.credits.rtTrig)],

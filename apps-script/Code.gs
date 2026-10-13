@@ -1,5 +1,5 @@
 /**
- * Treasure AI Pricing Estimator — submission endpoint for the "Captured Pricing Inputs" sheet.
+ * Treasure AI Scoping Estimator — submission endpoint for the "Captured Pricing Inputs" sheet.
  *
  * The calculator POSTs { sheet, headers, values }.
  *   - sheet:   tab to write to. Current calculator sends "New"; requests without it go to "Old"
@@ -23,13 +23,13 @@ const NEW_HEADERS = [
   'Direct Profiles (M)', 'Direct Behaviors (B)',
   'Total Profiles (M)', 'Total Behaviors (B)', 'P+B Units',
   'ICDP Tier', 'ICDP Tier Group', 'ICDP Tier Max (P+B)', 'ICDP Room Left (P+B)',
-  'AI Foundry Conversations/mo (K)',
+  'AI Studio Conversations/mo (K)',
   'Agentic Engage Emails/mo (M)', 'Agentic Engage Email Clicks/mo (K)',
   'Agentic Engage SMS/mo (K)', 'Agentic Engage Mobile Push/mo (M)',
   'RT PZ Profiles (M)', 'RT PZ Calls/mo (M)',
   'RT Trig Profiles (M)', 'RT Trig Events/mo (M)', 'RT Trig Activations/mo (M)',
   'AI Signals ML Predictions/mo (M)', 'AI Signals RFM Predictions/mo (M)',
-  'AI Foundry Credits/mo', 'Agentic Engage Credits/mo', 'RT PZ Credits/mo',
+  'AI Studio Credits/mo', 'Agentic Engage Credits/mo', 'RT PZ Credits/mo',
   'RT Trig Credits/mo', 'AI Signals Credits/mo',
   'AI Credits/Month', 'AI Credits/Year', 'Buffer %', 'AI Credits/Year incl. Buffer',
   'AI Tier', 'AI Tier Max (Credits/Year)', 'AI Room Left (Credits/Year)',
