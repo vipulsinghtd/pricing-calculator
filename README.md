@@ -1,4 +1,4 @@
-# Treasure AI — Pricing Estimator
+# Treasure AI — Scoping Estimator
 
 Single-page calculator (`index.html`, hosted on GitHub Pages from `main`) that estimates:
 
@@ -13,7 +13,7 @@ The UI follows the Treasure AI 2026 design system: Poppins/Manrope (self-hosted 
 
 | Product | Metric | Units per credit |
 |---|---|---|
-| AI Foundry | Conversations | 600 |
+| AI Studio | Conversations | 600 |
 | Agentic Engage | Email Messages *(or clicks — choose one)* | 1 Million |
 | Agentic Engage | Email Clicks *(or sends — choose one)* | 20 Thousand |
 | Agentic Engage | SMS Messages | 10 Thousand |
